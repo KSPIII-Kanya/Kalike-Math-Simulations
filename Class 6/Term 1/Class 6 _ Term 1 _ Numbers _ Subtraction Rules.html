@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <title>கழித்தல் விதிகள் – கண்டுபிடிப்பு மண்டலம்</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: bold;
+      color: #3498db; /* Blue heading */
+      margin-bottom: 8px;
+    }
+
+    header p.subtitle {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    header .curriculum {
+      font-size: 16px;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+
+    .rule-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 25px;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .rule-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .rule-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #3498db;
+    }
+
+    details summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2c3e50;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .controls input[type=number] {
+      width: 80px;
+      padding: 8px 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .reset-btn {
+      background-color: #e74c3c;
+    }
+
+    .reset-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .result {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #2ecc71;
+      font-weight: 500;
+    }
+
+    .balloon {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      cursor: grab;
+      user-select: none;
+      margin: 5px;
+    }
+
+    .red { background: #e74c3c; }
+    .blue { background: #3498db; }
+
+    .dropzone {
+      border: 2px dashed #aaa;
+      min-height: 60px;
+      padding: 10px;
+      background: #f9f9f9;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    .footer-buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn,
+      .reset-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+  <p class="subtitle">இத்திட்டம் டைட்டன்(TITAN) மற்றும் கலிகே(KALIKE) நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது.</p>
+  <div class="curriculum">
+    வகுப்பு 6 | பருவம் 1 | எண்கள் | கழித்தல் விதிகள்
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- Rule 1 -->
+  <div class="rule-card">
+    <div class="rule-title">சமன்பாடு: a − b = a + (−b)</div>
+    <details open>
+      <summary>எண்ணிலிருந்து ஒரு எதிர்மறை எண்ணைக் கூட்டுவது போல</summary>
+      <p>கழித்தல் என்பது ஓர் எதிர்மறை எண்ணைக் கூட்டுவதற்குச் சமம்.</p>
+    </details>
+    <div class="controls">
+      <label>அ =
+        <input type="number" id="r1a" value="5">
+      </label>
+      <label>ஆ =
+        <input type="number" id="r1b" value="3">
+      </label>
+      <button class="btn" onclick="addNegative()">கூட்டுக</button>
+    </div>
+    <div class="dropzone" id="dropzoneSub" ondragover="allowDrop(event)" ondrop="dropSub(event)">
+      <!-- Dropped elements go here -->
+    </div>
+    <div class="result" id="rule1Result">தற்போதைய மதிப்பு: 0</div>
+  </div>
+
+  <!-- Rule 2 -->
+  <div class="rule-card">
+    <div class="rule-title">சமன்பாடு: a − 0 = a</div>
+    <details open>
+      <summary>சுழியத்தைக் கழித்தாலும் எண் அப்படியே இருக்கும்</summary>
+      <p>ஏதேனும் ஓர் எண்ணிலிருந்து சுழியத்தைக் கழித்தாலும் விடை அதே எண்ணாகவே இருக்கும்.</p>
+    </details>
+    <div class="controls">
+      <label>அ =
+        <input type="number" id="r2a" value="7">
+      </label>
+      <button class="btn" onclick="updateRule2()">கணக்கிடு</button>
+    </div>
+    <div class="result" id="rule2Result"></div>
+  </div>
+
+  <!-- Rule 3 -->
+  <div class="rule-card">
+    <div class="rule-title">சமன்பாடு: a − a = 0</div>
+    <details open>
+      <summary>ஓர் எண்ணிலிருந்து அதே எண்ணைக் கழித்தால் விடை சுழியம்</summary>
+      <p>ஒரு எண்ணிலிருந்து அதே எண்ணைக் கழித்தால் விடை சுழியம்.</p>
+    </details>
+    <div class="controls">
+      <label>அ =
+        <input type="number" id="r3a" value="5">
+      </label>
+      <button class="btn" onclick="updateRule3()">கணக்கிடு</button>
+    </div>
+    <div class="result" id="rule3Result"></div>
+  </div>
+
+  <!-- Reset Button -->
+  <div class="footer-buttons">
+    <button class="btn reset-btn" onclick="resetAll()">மீண்டும் தொடங்குக</button>
+  </div>
+
+</div>
+
+<script>
+  let totalSub = 0;
+
+  function allowDrop(e) {
+    e.preventDefault();
+  }
+
+  function dropSub(e) {
+    e.preventDefault();
+    const data = e.dataTransfer.getData("text");
+    const element = document.getElementById(data);
+    const copy = element.cloneNode(true);
+    copy.id = "";
+    copy.draggable = false;
+    copy.style.margin = "5px";
+    e.target.appendChild(copy);
+
+    const value = parseInt(copy.getAttribute("data-value"));
+    totalSub += value;
+    document.getElementById("rule1Result").innerText = "தற்போதைய மதிப்பு: " + totalSub;
+  }
+
+  function addNegative() {
+    const a = parseInt(document.getElementById("r1a").value);
+    const b = -parseInt(document.getElementById("r1b").value);
+
+    // Clear previous drops
+    const dropzone = document.getElementById("dropzoneSub");
+    dropzone.innerHTML = "";
+    totalSub = 0;
+
+    const balloon = document.createElement("div");
+    balloon.className = "balloon red";
+    balloon.innerText = "+" + a;
+    balloon.setAttribute("data-value", a);
+    balloon.draggable = true;
+    balloon.ondragstart = function(e) { e.dataTransfer.setData("text", this.id); };
+    balloon.id = "balloon-" + Math.random().toString(36).substr(2, 9);
+    dropzone.appendChild(balloon);
+
+    const weight = document.createElement("div");
+    weight.className = "balloon blue";
+    weight.innerText = b;
+    weight.setAttribute("data-value", b);
+    weight.draggable = true;
+    weight.ondragstart = function(e) { e.dataTransfer.setData("text", this.id); };
+    weight.id = "weight-" + Math.random().toString(36).substr(2, 9);
+    dropzone.appendChild(weight);
+
+    totalSub = a + b;
+    document.getElementById("rule1Result").innerText = "தற்போதைய மதிப்பு: " + totalSub;
+  }
+
+  function updateRule2() {
+    const a = parseInt(document.getElementById("r2a").value);
+    document.getElementById("rule2Result").innerText = `${a} − 0 = ${a}`;
+  }
+
+  function updateRule3() {
+    const a = parseInt(document.getElementById("r3a").value);
+    document.getElementById("rule3Result").innerText = `${a} − ${a} = 0`;
+  }
+
+  function resetAll() {
+    // Reset result boxes
+    document.getElementById("rule1Result").innerText = "தற்போதைய மதிப்பு: 0";
+    document.getElementById("rule2Result").innerText = "";
+    document.getElementById("rule3Result").innerText = "";
+
+    // Reset inputs
+    document.getElementById("r1a").value = 5;
+    document.getElementById("r1b").value = 3;
+    document.getElementById("r2a").value = 7;
+    document.getElementById("r3a").value = 5;
+
+    // Clear drag-and-drop zone
+    document.getElementById("dropzoneSub").innerHTML = "";
+
+    // Reset total
+    totalSub = 0;
+  }
+</script>
+
+</body>
+</html>

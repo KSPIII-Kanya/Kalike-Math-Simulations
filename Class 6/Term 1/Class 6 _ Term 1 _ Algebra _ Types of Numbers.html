@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <title>எண்களின் வகைகள் – கண்டுபிடிப்பு மண்டலம்</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: bold;
+      color: #3498db;
+      margin-bottom: 8px;
+    }
+
+    header p.subtitle {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 15px;
+      margin: 5px;
+      display: inline-block;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .red { background: #e74c3c; color: white; }
+    .blue { background: #3498db; color: white; }
+    .green { background: #2ecc71; color: white; }
+    .purple { background: #9b59b6; color: white; }
+    .orange { background: #f39c12; color: white; }
+    .gray { background: #bdc3c7; color: white; }
+
+    .dropzone {
+      border: 2px dashed #aaa;
+      min-height: 100px;
+      padding: 10px;
+      margin-top: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .filled {
+      background-color: #eee !important;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .label-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .category-title {
+      font-weight: bold;
+    }
+
+    .required-count {
+      font-size: 14px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .feedback-area {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .success-box {
+      background: #dff0d8;
+      border-left: 4px solid #2ecc71;
+      padding: 15px;
+      border-radius: 6px;
+    }
+
+    .error-box {
+      background: #f2dede;
+      border-left: 4px solid #e74c3c;
+      padding: 15px;
+      border-radius: 6px;
+    }
+
+    .flash-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      background: #dff0d8;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: none;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      animation: fadeInOut 2s ease-in-out forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+      10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    }
+
+    .footer-buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+      margin: 5px;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .reset-btn {
+      background-color: #e74c3c;
+    }
+
+    .reset-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்தம்</h1>
+  <p class="subtitle">இத்திட்டம் டைட்டன்(TITAN) மற்றும் கலிகே(KALIKE) நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது.</p>
+  <div class="curriculum">
+    வகுப்பு 6 | பருவம் 1 | இயற்கணிதம் ஓர் அறிமுகம் | எண்களின் வகைகள்
+  </div>
+</header>
+
+<div class="content">
+
+  <h2 style="text-align:center;">எண்களை சரியான வகையில் வைக்கவும்</h2>
+
+  <!-- Drag Items -->
+  <div class="section">
+    <h3 class="category-title">🎯 இழுத்து விடுங்கள்:</h3>
+    <div id="drag-numbers" style="display:flex; flex-wrap:wrap; gap:10px;">
+      <div id="num1" class="card red" draggable="true" ondragstart="drag(event)">+3</div>
+      <div id="num2" class="card blue" draggable="true" ondragstart="drag(event)">–2</div>
+      <div id="num3" class="card green" draggable="true" ondragstart="drag(event)">0</div>
+      <div id="num4" class="card purple" draggable="true" ondragstart="drag(event)">2.5</div>
+      <div id="num5" class="card orange" draggable="true" ondragstart="drag(event)">5</div>
+      <div id="num6" class="card red" draggable="true" ondragstart="drag(event)">1</div>
+      <div id="num7" class="card gray" draggable="true" ondragstart="drag(event)">–3/2</div>
+      <div id="num8" class="card green" draggable="true" ondragstart="drag(event)">4/5</div>
+      <div id="num9" class="card purple" draggable="true" ondragstart="drag(event)">0.75</div>
+      <div id="num10" class="card orange" draggable="true" ondragstart="drag(event)">100</div>
+    </div>
+  </div>
+
+  <!-- Drop Zones -->
+  <div class="section">
+    <h3 class="category-title">🗂️ வைக்கும் இடங்கள்:</h3>
+
+    <div class="label-row">
+      <!-- Natural Numbers -->
+      <div style="flex:1; min-width: 200px;">
+        <div class="box-header">
+          <span class="category-title" style="color:#e74c3c;">இயற்கை எண்கள்</span>
+          <span class="required-count" id="naturalCount">(4)</span>
+        </div>
+        <div class="dropzone" id="natural" ondragover="allowDrop(event)" ondrop="dropToZone(event, 'natural')"></div>
+        <div class="number-info">(1, 2, 3...)</div>
+      </div>
+
+      <!-- Whole Numbers -->
+      <div style="flex:1; min-width: 200px;">
+        <div class="box-header">
+          <span class="category-title" style="color:#3498db;">முழு எண்கள்</span>
+          <span class="required-count" id="wholeCount">(5)</span>
+        </div>
+        <div class="dropzone" id="whole" ondragover="allowDrop(event)" ondrop="dropToZone(event, 'whole')"></div>
+        <div class="number-info">(0, 1, 2, 3...)</div>
+      </div>
+
+      <!-- Integers -->
+      <div style="flex:1; min-width: 200px;">
+        <div class="box-header">
+          <span class="category-title" style="color:#2ecc71;">முழுக்கள்</span>
+          <span class="required-count" id="integerCount">(6)</span>
+        </div>
+        <div class="dropzone" id="integer" ondragover="allowDrop(event)" ondrop="dropToZone(event, 'integer')"></div>
+        <div class="number-info">(எதிர்மறை, 0, நேர்மறை)</div>
+      </div>
+    </div>
+
+    <div class="label-row" style="margin-top:20px;">
+      <!-- Fractions -->
+      <div style="flex:1; min-width: 200px;">
+        <div class="box-header">
+          <span class="category-title" style="color:#9b59b6;">பின்னங்கள்</span>
+          <span class="required-count" id="fractionCount">(1)</span>
+        </div>
+        <div class="dropzone" id="fraction" ondragover="allowDrop(event)" ondrop="dropToZone(event, 'fraction')"></div>
+        <div class="number-info">(a/b வடிவில், b ≠ 0)</div>
+      </div>
+
+      <!-- Decimals -->
+      <div style="flex:1; min-width: 200px;">
+        <div class="box-header">
+          <span class="category-title" style="color:#f39c12;">தசம எண்கள்</span>
+          <span class="required-count" id="decimalCount">(2)</span>
+        </div>
+        <div class="dropzone" id="decimal" ondragover="allowDrop(event)" ondrop="dropToZone(event, 'decimal')"></div>
+        <div class="number-info">(புள்ளி '.' கொண்ட எண்கள்)</div>
+      </div>
+
+      <!-- Rational Numbers -->
+      <div style="flex:1; min-width: 200px;">
+        <div class="box-header">
+          <span class="category-title" style="color:#34495e;">நிகரெண்கள்</span>
+          <span class="required-count" id="rationalCount">(10)</span>
+        </div>
+        <div class="dropzone" id="rational" ondragover="allowDrop(event)" ondrop="dropToZone(event, 'rational')"></div>
+        <div class="number-info">(அனைத்தும் சேரும்)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Area -->
+  <div class="feedback-area" id="feedbackBox"></div>
+
+  <!-- Reset Button -->
+  <div class="footer-buttons">
+    <button class="btn reset-btn" onclick="resetAll()">மீண்டும் தொடங்குக</button>
+  </div>
+
+</div>
+
+<!-- Flash Overlay -->
+<div id="flashOverlay" class="flash-overlay">
+  <div id="flashText" class="flash-text"></div>
+</div>
+
+<script>
+  // Define required numbers per zone
+  const requiredCount = {
+    natural: 4,
+    whole: 5,
+    integer: 6,
+    fraction: 1,
+    decimal: 2,
+    rational: 10
+  };
+
+  // Track current count
+  const currentCount = {
+    natural: 4,
+    whole: 5,
+    integer: 6,
+    fraction: 1,
+    decimal: 2,
+    rational: 10
+  };
+
+  function drag(e) {
+    e.dataTransfer.setData("text", e.target.id);
+  }
+
+  function allowDrop(e) {
+    const targetId = e.currentTarget.id;
+
+    if (!document.getElementById(targetId).classList.contains("filled")) {
+      e.preventDefault();
+    }
+  }
+
+  function showFlashMessage(message) {
+    const flashOverlay = document.getElementById("flashOverlay");
+    const flashText = document.getElementById("flashText");
+
+    flashText.innerHTML = message;
+    flashOverlay.style.display = "block";
+
+    setTimeout(() => {
+      flashOverlay.style.display = "none";
+    }, 2000);
+  }
+
+  function dropToZone(e, targetZone) {
+    e.preventDefault();
+
+    const data = e.dataTransfer.getData("text");
+    const element = document.getElementById(data);
+
+    const box = e.target;
+    const feedbackBox = document.getElementById("feedbackBox");
+    const countLabel = document.getElementById(`${targetZone}Count`);
+
+    // Prevent duplicate drops by innerText
+    const alreadyInBox = [...box.children].some(child => child.innerText === element.innerText);
+    if (alreadyInBox) {
+      feedbackBox.innerHTML = `
+        <div class="error-box">
+          ❌ ${element.innerText} → ஏற்கனவே இங்கு உள்ளது!
+        </div>`;
+      return;
+    }
+
+    // Validate correct placement
+    const validZones = {
+      num1: ["natural", "whole", "integer", "rational"],
+      num2: ["integer", "rational"],
+      num3: ["whole", "integer", "rational"],
+      num4: ["decimal", "rational"],
+      num5: ["natural", "whole", "integer", "rational"],
+      num6: ["natural", "whole", "integer", "rational"],
+      num7: ["rational"],
+      num8: ["fraction", "rational"],
+      num9: ["decimal", "rational"],
+      num10: ["natural", "whole", "integer", "rational"]
+    };
+
+    const isValid = validZones[data]?.includes(targetZone);
+    if (!isValid) {
+      feedbackBox.innerHTML = `
+        <div class="error-box">
+          ❌ ${element.innerText} → இந்த வகையில் சேராது.
+        </div>`;
+      return;
+    }
+
+    // Clone and place
+    const copy = element.cloneNode(true);
+    copy.id = "";
+    box.appendChild(copy);
+
+    // Update label
+    currentCount[targetZone]--;
+    countLabel.textContent = `(${currentCount[targetZone]})`;
+
+    // Show success message
+    feedbackBox.innerHTML = `
+      <div class="success-box">
+        ✅ ${element.innerText} → சரி! ${getCategoryName(targetZone)} வகையில் சேர்க்கப்பட்டது.
+      </div>`;
+
+    setTimeout(() => {
+      feedbackBox.innerHTML = "";
+    }, 1500);
+
+    // If filled
+    if (currentCount[targetZone] === 0) {
+      box.classList.add("filled");
+      box.setAttribute("ondrop", "");
+      box.setAttribute("ondragover", "");
+
+      showFlashMessage(`வாழ்த்துகள். ${getCategoryName(targetZone)} முழுவதுமாக நிரப்பப்பட்டது`);
+    }
+  }
+
+  function getCategoryName(zone) {
+    const names = {
+      natural: "இயற்கை எண்கள்",
+      whole: "முழு எண்கள்",
+      integer: "முழுக்கள்",
+      fraction: "பின்னங்கள்",
+      decimal: "தசம எண்கள்",
+      rational: "நிகரெண்கள்"
+    };
+    return names[zone];
+  }
+
+  function resetAll() {
+    location.reload(); // Reload to reset everything
+  }
+</script>
+
+</body>
+</html>

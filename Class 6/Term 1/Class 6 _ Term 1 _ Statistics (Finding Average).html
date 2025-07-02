@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <title>புள்ளிவிவரம் – சராசரி</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: white;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: bold;
+      color: #d63031;
+      margin-bottom: 6px;
+    }
+
+    header p.subtitle {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    .curriculum {
+      font-size: 16px;
+      color: #777;
+      display: block;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .story {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      background: #ffe5ec;
+      border-left: 4px solid #d63031;
+      padding: 15px;
+      border-radius: 6px;
+    }
+
+    .simulator-row {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+      margin-top: 20px;
+    }
+
+    .graph-column,
+    .rulers-column {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .score-bar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 200px;
+      background: #f1f2f6;
+      border-radius: 8px;
+      padding: 10px;
+      position: relative;
+    }
+
+    .chart-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #aaa;
+    }
+
+    .score-bar {
+      width: 40px;
+      margin: 0 10px;
+      transition: height 0.3s ease;
+      border-radius: 4px;
+      position: relative;
+      text-align: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .red { background: linear-gradient(to top, #e74c3c, #c0392b); }
+    .blue { background: linear-gradient(to top, #3498db, #2980b9); }
+    .green { background: linear-gradient(to top, #2ecc71, #27ae60); }
+    .purple { background: linear-gradient(to top, #9b59b6, #8e44ad); }
+    .orange { background: linear-gradient(to top, #e67e22, #d35400); }
+
+    .subject-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .subject-label {
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #2d3436;
+    }
+
+    .info-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #dcdde1;
+      border-radius: 6px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .footer-buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    button.btn {
+      padding: 10px 20px;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 5px;
+      transition: background 0.3s ease;
+    }
+
+    button.btn:hover {
+      background-color: #74b9ff;
+    }
+
+    .reset-btn {
+      background-color: #e74c3c;
+    }
+
+    .reset-btn:hover {
+      background-color: #c0392b;
+    }
+
+    /* Slider Group */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .slider-group label {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .slider-group input[type="range"] {
+      width: 100%;
+    }
+
+    /* Floating Tooltip */
+    #dimensionLabel {
+      position: absolute;
+      font-size: 12px;
+      font-weight: bold;
+      color: #000;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 4px 8px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      pointer-events: none;
+      display: none;
+      z-index: 1000;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+  <p class="subtitle">இத்திட்டம் டைட்டன்(TITAN) மற்றும் கலிகே(KALIKE) நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது.</p>
+  <div class="curriculum">
+    வகுப்பு 6 | பருவம் 1 | எண்கள் – புள்ளிவிவரம் – சராசரி
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- Tamil Story -->
+  <div class="section story">
+    <strong>🎯 கதை: "மோகன் ஐந்து பாடங்களில் பெற்ற மதிப்பெண்களின் சராசரி கணக்கிட வேண்டும்"</strong><br><br>
+    மோகன் ஒவ்வொரு பாடத்திற்கும் மதிப்பெண் தெரிவு செய்து சராசரி கணக்கிட வேண்டும்.<br><br>
+    🔍 சராசரி = மொத்த மதிப்பெண்கள் / பாட எண்ணிக்கை<br>
+    👉 சராசரி என்பது ஒரு சம மதிப்பெண் பகிர்வு!
+  </div>
+
+  <!-- Graph + Rulers Row -->
+  <div class="simulator-row">
+    <!-- Left: Score Chart -->
+    <div class="graph-column">
+      <div class="section score-bar-container" id="scoreChart">
+        <div class="chart-line"></div>
+        <div class="score-bar red" id="barTamil" style="height:70px;">35</div>
+        <div class="score-bar blue" id="barEnglish" style="height:70px;">35</div>
+        <div class="score-bar green" id="barMaths" style="height:70px;">35</div>
+        <div class="score-bar purple" id="barScience" style="height:70px;">35</div>
+        <div class="score-bar orange" id="barSocial" style="height:70px;">35</div>
+      </div>
+
+      <!-- Subject Labels Below Bars -->
+      <div class="section subject-labels">
+        <div class="subject-label">தமிழ்</div>
+        <div class="subject-label">ஆங்கிலம்</div>
+        <div class="subject-label">கணிதம்</div>
+        <div class="subject-label">அறிவியல்</div>
+        <div class="subject-label">சமூகம்</div>
+      </div>
+
+      <!-- Result Box -->
+      <div class="section info-box" id="resultBox">
+        சராசரி = மொத்த மதிப்பெண்கள் / பாட எண்ணிக்கை<br>
+        = (35 + 35 + 35 + 35 + 35) / 5<br>
+        = 175 / 5 = <strong>35.00</strong>
+      </div>
+    </div>
+
+    <!-- Right: Sliders -->
+    <div class="rulers-column">
+      <div class="slider-group">
+        <label>🔴 தமிழ் – மதிப்பெண் தெரிவு</label>
+        <input type="range" min="0" max="100" value="35" id="tamil" oninput="updateScores()">
+      </div>
+
+      <div class="slider-group">
+        <label>🔵 ஆங்கிலம் – மதிப்பெண் தெரிவு</label>
+        <input type="range" min="0" max="100" value="35" id="english" oninput="updateScores()">
+      </div>
+
+      <div class="slider-group">
+        <label>🟢 கணிதம் – மதிப்பெண் தெரிவு</label>
+        <input type="range" min="0" max="100" value="35" id="maths" oninput="updateScores()">
+      </div>
+
+      <div class="slider-group">
+        <label>🟣 அறிவியல் – மதிப்பெண் தெரிவு</label>
+        <input type="range" min="0" max="100" value="35" id="science" oninput="updateScores()">
+      </div>
+
+      <div class="slider-group">
+        <label>🟠 சமூக அறிவியல் – மதிப்பெண் தெரிவு</label>
+        <input type="range" min="0" max="100" value="35" id="social" oninput="updateScores()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Button -->
+  <div class="footer-buttons">
+    <button class="btn reset-btn" onclick="resetAll()">மீண்டும் தொடங்குக</button>
+  </div>
+
+</div>
+
+<!-- Floating Label -->
+<div id="dimensionLabel"></div>
+
+<script>
+  const subjects = ['tamil', 'english', 'maths', 'science', 'social'];
+
+  // Mapping English IDs to Tamil subject names
+  const subjectNamesInTamil = {
+    tamil: 'தமிழ்',
+    english: 'ஆங்கிலம்',
+    maths: 'கணிதம்',
+    science: 'அறிவியல்',
+    social: 'சமூகம்'
+  };
+
+  function getScores() {
+    return subjects.reduce((acc, sub) => {
+      const val = parseInt(document.getElementById(sub).value);
+      acc[sub] = isNaN(val) ? 0 : val;
+      return acc;
+    }, {});
+  }
+
+  function updateBars(scores) {
+    subjects.forEach(subject => {
+      document.getElementById(`bar${capitalize(subject)}`).style.height = `${scores[subject] * 2}px`;
+      document.getElementById(`bar${capitalize(subject)}`).textContent = scores[subject];
+    });
+  }
+
+  function updateAverage(scores) {
+    const scoreValues = Object.values(scores);
+    const total = scoreValues.reduce((a, b) => a + b, 0);
+    const avg = (total / scoreValues.length).toFixed(2);
+
+    document.getElementById("resultBox").innerHTML = `
+      சராசரி = மொத்த மதிப்பெண்கள் / பாட எண்ணிக்கை<br>
+      = (${scoreValues.join(" + ")}) / 5<br>
+      = ${total} / 5 = <strong>${avg}</strong>`;
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function updateScores() {
+    const scores = getScores();
+    updateBars(scores);
+    updateAverage(scores);
+  }
+
+  function resetAll() {
+    subjects.forEach(subject => {
+      document.getElementById(subject).value = 35;
+    });
+    updateScores();
+  }
+
+  window.onload = () => {
+    updateScores();
+  };
+
+  // Floating tooltip logic - shows current value in Tamil
+  document.querySelectorAll('input[type="range"]').forEach(slider => {
+    slider.addEventListener('mousemove', (e) => {
+      const value = slider.value;
+      const dimensionLabel = document.getElementById('dimensionLabel');
+      dimensionLabel.textContent = `${subjectNamesInTamil[slider.id]} = ${value}`;
+      dimensionLabel.style.left = `${e.pageX + 10}px`;
+      dimensionLabel.style.top = `${e.pageY + 10}px`;
+      dimensionLabel.style.display = "block";
+    });
+
+    slider.addEventListener('mouseleave', () => {
+      document.getElementById('dimensionLabel').style.display = "none";
+    });
+
+    slider.addEventListener('change', () => {
+      document.getElementById('dimensionLabel').style.display = "none";
+    });
+  });
+</script>
+
+</body>
+</html>

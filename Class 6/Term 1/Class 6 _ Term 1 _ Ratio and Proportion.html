@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <title>விகிதம் மற்றும் விகித சமம்</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff0f6;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      font-size: 24px;
+      font-weight: bold;
+      color: #d63031;
+      margin-bottom: 6px;
+    }
+    header p.subtitle {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+    .curriculum {
+      font-size: 16px;
+      color: #777;
+      display: block;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .story {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      background: #ffe5ec;
+      border-left: 4px solid #d63031;
+      padding: 15px;
+      border-radius: 6px;
+    }
+    .slider-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 5px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .ruler-container {
+      position: relative;
+      height: 40px;
+      background: #eee;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 10px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    }
+    .ruler-part {
+      float: left;
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: inherit;
+    }
+    .red { background-color: #e74c3c; }
+    .blue { background-color: #3498db; }
+    .green { background-color: #2ecc71; }
+    .purple { background-color: #9b59b6; }
+    .ratio-display {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .result-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 18px;
+      display: none;
+      text-align: center;
+    }
+    .success-box {
+      background: #a2eb8f;
+      border-left: 4px solid #2ecc71;
+    }
+    .error-box {
+      background: #f1948a;
+      border-left: 4px solid #e74c3c;
+    }
+    .footer-buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+    button.btn {
+      padding: 10px 20px;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 5px;
+      transition: background 0.3s ease;
+    }
+    button.btn:hover {
+      background-color: #74b9ff;
+    }
+    .reset-btn {
+      background-color: #e74c3c;
+    }
+    .reset-btn:hover {
+      background-color: #c0392b;
+    }
+
+    /* Centered Flash Message */
+    .flash-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 20px;
+      z-index: 1000;
+      font-weight: bold;
+      display: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .flash-success {
+      background-color: #a2eb8f;
+      color: #27ae60;
+      border-left: 6px solid #27ae60;
+    }
+    .flash-error {
+      background-color: #f1948a;
+      color: #c0392b;
+      border-left: 6px solid #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+  <p class="subtitle">இத்திட்டம் டைட்டன்(TITAN) மற்றும் கலிகே(KALIKE) நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது.</p>
+  <div class="curriculum">
+    வகுப்பு 6 | பருவம் 1 | விகிதம் மற்றும் விகித சமம்
+  </div>
+</header>
+
+<!-- Flash Message -->
+<div id="flashMessage" class="flash-message"></div>
+
+<div class="content">
+
+  <!-- Story Section -->
+  <div class="section story">
+    <strong>🎯 கடலை மிட்டாய்களை பகிர்ந்து உண்ணும் நான்கு நண்பர்களின் (சிவா, தீபா, மோகன், செல்வி) கதை</strong><br><br>
+
+    சிவா ➜ 2 கடலை மிட்டாய்கள்<br>
+    தீபா ➜ 4 கடலை மிட்டாய்கள்<br>
+    → விகிதம்: `2:4` ➜ `2/4 = 1/2`<br><br>
+
+    மோகன் ➜ 3 கடலை மிட்டாய்கள்<br>
+    செல்வி ➜ 6 கடலை மிட்டாய்கள்<br>
+    → விகிதம்: `3:6` ➜ `3/6 = 1/2`<br><br>
+
+    🔍 இரண்டு பங்கீடும் ஒரே விகிதத்தில் உள்ளது!  
+    🎯 இதுதான் விகித சமம்!
+  </div>
+
+  <!-- Group 1: a : b -->
+  <div class="section">
+    <label>🎯 முதல் விகிதம்: a : b</label>
+    <div class="slider-group">
+      <label>🔴 சிவா (a): <span id="valueA">2</span></label>
+      <input type="range" min="1" max="20" value="2" id="a" oninput="updateRuler()">
+    </div>
+    <div class="slider-group">
+      <label>🔵 தீபா (b): <span id="valueB">4</span></label>
+      <input type="range" min="1" max="20" value="4" id="b" oninput="updateRuler()">
+    </div>
+    <div class="ruler-container" id="rulerAB">
+      <div class="ruler-part red" id="rulerPartA"></div>
+      <div class="ruler-part blue" id="rulerPartB"></div>
+    </div>
+    <div class="ratio-display" id="ratioABDisplay">விகிதம்: 2:4 ➜ 2/4 = 1/2</div>
+  </div>
+
+  <!-- Group 2: c : d -->
+  <div class="section">
+    <label>🎯 இரண்டாம் விகிதம்: c : d</label>
+    <div class="slider-group">
+      <label>🟢 மோகன் (c): <span id="valueC">3</span></label>
+      <input type="range" min="1" max="20" value="3" id="c" oninput="updateRuler()">
+    </div>
+    <div class="slider-group">
+      <label>🟣 செல்வி (d): <span id="valueD">6</span></label>
+      <input type="range" min="1" max="20" value="6" id="d" oninput="updateRuler()">
+    </div>
+    <div class="ruler-container" id="rulerCD">
+      <div class="ruler-part green" id="rulerPartC"></div>
+      <div class="ruler-part purple" id="rulerPartD"></div>
+    </div>
+    <div class="ratio-display" id="ratioCDDisplay">விகிதம்: 3:6 ➜ 3/6 = 1/2</div>
+
+    <!-- ✅ Moved Button Here -->
+    <div class="footer-buttons" style="text-align: center; margin-top: 20px;">
+      <button class="btn" onclick="showFlashMessage()">✅ விகித சமம் சரிபார்க்க</button>
+    </div>
+  </div>
+
+  <!-- Three-Term Ratio: a:b:c -->
+  <div class="section">
+    <label>🎯 மூன்று நபர் விகிதம்: a : b : c</label>
+    <div class="slider-group">
+      <label>🔴 சிவா (a): <span id="valueA3">2</span></label>
+      <input type="range" min="1" max="20" value="2" id="a3" oninput="updateRuler()">
+    </div>
+    <div class="slider-group">
+      <label>🔵 தீபா (b): <span id="valueB3">4</span></label>
+      <input type="range" min="1" max="20" value="4" id="b3" oninput="updateRuler()">
+    </div>
+    <div class="slider-group">
+      <label>🟢 மோகன் (c): <span id="valueC3">6</span></label>
+      <input type="range" min="1" max="20" value="6" id="c3" oninput="updateRuler()">
+    </div>
+    <div class="ruler-container" style="height:30px;" id="rulerABC">
+      <div class="ruler-part red" id="rulerPartA3"></div>
+      <div class="ruler-part blue" id="rulerPartB3"></div>
+      <div class="ruler-part green" id="rulerPartC3"></div>
+    </div>
+    <div class="ratio-display" id="ratioABCDisplay">விகிதம்: 2:4:6 ➜ 1:2:3</div>
+  </div>
+
+  <!-- Result Box -->
+  <div class="section" id="resultBox" style="display:none;">
+    <div id="resultText" class="result-box success-box" style="text-align:center;"></div>
+  </div>
+
+  <!-- Reset Button -->
+  <div class="footer-buttons">
+    <button class="btn reset-btn" onclick="resetAll()">மீண்டும் தொடங்குக</button>
+  </div>
+
+</div>
+
+<script>
+  function getValues() {
+    const a = parseInt(document.getElementById("a").value) || 1;
+    const b = parseInt(document.getElementById("b").value) || 1;
+    const c = parseInt(document.getElementById("c").value) || 1;
+    const d = parseInt(document.getElementById("d").value) || 1;
+
+    const a3 = parseInt(document.getElementById("a3").value) || 1;
+    const b3 = parseInt(document.getElementById("b3").value) || 1;
+    const c3 = parseInt(document.getElementById("c3").value) || 1;
+
+    return { a, b, c, d, a3, b3, c3 };
+  }
+
+  function updateSliderLabels() {
+    const { a, b, c, d, a3, b3, c3 } = getValues();
+
+    document.getElementById("valueA").textContent = a;
+    document.getElementById("valueB").textContent = b;
+    document.getElementById("valueC").textContent = c;
+    document.getElementById("valueD").textContent = d;
+    document.getElementById("valueA3").textContent = a3;
+    document.getElementById("valueB3").textContent = b3;
+    document.getElementById("valueC3").textContent = c3;
+  }
+
+  function updateRulers() {
+    const { a, b, c, d, a3, b3, c3 } = getValues();
+
+    // Ruler AB
+    if (a + b > 0) {
+      document.getElementById("rulerPartA").style.width = `${(a / (a + b)) * 100}%`;
+      document.getElementById("rulerPartB").style.width = `${(b / (a + b)) * 100}%`;
+
+      const gcdAB = gcd(a, b);
+      document.getElementById("ratioABDisplay").innerHTML = `
+        விகிதம்: ${a}:${b} ➜ 
+        ${a}/${b} = ${(gcdAB ? (a/gcdAB).toFixed(0) : a)} / ${(gcdAB ? (b/gcdAB).toFixed(0) : b)}`;
+    }
+
+    // Ruler CD
+    if (c + d > 0) {
+      document.getElementById("rulerPartC").style.width = `${(c / (c + d)) * 100}%`;
+      document.getElementById("rulerPartD").style.width = `${(d / (c + d)) * 100}%`;
+
+      const gcdCD = gcd(c, d);
+      document.getElementById("ratioCDDisplay").innerHTML = `
+        விகிதம்: ${c}:${d} ➜ 
+        ${c}/${d} = ${(gcdCD ? (c/gcdCD).toFixed(0) : c)} / ${(gcdCD ? (d/gcdCD).toFixed(0) : d)}`;
+    }
+
+    // Ruler ABC
+    if (a3 + b3 + c3 > 0) {
+      const total = a3 + b3 + c3;
+      document.getElementById("rulerPartA3").style.width = `${(a3 / total) * 100}%`;
+      document.getElementById("rulerPartB3").style.width = `${(b3 / total) * 100}%`;
+      document.getElementById("rulerPartC3").style.width = `${(c3 / total) * 100}%`;
+
+      const g = gcd(gcd(a3, b3), c3);
+      document.getElementById("ratioABCDisplay").innerHTML = `
+        விகிதம்: ${a3}:${b3}:${c3} ➜ 
+        ${a3/g}:${b3/g}:${c3/g}`;
+    }
+  }
+
+  function checkProportion() {
+    const { a, b, c, d } = getValues();
+    const resultBox = document.getElementById("resultBox");
+    const resultText = document.getElementById("resultText");
+
+    if (!a || !b || !c || !d) return;
+
+    const ratioAB = a / b;
+    const ratioCD = c / d;
+    const tolerance = 0.0001;
+
+    resultBox.style.display = "block";
+
+    if (Math.abs(ratioAB - ratioCD) < tolerance) {
+      resultText.className = "result-box success-box";
+      resultText.innerHTML = `🎉 ${a}:${b} = ${c}:${d} → இது விகித சமம்!`;
+    } else {
+      resultText.className = "result-box error-box";
+      resultText.innerHTML = `🚫 ${a}:${b} ≠ ${c}:${d} → இது விகித சமம் இல்லை!`;
+    }
+
+    return Math.abs(ratioAB - ratioCD) < tolerance;
+  }
+
+  function showFlashMessage() {
+    const isProportional = checkProportion();
+    const flashMessage = document.getElementById("flashMessage");
+
+    // Clear previous classes
+    flashMessage.className = "flash-message";
+
+    if (isProportional) {
+      flashMessage.textContent = "🎉 இரண்டு விகிதங்களும் சமம்!";
+      flashMessage.classList.add("flash-success");
+    } else {
+      flashMessage.textContent = "🚫 இரண்டு விகிதங்களும் சமமல்ல!";
+      flashMessage.classList.add("flash-error");
+    }
+
+    flashMessage.style.display = "block";
+
+    setTimeout(() => {
+      flashMessage.style.display = "none";
+      flashMessage.className = "flash-message"; // Reset classes
+    }, 2000);
+  }
+
+  function gcd(x, y) {
+    while (y) {
+      let temp = y;
+      y = x % y;
+      x = temp;
+    }
+    return x;
+  }
+
+  function updateRuler() {
+    updateSliderLabels();
+    updateRulers();
+    checkProportion();
+  }
+
+  function resetAll() {
+    document.getElementById("a").value = "2";
+    document.getElementById("b").value = "4";
+    document.getElementById("c").value = "3";
+    document.getElementById("d").value = "6";
+    document.getElementById("a3").value = "2";
+    document.getElementById("b3").value = "4";
+    document.getElementById("c3").value = "6";
+    updateRuler();
+  }
+
+  window.onload = () => {
+    updateRuler();
+  };
+</script>
+</body>
+</html>
