@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>எண் கோடு செயல்பாடு</title>
+    <style>
+        /* --- Google Font Import --- */
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;600;700&family=Poppins:wght@400;600&display=swap');
+
+        /* --- General Styling --- */
+        :root {
+            --primary-color: #00796b; /* Teal */
+            --secondary-color: #f57c00; /* Orange */
+            --background-color: #e0f2f1; /* Light Teal */
+            --font-color: #263238; /* Dark Grey */
+            --border-color: #b2dfdb;
+            --white-color: #ffffff;
+            --positive-color: #2e7d32; /* Green */
+            --negative-color: #c62828; /* Red */
+            --backspace-color: #424242; /* Dark Grey for Backspace */
+            --paren-color: #546e7a; /* Blue-grey for parentheses */
+            --rules-bg: #f0f4f5; /* Light grey for rules section */
+            --rules-border: #cfd8dc; /* Border for rules section */
+            --rules-text: #37474f; /* Darker text for rules */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Hind Madurai', 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--font-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 1rem;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none;
+        }
+
+        /* --- Header Styling --- */
+        .header-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--white-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .main-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .sub-header {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .class-info {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: var(--background-color);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* --- Main Simulator Container --- */
+        .simulator-container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--white-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem; /* Space before rules section */
+        }
+
+        /* --- Equation Display --- */
+        .display-area {
+            background-color: #eceff1;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: right;
+            border: 2px solid var(--border-color);
+            min-height: 7rem; /* Ensure enough space */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Align content to the bottom */
+        }
+
+        #equation-display {
+            font-size: 1.8rem; /* Slightly smaller for longer equations */
+            font-weight: 600;
+            color: var(--font-color);
+            word-wrap: break-word;
+            min-height: 2.5rem;
+            overflow-x: auto; /* Allow horizontal scrolling if equation is too long */
+            white-space: nowrap; /* Prevent wrapping */
+            text-overflow: ellipsis; /* Add ellipsis if overflow happens */
+            margin-bottom: 0.5rem;
+        }
+
+        #result-display {
+            font-size: 2.5rem; /* Adjusted for balance */
+            font-weight: 700;
+            color: var(--primary-color);
+            min-height: 3rem;
+        }
+
+        #rule-explanation { /* New style for rule text */
+            font-size: 0.9rem;
+            color: #3f51b5; /* A subtle blue for the rule text */
+            margin-top: 0.5rem;
+            min-height: 1.2rem; /* Ensure it takes up space even if empty */
+            text-align: left; /* Align rule text to left */
+            font-weight: 500;
+        }
+
+        /* --- Number Line --- */
+        .number-line-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        #number-line {
+            display: flex;
+            align-items: center;
+            overflow-x: scroll;
+            padding: 1.5rem 0;
+            border-top: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+            background: linear-gradient(to bottom, #f5f5f5, #ffffff);
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            box-shadow: inset 10px 0 10px -8px rgba(0,0,0,0.2), inset -10px 0 10px -8px rgba(0,0,0,0.2); /* Scroll shadows */
+        }
+        /* Hide scrollbar */
+        #number-line::-webkit-scrollbar { display: none; }
+        #number-line { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+        .number-tick {
+            flex: 0 0 70px; /* Do not grow, do not shrink, base width 70px */
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s ease;
+            scroll-snap-align: center;
+        }
+        
+        .number-tick:hover {
+            transform: translateY(-5px);
+        }
+
+        .number-tick::before { /* The vertical tick mark */
+            content: '';
+            position: absolute;
+            bottom: 30px;
+            height: 20px;
+            width: 3px;
+            background-color: var(--border-color);
+        }
+
+        .number-tick.major::before { /* Make every 5th tick longer */
+            height: 30px;
+            width: 4px;
+        }
+
+        .number-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .number-tick.positive .number-label { color: var(--positive-color); }
+        .number-tick.negative .number-label { color: var(--negative-color); }
+        .number-tick.zero .number-label { color: var(--font-color); font-weight: 700; }
+        .number-tick.zero::before {
+            height: 40px;
+            width: 5px;
+            background-color: var(--primary-color);
+        }
+        
+        .number-tick:hover .number-label {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+        }
+
+        /* --- Number Line Navigation Arrows --- */
+        .number-line-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none; /* Allow clicks to pass through initially */
+            padding: 0 0.5rem;
+            z-index: 10; /* Ensure arrows are above the number line */
+        }
+
+        .scroll-arrow {
+            background-color: rgba(0, 121, 107, 0.7); /* Primary color with transparency */
+            border: none;
+            color: var(--white-color);
+            font-size: 1.5rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            pointer-events: all; /* Re-enable clicks for buttons */
+        }
+
+        .scroll-arrow:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        .scroll-arrow:active {
+            transform: scale(0.95);
+        }
+
+        /* --- Controls Area --- */
+        .controls-area {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: var(--white-color);
+            line-height: 1;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-operator {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-paren {
+            background-color: var(--paren-color);
+        }
+
+        #clear-btn {
+            background-color: var(--negative-color);
+        }
+
+        #backspace-btn {
+            background-color: var(--backspace-color);
+            font-size: 1.8rem; /* Match other operator/clear buttons */
+        }
+
+        #zero-btn {
+            background-color: var(--primary-color);
+            font-size: 1.2rem;
+            font-family: 'Hind Madurai', sans-serif;
+        }
+
+        /* --- Rules Section Styling --- */
+        .rules-container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--rules-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--rules-border);
+            padding: 1.5rem;
+        }
+
+        .rules-summary {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            cursor: pointer;
+            list-style: none; /* Hide default arrow */
+            position: relative;
+            padding-left: 1.5rem; /* Space for custom arrow */
+        }
+        .rules-summary::-webkit-details-marker { display: none; } /* Hide for webkit */
+        .rules-summary::before { /* Custom arrow */
+            content: '▶';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.2s ease;
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+        details[open] .rules-summary::before {
+            transform: translateY(-50%) rotate(90deg);
+        }
+
+        .rules-content {
+            padding-top: 1rem;
+            color: var(--rules-text);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        .rules-content h3 {
+            font-size: 1.25rem;
+            color: var(--font-color);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--rules-border);
+            padding-bottom: 0.3rem;
+        }
+        .rules-content h4 {
+            font-size: 1.1rem;
+            color: var(--font-color);
+            margin-top: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+        .rules-content ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .rules-content ol {
+            list-style-type: decimal;
+            margin-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .rules-content li {
+            margin-bottom: 0.4rem;
+        }
+        .rules-content p {
+            margin-bottom: 0.8rem;
+        }
+        /* LaTeX styling */
+        .rules-content .math {
+            font-family: serif; /* For better math rendering */
+            font-style: italic;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .header-container { padding: 0.8rem; }
+            .main-header { font-size: 1.5rem; }
+            .sub-header { font-size: 0.9rem; }
+            .class-info { font-size: 1rem; padding: 0.4rem; }
+            .simulator-container { padding: 1rem; gap: 1rem; }
+            .display-area { padding: 0.8rem; }
+            #equation-display { font-size: 1.5rem; }
+            #result-display { font-size: 2.2rem; }
+            .number-tick { flex: 0 0 60px; /* Slightly smaller ticks on mobile */ }
+            .number-label { font-size: 1.1rem; }
+            .controls-area {
+                flex-direction: column; /* Stack buttons vertically on small screens */
+                align-items: center;
+                gap: 0.8rem;
+            }
+            .button-group {
+                width: 100%;
+                justify-content: center;
+                gap: 0.8rem;
+            }
+            .btn {
+                padding: 0.8rem 1rem;
+                font-size: 1.5rem;
+                flex: 1; /* Distribute space evenly among operator buttons */
+            }
+            #zero-btn { font-size: 1.1rem; width: 100%; }
+            #clear-btn, #backspace-btn { width: 100%; }
+            .scroll-arrow { font-size: 1.2rem; padding: 0.4rem 0.6rem; }
+            .rules-summary { font-size: 1.2rem; }
+            .rules-content { font-size: 0.9rem; }
+            .rules-content h3 { font-size: 1.15rem; }
+            .rules-content h4 { font-size: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                font-size: 1.2rem;
+                padding: 0.6rem 0.8rem;
+            }
+            /* Operator and parenthesis buttons should try to fit more horizontally */
+            .button-group .btn {
+                 flex: auto; /* Allow buttons to size naturally */
+                 min-width: 50px; /* Ensure they don't get too small */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-container">
+        <h1 class="main-header">கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+        <p class="sub-header">இத்திட்டம் TITAN மற்றும் KALIKE நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது</p>
+        <p class="class-info">வகுப்பு: 7 | பருவம்: 1 | தலைப்பு: எண் கோடு செயல்பாடு</p>
+    </header>
+
+    <main class="simulator-container">
+        <div class="display-area">
+            <div id="equation-display"></div>
+            <div id="result-display">=</div>
+            <div id="rule-explanation" class="rule-text"></div> <!-- New div for rule explanation -->
+        </div>
+        
+        <div class="number-line-wrapper">
+            <div id="number-line"></div>
+            <div class="number-line-nav">
+                <button id="scroll-left-btn" class="scroll-arrow"><span>&#9664;</span></button>
+                <button id="scroll-right-btn" class="scroll-arrow"><span>&#9654;</span></button>
+            </div>
+        </div>
+
+        <div class="controls-area">
+            <button id="zero-btn" class="btn">பூஜ்ஜியத்திற்குச் செல்லவும்</button>
+            <div class="button-group">
+                <button class="btn btn-paren" data-paren="(">(</button>
+                <button class="btn btn-paren" data-paren=")">)</button>
+                <button class="btn btn-paren" data-paren="[">[</button>
+                <button class="btn btn-paren" data-paren="]">]</button>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-operator" data-op="+">+</button>
+                <button class="btn btn-operator" data-op="-">-</button>
+                <button class="btn btn-operator" data-op="*">×</button>
+                <button class="btn btn-operator" data-op="/">÷</button>
+            </div>
+            <button id="backspace-btn" class="btn">⌫</button>
+            <button id="clear-btn" class="btn">அழி</button>
+        </div>
+    </main>
+
+    <section class="rules-container">
+        <details>
+            <summary class="rules-summary">அறிகுறிகள் மற்றும் செயல்பாடுகளின் விதிகள் (Rules of Signs and Operations)</summary>
+            <div class="rules-content">
+                <h3>எண் கோட்டில் கூட்டல் மற்றும் கழித்தல் (Addition and Subtraction on Number Line):</h3>
+                <ul>
+                    <li><strong>கூட்டல் (+):</strong> நேர்மறை எண்ணைக் கூட்ட, எண் கோட்டில் வலதுபுறம் செல்லவும். எதிர்மறை எண்ணைக் கூட்ட, எண் கோட்டில் இடதுபுறம் செல்லவும்.</li>
+                    <li><strong>கழித்தல் (-):</strong> நேர்மறை எண்ணைக் கழிக்க, எண் கோட்டில் இடதுபுறம் செல்லவும். எதிர்மறை எண்ணைக் கழிக்க, எண் கோட்டில் வலதுபுறம் செல்லவும்.</li>
+                </ul>
+
+                <h3>முழு எண்களின் செயல்பாடுகளுக்கான விதிகள் (Rules for Integer Operations):</h3>
+                <h4>கூட்டல் (Addition):</h4>
+                <ul>
+                    <li>ஒரே குறியுடைய எண்கள்: எண்களைக் கூட்டவும், அதே குறியை இடவும். (எ.கா: <span class="math">$5 + 3 = 8$</span>, <span class="math">$-5 + (-3) = -8$</span>)</li>
+                    <li>வெவ்வேறு குறியுடைய எண்கள்: பெரிய எண்ணிலிருந்து சிறிய எண்ணைக் கழிக்கவும், பெரிய எண்ணின் குறியை இடவும். (எ.கா: <span class="math">$5 + (-3) = 2$</span>, <span class="math">$-5 + 3 = -2$</span>)</li>
+                </ul>
+                <h4>கழித்தல் (Subtraction):</h4>
+                <ul>
+                    <li>முதல் எண்ணுடன், இரண்டாவது எண்ணின் குறியை மாற்றி கூட்டவும். (எ.கா: <span class="math">$5 - (-3) = 5 + 3 = 8$</span>)</li>
+                </ul>
+                <h4>பெருக்கல் மற்றும் வகுத்தல் (Multiplication and Division):</h4>
+                <ul>
+                    <li>ஒரே குறியுடைய எண்கள்: முடிவு நேர்மறை ( + ) ஆக இருக்கும். (எ.கா: <span class="math">$5 \times 3 = 15$</span>, <span class="math">$-5 \times -3 = 15$</span>)</li>
+                    <li>வெவ்வேறு குறியுடைய எண்கள்: முடிவு எதிர்மறை ( - ) ஆக இருக்கும். (எ.கா: <span class="math">$5 \times (-3) = -15$</span>, <span class="math">$-5 \times 3 = -15$</span>)</li>
+                </ul>
+
+                <h3>செயல்பாடுகளின் வரிசை (Order of Operations - BODMAS / PEMDAS):</h3>
+                <p>பல செயல்பாடுகள் உள்ள ஒரு சமன்பாட்டை மதிப்பிடும்போது, இந்த வரிசையைப் பின்பற்றவும்:</p>
+                <ol>
+                    <li><strong>B</strong>rackets / <strong>P</strong>arentheses (அடைப்புக்குறிகள் - அடைப்புக்குறிகளுக்குள் உள்ளதை முதலில் செய்யவும்)</li>
+                    <li><strong>O</strong>rders / <strong>E</strong>xponents (அடுக்குகள் - அடுக்குகள் அல்லது வர்க்கமூலங்களை மதிப்பிடவும்)</li>
+                    <li><strong>D</strong>ivision and <strong>M</strong>ultiplication (வகுத்தல் மற்றும் பெருக்கல் - இடமிருந்து வலமாக)</li>
+                    <li><strong>A</strong>ddition and <strong>S</strong>ubtraction (கூட்டல் மற்றும் கழித்தல் - இடமிருந்து வலமாக)</li>
+                </ol>
+                <p>இந்த செயல்பாடுகளின் வரிசையானது சமன்பாடுகளைத் தீர்க்கும் போது சரியான முடிவைப் பெற உதவுகிறது.</p>
+            </div>
+        </details>
+    </section>
+
+    <script>
+        // --- Core Logic for Evaluating Expressions with Precedence (BODMAS/PEMDAS) ---
+        // These functions are defined globally to be accessible from all event handlers.
+
+        /**
+         * Evaluates an arithmetic expression array, respecting the order of operations (BODMAS/PEMDAS).
+         * Handles numbers, operators (+, -, *, /), and parentheses/brackets.
+         * @param {Array} exprArray The expression as an array of numbers, operators, and parentheses.
+         * @returns {number} The calculated result of the expression.
+         * @throws {Error} If the expression is invalid (e.g., division by zero, mismatched parentheses).
+         */
+        function evaluateExpressionWithPrecedence(exprArray) {
+            // Step 1: Create a copy and ensure all number-like strings are converted to actual numbers.
+            let currentExpression = exprArray.map(item => {
+                if (typeof item === 'string' && !isNaN(parseInt(item)) && !['+', '-', '*', '/', '(', ')', '[', ']'].includes(item)) {
+                    return parseInt(item);
+                }
+                return item;
+            });
+
+            // Step 2: Resolve all parentheses/brackets recursively first.
+            // This flattens the expression by replacing bracketed sub-expressions with their results.
+            const afterParenResolution = resolveParentheses(currentExpression);
+            
+            // After parentheses resolution, the expression array should only contain numbers and operators.
+            // If it still contains arrays (unresolved nested structures) or unmatched parentheses, it's invalid.
+            if (afterParenResolution.some(item => Array.isArray(item) || (typeof item === 'string' && ['(', ')', '[', ']'].includes(item)))) {
+                 throw new Error("தவறான சமன்பாடு அமைப்பு: அடைப்புக்குறி சிக்கல்");
+            }
+
+            // Step 3: Perform Multiplication and Division (left-to-right).
+            const afterMulDiv = performOperations(afterParenResolution, ['*', '/']);
+
+            // Step 4: Perform Addition and Subtraction (left-to-right).
+            const finalResult = performOperations(afterMulDiv, ['+', '-']);
+
+            // The final result should be a single number after all operations.
+            if (finalResult.length !== 1 || typeof finalResult[0] !== 'number') {
+                throw new Error("தவறான சமன்பாடு அமைப்பு");
+            }
+
+            return finalResult[0];
+        }
+
+        /**
+         * Recursively resolves expressions within parentheses and square brackets.
+         * @param {Array} arr The expression array potentially containing nested parentheses.
+         * @returns {Array} An array where all bracketed sub-expressions are replaced by their evaluated results.
+         * @throws {Error} If parentheses are mismatched, empty, or contain syntax errors.
+         */
+        function resolveParentheses(arr) {
+            let result = [];
+            let i = 0;
+            while (i < arr.length) {
+                if (arr[i] === '(' || arr[i] === '[') {
+                    const openParen = arr[i];
+                    const closeParen = (openParen === '(') ? ')' : ']';
+                    let parenBalance = 1;
+                    let subExpr = [];
+                    let j = i + 1; // Start searching for sub-expression after the opening parenthesis
+                    
+                    if (j >= arr.length) {
+                        throw new Error("தவறான அடைப்புக்குறிகள்: திறந்த அடைப்புக்குறி முடிவில்"); // Unclosed parenthesis at end
+                    }
+
+                    // Extract the sub-expression within the current parenthesis pair
+                    while (j < arr.length && parenBalance > 0) {
+                        if (arr[j] === '(' || arr[j] === '[') parenBalance++;
+                        else if (arr[j] === ')' || arr[j] === ']') parenBalance--;
+                        
+                        if (parenBalance > 0) { // Only add to subExpr if it's not the final closing parenthesis for this level
+                            subExpr.push(arr[j]);
+                        }
+                        j++;
+                    }
+
+                    // Check for mismatched or unclosed parentheses
+                    if (parenBalance !== 0 || (j > i + 1 && arr[j-1] !== closeParen)) { 
+                        throw new Error("தவறான அடைப்புக்குறிகள்: பொருந்தாத அல்லது மூடப்படாதவை");
+                    }
+                    // Check for empty parentheses, e.g., "()" or "[]"
+                    if (subExpr.length === 0) {
+                        throw new Error("வெற்று அடைப்புக்குறிகள்");
+                    }
+                    // Check if the sub-expression ends with an operator (invalid syntax)
+                    const lastInSub = subExpr[subExpr.length - 1];
+                    if (typeof lastInSub === 'string' && ['+', '-', '*', '/'].includes(lastInSub)) {
+                        throw new Error("தவறான அடைப்புக்குறிகள்: இறுதி ஆபரேட்டர்");
+                    }
+
+                    // Recursively evaluate the sub-expression and push its single numerical result
+                    let subResult = evaluateExpressionWithPrecedence(subExpr);
+                    result.push(subResult);
+                    i = j; // Move the main index past the entire parenthesis block
+                } else {
+                    result.push(arr[i]);
+                    i++;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Performs a specific set of arithmetic operations (e.g., all '*' and '/') in left-to-right order.
+         * @param {Array} arr The array of numbers and operators.
+         * @param {Array<string>} operators An array of operators to process in this pass (e.g., ['*', '/']).
+         * @returns {Array} An array with the specified operations resolved.
+         * @throws {Error} For division by zero or invalid expression structure.
+         */
+        function performOperations(arr, operators) {
+            let temp = [...arr]; // Create a mutable copy to modify
+            let i = 0;
+            while (i < temp.length) {
+                const item = temp[i];
+                // Check if the current item is one of the target operators
+                if (typeof item === 'string' && operators.includes(item)) {
+                    // Ensure there are valid numbers before and after the operator
+                    if (i === 0 || i >= temp.length - 1 || typeof temp[i-1] !== 'number' || typeof temp[i+1] !== 'number') {
+                        // This check catches operators that are not correctly flanked by numbers.
+                        // This is a legitimate syntax error for binary operators.
+                        throw new Error("தவறான சமன்பாடு அமைப்பு: ஆபரேட்டர் பிழை"); // Operator without valid operands
+                    }
+
+                    const num1 = temp[i-1];
+                    const operator = item;
+                    const num2 = temp[i+1];
+                    let res;
+
+                    switch (operator) {
+                        case '*': res = num1 * num2; break;
+                        case '/':
+                            if (num2 === 0) throw new Error("பூஜ்ஜியத்தால் வகுக்க முடியாது");
+                            res = Math.trunc(num1 / num2); // Integer division as per requirement
+                            break;
+                        case '+': res = num1 + num2; break;
+                        case '-': res = num1 - num2; break;
+                    }
+                    // Replace the two operands and the operator with the single calculated result
+                    temp.splice(i - 1, 3, res);
+                    i -= 1; // Adjust index because array length decreased by 2
+                } else {
+                    i++;
+                }
+            }
+            return temp;
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const numberLine = document.getElementById('number-line');
+            const equationDisplay = document.getElementById('equation-display');
+            const resultDisplay = document.getElementById('result-display');
+            const ruleExplanationDiv = document.getElementById('rule-explanation'); 
+            const clearBtn = document.getElementById('clear-btn');
+            const backspaceBtn = document.getElementById('backspace-btn');
+            const zeroBtn = document.getElementById('zero-btn');
+            const scrollLeftBtn = document.getElementById('scroll-left-btn');
+            const scrollRightBtn = document.getElementById('scroll-right-btn');
+            
+            // --- State Variables ---
+            let equation = []; // Stores numbers, operators, and parentheses
+            let lastInputType = 'none'; // 'number', 'operator', 'parenthesis', 'none'
+
+            // --- Generate Number Line ---
+            function createNumberLine() {
+                for (let i = -100; i <= 100; i++) {
+                    const tick = document.createElement('div');
+                    tick.className = 'number-tick';
+                    tick.dataset.number = i;
+
+                    const label = document.createElement('span');
+                    label.className = 'number-label';
+                    label.textContent = i;
+                    
+                    if (i > 0) tick.classList.add('positive');
+                    else if (i < 0) tick.classList.add('negative');
+                    else {
+                        tick.classList.add('zero');
+                        tick.id = 'zero-tick';
+                    }
+
+                    if (i % 5 === 0) {
+                        tick.classList.add('major');
+                    }
+                    
+                    tick.appendChild(label);
+                    numberLine.appendChild(tick);
+                }
+            }
+
+            // --- Scroll to Zero on Load and Button Click ---
+            function goToZero() {
+                const zeroTick = document.getElementById('zero-tick');
+                if (zeroTick) {
+                    const scrollContainer = zeroTick.parentElement;
+                    const containerWidth = scrollContainer.clientWidth;
+                    const zeroLeft = zeroTick.offsetLeft;
+                    const zeroWidth = zeroTick.offsetWidth;
+                    scrollContainer.scrollLeft = zeroLeft - (containerWidth / 2) + (zeroWidth / 2);
+                    numberLine.dispatchEvent(new Event('scroll'));
+                }
+            }
+
+            // --- Update Display ---
+            function updateDisplay() {
+                equationDisplay.textContent = equation.join(' ');
+                
+                // Always try to calculate and display the result, handling specific errors gracefully
+                calculateAndDisplayResult();
+
+                // Conditionally display the specific rule based on simplicity
+                displayRuleBasedOnEquation();
+            }
+
+            // Handles the calculation and display of the numerical result
+            function calculateAndDisplayResult() {
+                if (equation.length === 0) {
+                    resultDisplay.textContent = '=';
+                    return;
+                }
+                try {
+                    let result = evaluateExpressionWithPrecedence(equation);
+                    resultDisplay.textContent = '= ' + result;
+                } catch (error) {
+                    // Specific handling for "Operator error" when it likely means incomplete expression
+                    if (error.message.includes("ஆபரேட்டர் பிழை") && typeof equation[equation.length - 1] === 'string' && ['+', '-', '*', '/'].includes(equation[equation.length - 1])) {
+                        resultDisplay.textContent = '= ...'; // Indicate incomplete expression
+                    } else if (error.message.includes("பூஜ்ஜியத்தால் வகுக்க முடியாது")) {
+                        resultDisplay.textContent = "பூஜ்ஜியத்தால் வகுக்க முடியாது";
+                    } else if (error.message.includes("தவறான அடைப்புக்குறிகள்") || error.message.includes("வெற்று அடைப்புக்குறிகள்") || error.message.includes("தவறான சமன்பாடு அமைப்பு")) {
+                        resultDisplay.textContent = error.message; // Display specific parsing/syntax errors
+                    } else {
+                        resultDisplay.textContent = "கணக்கிட முடியவில்லை"; // Generic fallback for unexpected errors
+                        console.error("Calculation error:", error.message); // Log full error for detailed debugging
+                    }
+                }
+            }
+
+
+            // Function to determine and display the rule for simple operations
+            function displayRuleBasedOnEquation() {
+                ruleExplanationDiv.textContent = ''; // Clear previous rule
+
+                // Check for a simple A op B structure (e.g., -3 + 2)
+                if (equation.length === 3 && 
+                    typeof equation[0] === 'number' && 
+                    typeof equation[2] === 'number' && 
+                    typeof equation[1] === 'string' && 
+                    ['+', '-', '*', '/'].includes(equation[1])) {
+                    
+                    const num1 = equation[0];
+                    const operator = equation[1];
+                    const num2 = equation[2];
+                    ruleExplanationDiv.textContent = getRuleText(num1, operator, num2);
+                } else if (equation.length > 0) {
+                    // For more complex equations or incomplete expressions, prompt to refer to full rules
+                    ruleExplanationDiv.textContent = "சிக்கலான சமன்பாடு. விதிகளை கீழே உள்ள பிரிவில் பார்க்கவும்."; // Complex equation. See rules in the section below.
+                } else {
+                    ruleExplanationDiv.textContent = ''; // Clear if equation is empty
+                }
+            }
+
+            // Function to get the Tamil rule text based on numbers and operator
+            function getRuleText(num1, operator, num2) {
+                let rule = "";
+
+                if (operator === '+') {
+                    if (Math.sign(num1) === Math.sign(num2) || (num1 === 0 || num2 === 0)) { // Same sign or one is zero
+                        rule = "ஒரே குறியுடைய எண்கள்: எண்களைக் கூட்டவும், அதே குறியை இடவும்.";
+                    } else { // Different signs
+                        rule = "வெவ்வேறு குறியுடைய எண்கள்: பெரிய எண்ணிலிருந்து சிறிய எண்ணைக் கழிக்கவும், பெரிய எண்ணின் குறியை இடவும்.";
+                    }
+                } else if (operator === '-') {
+                    // Explain subtraction as "change sign and add"
+                    let effectiveNum2 = -num2; // The number that is effectively being added
+                    let additionRulePart;
+                    if (Math.sign(num1) === Math.sign(effectiveNum2) || (num1 === 0 || effectiveNum2 === 0)) {
+                        additionRulePart = "ஒரே குறியுடைய எண்கள்";
+                    } else {
+                        additionRulePart = "வெவ்வேறு குறியுடைய எண்கள்";
+                    }
+                    rule = `கழித்தல் விதி: ${num2} இன் குறியை மாற்றி (${effectiveNum2} ஆகிறது), கூட்டல் விதியைப் பயன்படுத்தவும். (${additionRulePart})`;
+                } else if (operator === '*' || operator === '/') {
+                    if (Math.sign(num1) === Math.sign(num2) || num1 === 0 || num2 === 0) { // Same sign or one is zero (zero product rule)
+                        rule = "ஒரே குறியுடைய எண்கள்: முடிவு நேர்மறை (+) ஆக இருக்கும்.";
+                        if (num1 === 0 || num2 === 0) {
+                            rule += " (பூஜ்ஜியத்தால் பெருக்கினால்/வகுத்தால் பூஜ்ஜியமே வரும்)"; // Clarify for zero
+                        }
+                    } else { // Different signs
+                        rule = "வெவ்வேறு குறியுடைய எண்கள்: முடிவு எதிர்மறை (-) ஆக இருக்கும்.";
+                    }
+                }
+                return rule;
+            }
+
+            // --- Event Handlers ---
+
+            // Handles clicks on numbers from the number line
+            function handleNumberClick(num) {
+                const last = equation.length > 0 ? equation[equation.length - 1] : null;
+
+                // A number cannot follow another number directly, or a closing parenthesis directly without an operator.
+                if (lastInputType === 'number' || last === ')' || last === ']') {
+                    return; 
+                }
+                
+                equation.push(num);
+                lastInputType = 'number';
+                updateDisplay();
+            }
+
+            // Handles clicks on arithmetic operators (+, -, *, /)
+            function handleOperatorClick(op) {
+                // Cannot start an equation with an operator.
+                if (equation.length === 0) {
+                    return;
+                }
+
+                const last = equation[equation.length - 1];
+                
+                // If last was an operator, replace it
+                if (lastInputType === 'operator') {
+                    equation[equation.length - 1] = op;
+                } 
+                // If last was an opening parenthesis, do not allow operator (e.g., ( + ) is invalid)
+                else if (last === '(' || last === '[') {
+                    return; 
+                }
+                // Otherwise, append the operator
+                else {
+                    equation.push(op);
+                }
+                lastInputType = 'operator';
+                updateDisplay();
+            }
+
+            // Handles clicks on parentheses ( (, ), [, ] )
+            function handleParenthesisClick(paren) {
+                const last = equation.length > 0 ? equation[equation.length - 1] : null;
+
+                if (paren === '(' || paren === '[') {
+                    // An opening parenthesis cannot follow a number or a closing parenthesis directly (e.g., 5( or )( ).
+                    if (lastInputType === 'number' || last === ')' || last === ']') {
+                        return; 
+                    }
+                    equation.push(paren);
+                    lastInputType = 'parenthesis';
+                } else if (paren === ')' || paren === ']') {
+                    // A closing parenthesis must follow a number or another closing parenthesis.
+                    // It cannot follow an operator or an opening parenthesis directly (e.g., (+ or ([).
+                    if (equation.length === 0 || lastInputType === 'operator' || last === '(' || last === '[') {
+                        return;
+                    }
+                    
+                    // Basic balance check: ensure there's at least one unclosed opening parenthesis
+                    // of the same type before allowing a closing one.
+                    let openChar = (paren === ')') ? '(' : '[';
+                    let balance = 0;
+                    for (let i = 0; i < equation.length; i++) {
+                        if (equation[i] === openChar) balance++;
+                        if (equation[i] === paren) balance--;
+                    }
+                    if (balance <= 0) { // Not balanced correctly (e.g., trying to close a paren without an open one)
+                        return;
+                    }
+
+                    equation.push(paren);
+                    lastInputType = 'parenthesis';
+                }
+                updateDisplay();
+            }
+
+            // Clears the entire equation
+            function handleClear() {
+                equation = [];
+                lastInputType = 'none';
+                updateDisplay();
+            }
+
+            // Removes the last entered element (number, operator, or parenthesis)
+            function handleBackspace() {
+                if (equation.length === 0) {
+                    return; // Nothing to clear
+                }
+
+                equation.pop(); // Remove the last element
+                
+                if (equation.length === 0) {
+                    lastInputType = 'none';
+                } else {
+                    const lastElement = equation[equation.length - 1];
+                    if (typeof lastElement === 'number') {
+                        lastInputType = 'number';
+                    } else if (['+', '-', '*', '/'].includes(lastElement)) {
+                        lastInputType = 'operator';
+                    } else if (['(', ')', '[', ']'].includes(lastElement)) {
+                        lastInputType = 'parenthesis';
+                    } else {
+                        lastInputType = 'none'; // Fallback for unexpected types
+                    }
+                }
+                updateDisplay();
+            }
+
+            // --- Event Listeners ---
+
+            // Listen for clicks on number ticks
+            numberLine.addEventListener('click', (e) => {
+                const tick = e.target.closest('.number-tick');
+                if (tick && tick.dataset.number !== undefined) {
+                    handleNumberClick(parseInt(tick.dataset.number));
+                }
+            });
+
+            // Listen for clicks on operator buttons
+            document.querySelectorAll('.btn-operator').forEach(button => {
+                button.addEventListener('click', () => {
+                    handleOperatorClick(button.dataset.op);
+                });
+            });
+
+            // Listen for clicks on parenthesis buttons
+            document.querySelectorAll('.btn-paren').forEach(button => {
+                button.addEventListener('click', () => {
+                    handleParenthesisClick(button.dataset.paren);
+                });
+            });
+
+            // Listen for clear and backspace buttons
+            clearBtn.addEventListener('click', handleClear);
+            backspaceBtn.addEventListener('click', handleBackspace);
+            zeroBtn.addEventListener('click', goToZero);
+            
+            // Listen for scroll navigation buttons
+            scrollLeftBtn.addEventListener('click', () => {
+                numberLine.scrollBy({
+                    left: -numberLine.clientWidth / 2, // Scroll by half the visible width
+                    behavior: 'smooth'
+                });
+            });
+
+            scrollRightBtn.addEventListener('click', () => {
+                numberLine.scrollBy({
+                    left: numberLine.clientWidth / 2, // Scroll by half the visible width
+                    behavior: 'smooth'
+                });
+            });
+
+            // Update arrow visibility based on scroll position
+            function updateScrollArrows() {
+                const scrollLeft = numberLine.scrollLeft;
+                const scrollWidth = numberLine.scrollWidth;
+                const clientWidth = numberLine.clientWidth;
+
+                // Show/hide arrows based on scroll position with a small buffer
+                scrollLeftBtn.style.display = scrollLeft > 5 ? 'flex' : 'none';
+                scrollRightBtn.style.display = scrollLeft < (scrollWidth - clientWidth - 5) ? 'flex' : 'none';
+            }
+
+            numberLine.addEventListener('scroll', updateScrollArrows);
+
+            // --- Initialization ---
+            createNumberLine();
+            goToZero(); // Center on zero at the start
+            updateDisplay();
+            updateScrollArrows(); // Call initially to set arrow visibility
+        });
+    </script>
+
+</body>
+</html>

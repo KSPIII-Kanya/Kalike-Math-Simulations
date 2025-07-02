@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>இணைகரம், சாய்சதுரம், சரிவகம் - சுற்றளவு மற்றும் பரப்பளவு</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Madurai', 'Poppins', sans-serif;
+            background-color: #e0f2f1; /* Light Teal */
+            color: #263238; /* Dark Grey */
+        }
+        .container-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #00796b; /* Primary color */
+        }
+        .btn-primary {
+            background-color: #00796b; /* Teal */
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #004d40; /* Darker Teal */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .btn-secondary {
+            background-color: #f57c00; /* Orange */
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #ef6c00; /* Darker Orange */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .btn-reset {
+            background-color: #c62828; /* Red */
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .btn-reset:hover {
+            background-color: #b71c1c; /* Darker Red */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .input-field {
+            border: 1px solid #b2dfdb;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            color: #263238;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #00796b;
+            box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.2);
+        }
+        .result-display {
+            background-color: #eceff1;
+            border: 2px solid #b2dfdb;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        canvas {
+            border: 2px solid #b2dfdb;
+            background-color: #ffffff;
+            border-radius: 8px;
+        }
+        .rules-summary {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #00796b;
+            cursor: pointer;
+            list-style: none; /* Hide default arrow */
+            position: relative;
+            padding-left: 1.5rem; /* Space for custom arrow */
+        }
+        .rules-summary::-webkit-details-marker { display: none; } /* Hide for webkit */
+        .rules-summary::before { /* Custom arrow */
+            content: '▶';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.2s ease;
+            color: #f57c00;
+            font-size: 1rem;
+        }
+        details[open] .rules-summary::before {
+            transform: translateY(-50%) rotate(90deg);
+        }
+        .rules-content {
+            padding-top: 1rem;
+            color: #37474f;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        .rules-content h3 {
+            font-size: 1.25rem;
+            color: #263238;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #cfd8dc;
+            padding-bottom: 0.3rem;
+        }
+        .rules-content ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .rules-content li {
+            margin-bottom: 0.4rem;
+        }
+        /* Styling for highlighting */
+        .highlight-perimeter {
+            stroke: #2e7d32; /* Green */
+            stroke-width: 4;
+        }
+        .highlight-area {
+            fill: rgba(0, 121, 107, 0.2); /* Semi-transparent teal */
+            stroke: #00796b;
+            stroke-width: 2;
+        }
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .header-container { padding: 0.8rem; }
+            .main-header { font-size: 1.5rem; }
+            .sub-header { font-size: 0.9rem; }
+            .class-info { font-size: 1rem; padding: 0.4rem; }
+            .simulator-container { padding: 1rem; gap: 1rem; }
+            .btn { padding: 0.8rem 1rem; font-size: 1.5rem; }
+            .input-field { padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body class="p-4 flex flex-col items-center min-h-screen">
+
+    <header class="header-container w-full max-w-4xl mb-6 text-center">
+        <h1 class="main-header text-2xl font-bold text-teal-700">கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+        <p class="sub-header text-gray-700 mt-1">இத்திட்டம் TITAN மற்றும் KALIKE நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது</p>
+        <p class="class-info text-lg font-semibold bg-teal-100 rounded-lg inline-block px-3 py-1 mt-4">
+            வகுப்பு: 7 | பருவம்: 1 | தலைப்பு: இணைகரம், சாய்சதுரம், சரிவகம் ஆகியவற்றின் சுற்றளவையும், பரப்பளவையும் புரிந்துகொள்ளுதல்
+        </p>
+    </header>
+
+    <main class="container-card w-full max-w-4xl p-6 mb-6">
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Shape Selection & Inputs -->
+            <div class="w-full md:w-1/2 flex flex-col gap-4">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">வடிவத்தைத் தேர்ந்தெடுக்கவும்:</h2>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button id="select-parallelogram" class="shape-btn btn-primary px-4 py-2 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500">இணைகரம்</button>
+                    <button id="select-rhombus" class="shape-btn btn-primary px-4 py-2 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500">சாய்சதுரம்</button>
+                    <button id="select-trapezoid" class="shape-btn btn-primary px-4 py-2 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500">சரிவகம்</button>
+                </div>
+
+                <div id="input-fields" class="flex flex-col gap-3">
+                    <!-- Input fields will be generated here by JavaScript -->
+                </div>
+
+                <button id="reset-inputs" class="btn-reset px-4 py-2 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 mt-4">
+                    உள்ளீடுகளை மீட்டமை
+                </button>
+            </div>
+
+            <!-- Canvas and Results -->
+            <div class="w-full md:w-1/2 flex flex-col gap-4">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">வடிவம் மற்றும் முடிவுகள்:</h2>
+                <canvas id="geometryCanvas" width="400" height="300" class="w-full max-w-md h-auto mx-auto"></canvas>
+                <div class="flex justify-center gap-4 mt-2">
+                    <button id="show-perimeter" class="btn-secondary px-4 py-2 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500">சுற்றளவு காட்டு</button>
+                    <button id="show-area" class="btn-secondary px-4 py-2 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500">பரப்பளவு காட்டு</button>
+                </div>
+
+                <div class="result-display p-4 rounded-lg mt-4">
+                    <p class="text-xl font-medium text-gray-700">சுற்றளவு சூத்திரம்: <span id="perimeter-formula-output" class="font-bold text-teal-700 block mt-1"></span></p>
+                    <p class="text-xl font-medium text-gray-700">சுற்றளவு (Perimeter): <span id="perimeter-output" class="font-bold text-teal-700 block mt-1"></span></p>
+                    <p class="text-xl font-medium text-gray-700 mt-2">பரப்பளவு சூத்திரம்: <span id="area-formula-output" class="font-bold text-teal-700 block mt-1"></span></p>
+                    <p class="text-xl font-medium text-gray-700 mt-2">பரப்பளவு (Area): <span id="area-output" class="font-bold text-teal-700 block mt-1"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-center mt-6">
+            <button id="full-reset" class="btn-reset px-6 py-3 rounded-lg text-xl font-bold focus:outline-none focus:ring-2 focus:ring-red-500">
+                முழு மீட்டமைப்பு
+            </button>
+        </div>
+    </main>
+
+    <!-- Educational Section -->
+    <section class="container-card w-full max-w-4xl p-6 mb-6">
+        <details>
+            <summary class="rules-summary">சுற்றளவு மற்றும் பரப்பளவு என்றால் என்ன? (What is Perimeter and Area?)</summary>
+            <div class="rules-content">
+                <h3>சுற்றளவு (Perimeter):</h3>
+                <p>ஒரு வடிவத்தின் சுற்றளவு என்பது அதன் வெளிப்புற விளிம்புகளின் மொத்த நீளம் ஆகும். சுற்றளவைக் கண்டறிய, வடிவத்தின் அனைத்துப் பக்கங்களின் நீளங்களையும் கூட்ட வேண்டும். உதாரணமாக, ஒரு மைதானத்தைச் சுற்றி நடக்கும்போது, நீங்கள் அதன் சுற்றளவை அளவிடுகிறீர்கள்.</p>
+                <h4>சுற்றளவு சூத்திரங்கள்:</h4>
+                <ul>
+                    <li><strong>இணைகரம்:</strong> 2 x (அடிப்பக்கம் + சாய்வுப் பக்கம்)</li>
+                    <li><strong>சாய்சதுரம்:</strong> 4 x பக்கம்</li>
+                    <li><strong>சரிவகம்:</strong> சமமற்ற பக்கங்கள் + சமமற்ற பக்கங்கள் + இணைப்பக்கம் 1 + இணைப்பக்கம் 2</li>
+                </ul>
+
+                <h3>பரப்பளவு (Area):</h3>
+                <p>ஒரு வடிவத்தின் பரப்பளவு என்பது அது ஒரு தட்டையான பரப்பில் (2D மேற்பரப்பில்) எவ்வளவு இடத்தைக் ஆக்கிரமித்துள்ளது என்பதற்கான அளவீடு ஆகும். இது பொதுவாக சதுர அலகுகளில் (உதாரணமாக, சதுர சென்டிமீட்டர் அல்லது சதுர மீட்டர்) அளவிடப்படுகிறது. உதாரணமாக, ஒரு வீட்டின் தரை அல்லது ஒரு வயலின் பரப்பு.</p>
+                <h4>பரப்பளவு சூத்திரங்கள்:</h4>
+                <ul>
+                    <li><strong>இணைகரம்:</strong> அடிப்பக்கம் x உயரம்</li>
+                    <li><strong> சாய்சதுரம்:</strong> பக்கம் x உயரம்</li>
+                    <li><strong>சரிவகம்:</strong> 0.5 x (இணைப்பக்கம் 1 + இணைப்பக்கம் 2) x உயரம்</li>
+                </ul>
+                <p>இந்தக் கருத்துகளைப் புரிந்துகொள்வது நிஜ வாழ்க்கைச் சூழ்நிலைகளில் பல கணிதப் பிரச்சனைகளைத் தீர்க்க உதவும்.</p>
+            </div>
+        </details>
+    </section>
+
+    <!-- New Section for Real-World Applications -->
+    <section class="container-card w-full max-w-4xl p-6">
+        <details>
+            <summary class="rules-summary">நிஜ உலகில் இணைகரம், சாய்சதுரம், சரிவகம் (Parallelograms, Rhombuses, Trapezoids in the Real World)</summary>
+            <div class="rules-content">
+                <h3>இணைகரம் (Parallelogram):</h3>
+                <ul>
+                    <li>கட்டிடங்கள் மற்றும் பாலங்களின் வடிவமைப்பு.</li>
+                    <li>ஒரு மடிக்கணினியின் திரையைத் திறக்கும்போது ஏற்படும் கோணம்.</li>
+                    <li>ஒரு நாற்காலியின் சில பாகங்கள்.</li>
+                    <li>விசைப்பலகை (Keyboard) விசைகளின் அமைப்பு.</li>
+                    <li>பலூன் கத்தரிக்கோல் அல்லது பாண்டோகிராஃப் போன்ற கருவிகள்.</li>
+                </ul>
+                <h3> சாய்சதுரம் (Rhombus):</h3>
+                <ul>
+                    <li>நகை வடிவமைப்புகள், குறிப்பாக வைர வெட்டுக்கள்.</li>
+                    <li>சாளரக் கண்ணாடிகளின் கிரில் வடிவமைப்புகள்.</li>
+                    <li>பதக்கங்கள் மற்றும் சின்னங்கள்.</li>
+                    <li>டைல்ஸ் அல்லது தரை ஓடுகளின் வடிவங்கள்.</li>
+                    <li>பறக்கும் பட்டம் (Kite) சில நேரங்களில் சாய்சதுர வடிவில் இருக்கும்.</li>
+                </ul>
+                <h3>சரிவகம் (Trapezoid):</h3>
+                <ul>
+                    <li>மேசைகள், அலமாரிகள் போன்ற தளபாடங்களின் மேல் தளங்கள் அல்லது பக்கவாட்டுகள்.</li>
+                    <li>பாலங்களின் ஆதரவு அமைப்புகள்.</li>
+                    <li>அணைகள் மற்றும் சரிவுகளின் குறுக்குவெட்டு தோற்றம்.</li>
+                    <li>கைப்பைகள் அல்லது சில பைகளின் வடிவமைப்பு.</li>
+                    <li>சாலை அடையாளங்கள் மற்றும் போக்குவரத்துக் கூம்புகள்.</li>
+                </ul>
+                <p>இந்த வடிவங்கள் நம் அன்றாட வாழ்வில் பல்வேறு கட்டமைப்புகள் மற்றும் பொருட்களில் பயன்படுத்தப்படுகின்றன.</p>
+            </div>
+        </details>
+    </section>
+
+
+    <script>
+        let canvas, ctx, inputFieldsDiv, perimeterOutput, areaOutput, perimeterFormulaOutput, areaFormulaOutput, showPerimeterBtn, showAreaBtn, resetInputsBtn, fullResetBtn;
+
+        let currentShape = null; // 'parallelogram', 'rhombus', 'trapezoid'
+        let currentInputs = {};
+        let dimensions = {}; // Stores calculated values or input values for drawing/calculation
+
+        // --- Shape Definitions and Input Fields ---
+        const shapes = {
+            parallelogram: {
+                name: 'இணைகரம்',
+                inputs: [
+                    { id: 'para_base', label: 'அடிப்பக்கம் (மீ)', type: 'number', min: 1, value: 80 },
+                    { id: 'para_side', label: 'சாய்வுப் பக்கம் (மீ)', type: 'number', min: 1, value: 50 },
+                    { id: 'para_height', label: 'உயரம் (மீ)', type: 'number', min: 1, value: 40 }
+                ],
+                calculate: (b, s, h) => ({
+                    perimeter: 2 * (b + s),
+                    area: b * h,
+                    perimeterFormula: '2 x (அடிப்பக்கம் + சாய்வுப் பக்கம்)',
+                    areaFormula: 'அடிப்பக்கம் x உயரம்'
+                }),
+                draw: (ctx, width, height, inputs, highlightType) => {
+                    const base = inputs.para_base;
+                    const side = inputs.para_side;
+                    const h = inputs.para_height;
+
+                    // Calculate a more conservative scale to ensure fitting
+                    const maxDim = Math.max(base + side * 0.5, h + side * 0.5); // Estimate max width and height needed
+                    const scale = Math.min(width / maxDim, height / maxDim) * 0.7; // Reduced scaling factor
+
+
+                    const scaledBase = base * scale;
+                    const scaledSide = side * scale;
+                    const scaledHeight = h * scale;
+
+                    // Adjust offsets to ensure the drawing is centered and fits within canvas
+                    const visualSlantX = Math.min(scaledBase * 0.4, Math.max(0, Math.sqrt(Math.pow(scaledSide, 2) - Math.pow(scaledHeight, 2))));
+                    const totalWidth = scaledBase + visualSlantX;
+                    const totalHeight = scaledHeight;
+
+                    const offsetX = (width - totalWidth) / 2 + visualSlantX; // Adjust offsetX to account for slant
+                    const offsetY = (height - totalHeight) / 2;
+
+
+                    ctx.beginPath();
+                    ctx.moveTo(offsetX - visualSlantX, offsetY + scaledHeight); // Bottom-left (A)
+                    ctx.lineTo(offsetX + scaledBase - visualSlantX, offsetY + scaledHeight); // Bottom-right (B)
+                    ctx.lineTo(offsetX + scaledBase, offsetY); // Top-right (C)
+                    ctx.lineTo(offsetX, offsetY); // Top-left (D)
+                    ctx.closePath();
+
+                    if (highlightType === 'area') {
+                        ctx.fillStyle = 'rgba(0, 121, 107, 0.2)';
+                        ctx.fill();
+                        ctx.strokeStyle = '#00796b';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    } else if (highlightType === 'perimeter') {
+                        ctx.strokeStyle = '#2e7d32'; // Green
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+                    } else {
+                        ctx.strokeStyle = '#333';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+
+                    // --- Labels ---
+                    ctx.fillStyle = '#000';
+                    ctx.font = '14px "Hind Madurai", sans-serif';
+                    ctx.textAlign = 'center';
+
+                    // அடிப்பக்கம் (Base) label
+                    ctx.fillText(`அடிப்பக்கம் (${base} மீ)`, offsetX + scaledBase / 2 - visualSlantX/2, offsetY + scaledHeight + 20);
+
+                    // சாய்வுப் பக்கம் (Slant side) label
+                    // Rotate for better display on the slanted side
+                    ctx.save();
+                    const midPointXSlant = offsetX - visualSlantX / 2;
+                    const midPointYSlant = offsetY + scaledHeight / 2;
+                    ctx.translate(midPointXSlant, midPointYSlant);
+                    const angle = Math.atan2(scaledHeight, visualSlantX); // Angle of the slanted side
+                    ctx.rotate(-angle); // Rotate to align with the slanted side
+                    ctx.fillText(`சாய்வுப் பக்கம் (${side} மீ)`, 0, -5); // Adjusted Y for better visual
+                    ctx.restore();
+                    
+                    // உயரம் (Height) line and label
+                    ctx.beginPath();
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeStyle = '#666';
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(offsetX + scaledBase - visualSlantX, offsetY + scaledHeight); // From bottom right base
+                    ctx.lineTo(offsetX + scaledBase - visualSlantX, offsetY); // Up to top right vertex
+                    ctx.stroke();
+                    ctx.setLineDash([]); // Reset dashed line
+                    
+                    ctx.save();
+                    ctx.translate(offsetX + scaledBase - visualSlantX + 15, offsetY + scaledHeight / 2);
+                    ctx.rotate(-Math.PI / 2); // Rotate 90 degrees clockwise
+                    ctx.fillText(`உயரம் (${h} மீ)`, 0, 0);
+                    ctx.restore();
+                }
+            },
+            rhombus: {
+                name: 'சாய்சதுரம்',
+                inputs: [
+                    { id: 'rhombus_base', label: 'பக்கம் (மீ)', type: 'number', min: 1, value: 60 },
+                    { id: 'rhombus_height', label: 'உயரம் (மீ)', type: 'number', min: 1, value: 50 }
+                ],
+                calculate: (b, h) => ({
+                    perimeter: 4 * b,
+                    area: b * h,
+                    perimeterFormula: '4 x பக்கம்',
+                    areaFormula: 'பக்கம் x உயரம்'
+                }),
+                draw: (ctx, width, height, inputs, highlightType) => {
+                    const base = inputs.rhombus_base;
+                    const h = inputs.rhombus_height;
+
+                    // Calculate a more conservative scale to ensure fitting
+                    const maxDim = Math.max(base + h * 0.5, h + base * 0.5);
+                    const scale = Math.min(width / maxDim, height / maxDim) * 0.7; // Reduced scaling factor
+
+                    const scaledBase = base * scale;
+                    const scaledHeight = h * scale;
+
+                    // Visual slant for rhombus drawing
+                    const visualSlantX = scaledBase * 0.3; // Can be adjusted for visual preference
+                    const totalWidth = scaledBase + visualSlantX;
+                    const totalHeight = scaledHeight;
+
+                    const offsetX = (width - totalWidth) / 2 + visualSlantX; // Adjust offsetX to account for slant
+                    const offsetY = (height - totalHeight) / 2;
+
+                    ctx.beginPath();
+                    ctx.moveTo(offsetX - visualSlantX, offsetY + scaledHeight); // Bottom-left
+                    ctx.lineTo(offsetX + scaledBase - visualSlantX, offsetY + scaledHeight); // Bottom-right
+                    ctx.lineTo(offsetX + scaledBase, offsetY); // Top-right
+                    ctx.lineTo(offsetX, offsetY); // Top-left
+                    ctx.closePath();
+
+                    if (highlightType === 'area') {
+                        ctx.fillStyle = 'rgba(0, 121, 107, 0.2)';
+                        ctx.fill();
+                        ctx.strokeStyle = '#00796b';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    } else if (highlightType === 'perimeter') {
+                        ctx.strokeStyle = '#2e7d32';
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+                    } else {
+                        ctx.strokeStyle = '#333';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+
+                    // --- Labels ---
+                    ctx.fillStyle = '#000';
+                    ctx.font = '14px "Hind Madurai", sans-serif';
+                    ctx.textAlign = 'center';
+
+                    // பக்கம் (Side) label
+                    ctx.fillText(`பக்கம் (${base} மீ)`, offsetX + scaledBase / 2 - visualSlantX/2, offsetY + scaledHeight + 20);
+
+                    // உயரம் (Height) line and label
+                    ctx.beginPath();
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeStyle = '#666';
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(offsetX + scaledBase - visualSlantX, offsetY + scaledHeight);
+                    ctx.lineTo(offsetX + scaledBase - visualSlantX, offsetY);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    ctx.save();
+                    ctx.translate(offsetX + scaledBase - visualSlantX + 15, offsetY + scaledHeight / 2);
+                    ctx.rotate(-Math.PI / 2);
+                    ctx.fillText(`உயரம் (${h} மீ)`, 0, 0);
+                    ctx.restore();
+                }
+            },
+            trapezoid: {
+                name: 'சரிவகம்',
+                inputs: [
+                    { id: 'trap_base1', label: 'இணைப்பக்கம் 1 (மீ)', type: 'number', min: 1, value: 100 },
+                    { id: 'trap_base2', label: 'இணைப்பக்கம் 2 (மீ)', type: 'number', min: 1, value: 60 },
+                    { id: 'trap_height', label: 'உயரம் (மீ)', type: 'number', min: 1, value: 50 },
+                    { id: 'trap_side3', label: 'பக்கம் 3 (மீ)', type: 'number', min: 1, value: 55 },
+                    { id: 'trap_side4', label: 'பக்கம் 4 (மீ)', type: 'number', min: 1, value: 45 }
+                ],
+                calculate: (b1, b2, h, s3, s4) => ({
+                    perimeter: b1 + b2 + s3 + s4,
+                    area: 0.5 * (b1 + b2) * h,
+                    perimeterFormula: 'இணைப்பக்கம் 1 + இணைப்பக்கம் 2 + பக்கம் 3 + பக்கம் 4',
+                    areaFormula: '0.5 x (இணைப்பக்கம் 1 + இணைப்பக்கம் 2) x உயரம்'
+                }),
+                draw: (ctx, canvasWidth, canvasHeight, inputs, highlightType) => {
+                    const base1 = inputs.trap_base1;
+                    const base2 = inputs.trap_base2;
+                    const h = inputs.trap_height;
+                    const side3 = inputs.trap_side3;
+                    const side4 = inputs.trap_side4;
+
+
+                    const scale = Math.min(canvasWidth / Math.max(base1, base2), canvasHeight / h) * 0.7;
+                    const scaledBase1 = base1 * scale;
+                    const scaledBase2 = base2 * scale;
+                    const scaledHeight = h * scale;
+
+                    const offsetX = (canvasWidth - scaledBase1) / 2;
+                    const offsetY = (canvasHeight - scaledHeight) / 2;
+
+                    const topBaseOffset = (scaledBase1 - scaledBase2) / 2;
+
+                    ctx.beginPath();
+                    ctx.moveTo(offsetX, offsetY + scaledHeight); // Bottom-left (A)
+                    ctx.lineTo(offsetX + scaledBase1, offsetY + scaledHeight); // Bottom-right (B)
+                    ctx.lineTo(offsetX + scaledBase1 - topBaseOffset, offsetY); // Top-right (C)
+                    ctx.lineTo(offsetX + topBaseOffset, offsetY); // Top-left (D)
+                    ctx.closePath();
+
+                    if (highlightType === 'area') {
+                        ctx.fillStyle = 'rgba(0, 121, 107, 0.2)';
+                        ctx.fill();
+                        ctx.strokeStyle = '#00796b';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    } else if (highlightType === 'perimeter') {
+                        ctx.strokeStyle = '#2e7d32';
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+                    } else {
+                        ctx.strokeStyle = '#333';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+
+                    // --- Labels ---
+                    ctx.fillStyle = '#000';
+                    ctx.font = '14px "Hind Madurai", sans-serif';
+                    ctx.textAlign = 'center';
+
+                    // இணைப்பக்கம் 1 (Base 1) label (bottom)
+                    ctx.fillText(`இணைப்பக்கம் 1 (${base1} மீ)`, offsetX + scaledBase1 / 2, offsetY + scaledHeight + 20);
+
+                    // இணைப்பக்கம் 2 (Base 2) label (top)
+                    ctx.fillText(`இணைப்பக்கம் 2 (${base2} மீ)`, offsetX + topBaseOffset + scaledBase2 / 2, offsetY - 5);
+
+                    // உயரம் (Height) line and label
+                    ctx.beginPath();
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeStyle = '#666';
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(offsetX + topBaseOffset + scaledBase2 / 2, offsetY); // From top-center of base2
+                    ctx.lineTo(offsetX + topBaseOffset + scaledBase2 / 2, offsetY + scaledHeight); // Down to base1 level
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    ctx.save();
+                    ctx.translate(offsetX + topBaseOffset + scaledBase2 / 2 + 15, offsetY + scaledHeight / 2);
+                    ctx.rotate(-Math.PI / 2);
+                    ctx.fillText(`உயரம் (${h} மீ)`, 0, 0);
+                    ctx.restore();
+
+                    // பக்கம் 3 (Side 3) label (left slant)
+                    ctx.textAlign = 'right';
+                    ctx.fillText(`பக்கம் 3 (${side3} மீ)`, offsetX + topBaseOffset / 2 - 5, offsetY + scaledHeight / 2);
+                    
+                    // பக்கம் 4 (Side 4) label (right slant)
+                    ctx.textAlign = 'left';
+                    ctx.fillText(`பக்கம் 4 (${side4} மீ)`, offsetX + scaledBase1 - topBaseOffset / 2 + 5, offsetY + scaledHeight / 2);
+                }
+            }
+        };
+
+        // --- Core Functions ---
+
+        /**
+         * Generates input fields based on the selected shape.
+         * @param {string} shapeKey - The key of the selected shape (e.g., 'parallelogram').
+         */
+        function generateInputs(shapeKey) {
+            inputFieldsDiv.innerHTML = ''; // Clear existing inputs
+            currentInputs = {}; // Reset current inputs
+            const shape = shapes[shapeKey];
+
+            shape.inputs.forEach(inputDef => {
+                const div = document.createElement('div');
+                div.className = 'flex flex-col';
+
+                const label = document.createElement('label');
+                label.setAttribute('for', inputDef.id);
+                label.className = 'text-gray-700 text-sm font-medium mb-1';
+                label.textContent = inputDef.label;
+
+                const input = document.createElement('input');
+                input.type = inputDef.type;
+                input.id = inputDef.id;
+                input.min = inputDef.min;
+                input.value = inputDef.value; // Set default value
+                input.className = 'input-field w-full';
+                input.addEventListener('input', updateSimulator);
+                
+                div.appendChild(label);
+                div.appendChild(input);
+                inputFieldsDiv.appendChild(div);
+
+                currentInputs[inputDef.id] = input; // Store reference to the input element
+            });
+            updateSimulator(); // Recalculate and redraw after generating new inputs
+        }
+
+        /**
+         * Updates the simulator: reads inputs, calculates, and redraws.
+         * @param {string} highlightType - 'perimeter', 'area', or null for no special highlight.
+         */
+        function updateSimulator(highlightType = null) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+
+            if (!currentShape) {
+                perimeterOutput.textContent = '';
+                areaOutput.textContent = '';
+                perimeterFormulaOutput.textContent = '';
+                areaFormulaOutput.textContent = '';
+                return;
+            }
+
+            // Read values from input fields
+            const inputValues = {};
+            let allInputsValid = true;
+            shapes[currentShape].inputs.forEach(inputDef => {
+                const inputElement = currentInputs[inputDef.id];
+                const value = parseFloat(inputElement.value);
+                if (isNaN(value) || value <= 0) {
+                    allInputsValid = false;
+                    inputElement.classList.add('border-red-500'); // Highlight invalid input
+                } else {
+                    inputElement.classList.remove('border-red-500');
+                }
+                inputValues[inputDef.id] = value;
+            });
+
+            if (!allInputsValid) {
+                perimeterOutput.textContent = 'செல்லாத உள்ளீடு';
+                areaOutput.textContent = 'செல்லாத உள்ளீடு';
+                perimeterFormulaOutput.textContent = '';
+                areaFormulaOutput.textContent = '';
+                return;
+            }
+
+            // Store dimensions for drawing
+            dimensions = inputValues; 
+            
+            // Calculate Perimeter and Area
+            const calculationArgs = shapes[currentShape].inputs.map(inputDef => inputValues[inputDef.id]);
+            const results = shapes[currentShape].calculate(...calculationArgs);
+
+            perimeterFormulaOutput.textContent = results.perimeterFormula;
+            perimeterOutput.textContent = `${results.perimeter.toFixed(2)} மீ`;
+            areaFormulaOutput.textContent = results.areaFormula;
+            areaOutput.textContent = `${results.area.toFixed(2)} சதுர மீ`;
+
+            // Draw the shape
+            shapes[currentShape].draw(ctx, canvas.width, canvas.height, dimensions, highlightType);
+        }
+
+        /**
+         * Sets the current shape and updates the UI.
+         * @param {string} shapeKey - The key of the shape to select.
+         */
+        function selectShape(shapeKey) {
+            currentShape = shapeKey;
+            // Highlight selected button
+            document.querySelectorAll('.shape-btn').forEach(btn => {
+                if (btn.id.includes(shapeKey)) {
+                    btn.classList.add('bg-teal-700');
+                    btn.classList.remove('btn-primary');
+                } else {
+                    btn.classList.remove('bg-teal-700');
+                    btn.classList.add('btn-primary');
+                }
+            });
+            generateInputs(currentShape);
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign DOM elements here, inside DOMContentLoaded
+            canvas = document.getElementById('geometryCanvas');
+            ctx = canvas.getContext('2d');
+            inputFieldsDiv = document.getElementById('input-fields');
+            perimeterOutput = document.getElementById('perimeter-output');
+            areaOutput = document.getElementById('area-output');
+            perimeterFormulaOutput = document.getElementById('perimeter-formula-output'); 
+            areaFormulaOutput = document.getElementById('area-formula-output');         
+            showPerimeterBtn = document.getElementById('show-perimeter');
+            showAreaBtn = document.getElementById('show-area');
+            resetInputsBtn = document.getElementById('reset-inputs');
+            fullResetBtn = document.getElementById('full-reset');
+
+            document.getElementById('select-parallelogram').addEventListener('click', () => selectShape('parallelogram'));
+            document.getElementById('select-rhombus').addEventListener('click', () => selectShape('rhombus'));
+            document.getElementById('select-trapezoid').addEventListener('click', () => selectShape('trapezoid'));
+
+            showPerimeterBtn.addEventListener('click', () => updateSimulator('perimeter'));
+            showAreaBtn.addEventListener('click', () => updateSimulator('area'));
+
+            resetInputsBtn.addEventListener('click', () => {
+                if (currentShape) {
+                    shapes[currentShape].inputs.forEach(inputDef => {
+                        currentInputs[inputDef.id].value = inputDef.value; // Reset to default value
+                    });
+                    updateSimulator();
+                }
+            });
+
+            fullResetBtn.addEventListener('click', () => {
+                // Instead of clearing all, reset to default shape
+                selectShape('parallelogram'); 
+            });
+
+            // --- Initial Load ---
+            selectShape('parallelogram'); // Default shape on load
+        });
+    </script>
+</body>
+</html>

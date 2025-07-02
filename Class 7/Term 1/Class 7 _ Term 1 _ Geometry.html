@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>கன்ய சம்பூர்ணா திட்டம் - வடிவியல்</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Tamil', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .tab-btn, .primary-toggle-btn {
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+        }
+        .tab-btn.active, .primary-toggle-btn.active {
+            border-bottom-color: #4f46e5;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        .module {
+            display: none;
+        }
+        .module.active {
+            display: block;
+        }
+        canvas {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .instruction-card {
+            background-color: #eef2ff;
+            border-left: 4px solid #4f46e5;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md p-4 text-center">
+        <h1 class="text-2xl md:text-3xl font-bold text-indigo-700">கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+        <p class="text-sm md:text-base text-gray-600 mt-1">இத்திட்டம் TITAN மற்றும் KALIKE நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது</p>
+        <p class="text-lg font-semibold text-gray-800 mt-2">வகுப்பு: 7 | பருவம்: 1 | தலைப்பு: வடிவியல்</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 md:p-6">
+        <!-- Navigation Tabs -->
+        <div class="bg-white rounded-lg shadow-sm mb-6 overflow-x-auto">
+            <nav id="tabs" class="flex">
+                <button data-target="module1" class="tab-btn p-4 flex-shrink-0">கோணங்கள் & கோடுகள்</button>
+                <button data-target="module2" class="tab-btn p-4 flex-shrink-0">குறுக்குவெட்டிகள்</button>
+                <button data-target="module3" class="tab-btn p-4 flex-shrink-0">மையக்குத்துக்கோடு</button>
+                <button data-target="module4" class="tab-btn p-4 flex-shrink-0">கோண இருசமவெட்டி</button>
+                <button data-target="module5" class="tab-btn p-4 flex-shrink-0">சிறப்பு கோணங்கள்</button>
+            </nav>
+        </div>
+
+        <!-- Simulation Modules Container -->
+        <div id="simulation-container">
+
+            <!-- Module 1: Angles & Lines -->
+            <div id="module1" class="module p-4 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-600">கோணங்கள் மற்றும் கோடுகளை அறிதல்</h2>
+                
+                <div class="flex border-b mb-4">
+                    <button id="show-angles-btn" class="primary-toggle-btn p-3 font-semibold">கோணங்கள்</button>
+                    <button id="show-lines-btn" class="primary-toggle-btn p-3 font-semibold">கோடுகள்</button>
+                </div>
+            
+                <div id="angle-simulation-wrapper">
+                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                        <button id="angle-type-btn" class="p-2 rounded btn-primary">அடிப்படை கோணங்கள்</button>
+                        <button id="linear-pair-btn" class="p-2 rounded btn-secondary">நேரிய இணைக் கோணங்கள்</button>
+                        <button id="vertical-angles-btn" class="p-2 rounded btn-secondary">குத்தெதிர்க் கோணங்கள்</button>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <canvas id="angle-canvas" width="500" height="400"></canvas>
+                        <div id="angle-info" class="p-4 instruction-card rounded-lg min-h-[200px]">
+                            <h3 id="angle-title" class="text-xl font-semibold mb-2"></h3>
+                            <p id="angle-desc" class="mb-4"></p>
+                            <div id="angle-readout" class="text-lg font-bold bg-white p-3 rounded-md shadow-inner"></div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div id="line-simulation-wrapper" style="display: none;">
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                        <button id="line-proper-btn" class="p-2 rounded btn-primary">நேர்கோடு</button>
+                        <button id="segment-btn" class="p-2 rounded btn-secondary">நேர்கோட்டுத்துண்டு</button>
+                        <button id="ray-btn" class="p-2 rounded btn-secondary">கதிர்</button>
+                        <button id="intersecting-lines-btn" class="p-2 rounded btn-secondary">வெட்டும் கோடுகள்</button>
+                        <button id="parallel-lines-btn" class="p-2 rounded btn-secondary">இணை கோடுகள்</button>
+                        <button id="perpendicular-lines-btn" class="p-2 rounded btn-secondary">செங்குத்து கோடுகள்</button>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <canvas id="line-canvas" width="500" height="400"></canvas>
+                        <div id="line-info" class="p-4 instruction-card rounded-lg min-h-[200px]">
+                            <h3 id="line-title" class="text-xl font-semibold mb-2"></h3>
+                            <p id="line-desc" class="mb-4"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2: Transversals -->
+            <div id="module2" class="module p-4 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-600">குறுக்குவெட்டிகள் மற்றும் கோணங்கள்</h2>
+                <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <canvas id="transversal-canvas" width="500" height="500"></canvas>
+                    <div>
+                        <div class="p-4 instruction-card rounded-lg mb-4">
+                            <h3 class="text-xl font-semibold mb-2">ஆய்வு செய்க</h3>
+                            <p>இணை கோடுகளை ஒரு குறுக்குவெட்டி வெட்டும்போது உருவாகும் கோணங்களின் உறவுகளைக் கண்டறியுங்கள். கைப்பிடிகளை நகர்த்தி கோணங்கள் மாறுவதைக் கவனியுங்கள்.</p>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <input type="checkbox" id="parallel-toggle" class="h-6 w-6" checked>
+                            <label for="parallel-toggle" class="ml-2 font-medium">கோடுகளை இணையாக வைக்கவும்</label>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2" id="transversal-buttons">
+                            <button class="transversal-angle-btn p-2 rounded btn-primary" data-type="corresponding">ஒத்த கோணங்கள்</button>
+                            <button class="transversal-angle-btn p-2 rounded btn-secondary" data-type="alt-interior">ஒன்றுவிட்ட உட்கோணங்கள்</button>
+                            <button class="transversal-angle-btn p-2 rounded btn-secondary" data-type="alt-exterior">ஒன்றுவிட்ட வெளிகோணங்கள்</button>
+                            <button class="transversal-angle-btn p-2 rounded btn-secondary" data-type="con-interior">ஒரே பக்க உட்கோணங்கள்</button>
+                        </div>
+                        <div id="transversal-info" class="mt-4 text-md font-medium bg-white p-3 rounded-md shadow-inner min-h-[140px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3: Perpendicular Bisector -->
+            <div id="module3" class="module p-4 bg-white rounded-lg shadow-md">
+                 <h2 class="text-2xl font-bold mb-4 text-indigo-600">மையக்குத்துக்கோடு வரைதல்</h2>
+                 <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <canvas id="bisector-canvas" width="500" height="500"></canvas>
+                    <div>
+                        <div class="p-4 instruction-card rounded-lg mb-4 space-y-2">
+                             <h3 id="bisector-title" class="text-xl font-semibold mb-2">மையக்குத்துக்கோடு வரைதல்</h3>
+                             <div id="bisector-instructions-list"></div>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button id="bisector-next-step" class="p-3 rounded btn-primary flex-1">அடுத்த படி</button>
+                            <button id="bisector-reset" class="p-3 rounded btn-secondary">மீண்டும் தொடங்கு</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Module 4: Angle Bisector -->
+            <div id="module4" class="module p-4 bg-white rounded-lg shadow-md">
+                 <h2 class="text-2xl font-bold mb-4 text-indigo-600">கோண இருசமவெட்டி வரைதல்</h2>
+                 <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <canvas id="angle-bisector-canvas" width="500" height="500"></canvas>
+                    <div>
+                        <div class="p-4 instruction-card rounded-lg mb-4 space-y-2">
+                              <h3 id="angle-bisector-title" class="text-xl font-semibold mb-2">கோண இருசமவெட்டி வரைதல்</h3>
+                              <div id="angle-bisector-instructions-list"></div>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button id="angle-bisector-next-step" class="p-3 rounded btn-primary flex-1">அடுத்த படி</button>
+                            <button id="angle-bisector-reset" class="p-3 rounded btn-secondary">மீண்டும் தொடங்கு</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 5: Special Angles -->
+            <div id="module5" class="module p-4 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-600">சிறப்பு கோணங்கள் வரைதல்</h2>
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <button data-angle="60" class="special-angle-btn p-2 rounded btn-primary">60° கோணம்</button>
+                    <button data-angle="120" class="special-angle-btn p-2 rounded btn-secondary">120° கோணம்</button>
+                    <button data-angle="90" class="special-angle-btn p-2 rounded btn-secondary">90° கோணம்</button>
+                    <button data-angle="30" class="special-angle-btn p-2 rounded btn-secondary">30° கோணம்</button>
+                </div>
+                 <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <canvas id="special-angle-canvas" width="500" height="500"></canvas>
+                    <div>
+                        <div class="p-4 instruction-card rounded-lg mb-4 space-y-2">
+                            <h3 id="special-angle-title" class="text-xl font-semibold mb-2">60° கோணம் வரைதல்</h3>
+                            <div id="special-angle-instructions-list"></div>
+                        </div>
+                         <div class="flex space-x-4">
+                            <button id="special-angle-next-step" class="p-3 rounded btn-primary flex-1">அடுத்த படி</button>
+                            <button id="special-angle-reset" class="p-3 rounded btn-secondary">மீண்டும் தொடங்கு</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <script>
+    // This self-contained script runs the entire simulation.
+
+    // --- UTILITY FUNCTIONS ---
+    function toRadians(deg) { return deg * Math.PI / 180; }
+    function toDegrees(rad) { return rad * 180 / Math.PI; }
+    function dist(p1, p2) { return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)); }
+    
+    function drawHandle(ctx, x, y) {
+        ctx.save();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#4338ca';
+        ctx.fillStyle = 'rgba(165, 180, 252, 0.4)';
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // --- MAIN APP LOGIC ---
+    const App = {
+        activeModule: 'module1',
+        
+        init() {
+            const tabs = document.getElementById('tabs');
+            tabs.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    this.switchModule(e.target.dataset.target);
+                }
+            });
+            this.switchModule(this.activeModule);
+        },
+
+        switchModule(moduleId) {
+            this.activeModule = moduleId;
+            document.querySelectorAll('#tabs button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.target === moduleId);
+            });
+            document.querySelectorAll('.module').forEach(module => {
+                module.classList.toggle('active', module.id === moduleId);
+            });
+            switch (moduleId) {
+                case 'module1': Module1Sim.init(); break;
+                case 'module2': TransversalSim.init(); break;
+                case 'module3': PerpendicularBisectorSim.init(); break;
+                case 'module4': AngleBisectorSim.init(); break;
+                case 'module5': SpecialAnglesSim.init(); break;
+            }
+        }
+    };
+
+    // --- MODULE 1: Main controller for Angles and Lines ---
+    const Module1Sim = {
+        activeSim: 'angles',
+        initialized: false,
+
+        init() {
+            if (this.initialized) {
+                 this.switchSim(this.activeSim);
+                 return;
+            }
+            document.getElementById('show-angles-btn').onclick = () => this.switchSim('angles');
+            document.getElementById('show-lines-btn').onclick = () => this.switchSim('lines');
+            this.switchSim('angles');
+            this.initialized = true;
+        },
+
+        switchSim(simName) {
+            this.activeSim = simName;
+            const angleWrapper = document.getElementById('angle-simulation-wrapper');
+            const lineWrapper = document.getElementById('line-simulation-wrapper');
+            const angleBtn = document.getElementById('show-angles-btn');
+            const lineBtn = document.getElementById('show-lines-btn');
+
+            if (simName === 'angles') {
+                angleWrapper.style.display = 'block';
+                lineWrapper.style.display = 'none';
+                angleBtn.classList.add('active');
+                lineBtn.classList.remove('active');
+                if (!AnglesSim.canvas) AnglesSim.init(); else AnglesSim.draw();
+            } else { // lines
+                angleWrapper.style.display = 'none';
+                lineWrapper.style.display = 'block';
+                lineBtn.classList.add('active');
+                angleBtn.classList.remove('active');
+                if (!LinesSim.canvas) LinesSim.init(); else LinesSim.draw();
+            }
+        }
+    };
+    
+    // --- MODULE 1 > SUB-MODULE: ANGLES SIMULATION ---
+    const AnglesSim = {
+        canvas: null, ctx: null, center: {}, arm: {},
+        mode: 'type',
+        angle: 45, isDragging: false,
+        
+        init() {
+            this.canvas = document.getElementById('angle-canvas');
+            if(!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.center = { x: this.canvas.width / 2, y: this.canvas.height / 2 };
+            this.setupMode('type');
+            this.addEventListeners();
+        },
+
+        setupMode(newMode) {
+            this.mode = newMode;
+            document.getElementById('angle-type-btn').classList.toggle('btn-primary', newMode === 'type');
+            document.getElementById('angle-type-btn').classList.toggle('btn-secondary', newMode !== 'type');
+            document.getElementById('linear-pair-btn').classList.toggle('btn-primary', newMode === 'linear');
+            document.getElementById('linear-pair-btn').classList.toggle('btn-secondary', newMode !== 'linear');
+            document.getElementById('vertical-angles-btn').classList.toggle('btn-primary', newMode === 'vertical');
+            document.getElementById('vertical-angles-btn').classList.toggle('btn-secondary', newMode !== 'vertical');
+
+            if (this.mode === 'type') this.angle = 45;
+            else if (this.mode === 'linear') this.angle = 120;
+            else if (this.mode === 'vertical') {
+                 this.lineP1 = {x: 100, y: 100}; this.lineP2 = {x: 400, y: 300};
+                 this.lineP3 = {x: 100, y: 300}; this.lineP4 = {x: 400, y: 100};
+            }
+            this.draw();
+        },
+        
+        addEventListeners() {
+            document.getElementById('angle-type-btn').onclick = () => this.setupMode('type');
+            document.getElementById('linear-pair-btn').onclick = () => this.setupMode('linear');
+            document.getElementById('vertical-angles-btn').onclick = () => this.setupMode('vertical');
+
+            this.canvas.onmousedown = (e) => this.isDragging = true;
+            this.canvas.onmouseup = (e) => this.isDragging = false;
+            this.canvas.onmouseleave = (e) => this.isDragging = false;
+            this.canvas.onmousemove = (e) => {
+                if (!this.isDragging) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const mouse = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+                
+                if (this.mode === 'type' || this.mode === 'linear') {
+                    const dx = mouse.x - this.center.x;
+                    const dy = mouse.y - this.center.y;
+                    let newAngle = Math.round(toDegrees(Math.atan2(-dy, dx)));
+                    if (newAngle < 0) newAngle += 360;
+                    this.angle = newAngle;
+                } else if (this.mode === 'vertical') {
+                    this.lineP2.x = mouse.x; this.lineP2.y = mouse.y;
+                }
+                this.draw();
+            };
+        },
+
+        draw() {
+            if(!this.ctx) return;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            switch(this.mode) {
+                case 'type': this.drawAngleType(); break;
+                case 'linear': this.drawLinearPair(); break;
+                case 'vertical': this.drawVerticalAngles(); break;
+            }
+        },
+
+        drawAngleType() {
+            const angleRad = toRadians(this.angle);
+            const radius = 150;
+            this.arm = { x: this.center.x + radius * Math.cos(angleRad), y: this.center.y - radius * Math.sin(angleRad) };
+            
+            this.ctx.beginPath(); this.ctx.moveTo(this.center.x, this.center.y);
+            this.ctx.lineTo(this.center.x + radius, this.center.y);
+            this.ctx.strokeStyle = '#333'; this.ctx.lineWidth = 5; this.ctx.stroke();
+
+            this.ctx.beginPath(); this.ctx.moveTo(this.center.x, this.center.y);
+            this.ctx.lineTo(this.arm.x, this.arm.y); this.ctx.stroke();
+            
+            drawHandle(this.ctx, this.arm.x, this.arm.y);
+
+            this.ctx.beginPath(); this.ctx.moveTo(this.center.x, this.center.y);
+            this.ctx.arc(this.center.x, this.center.y, 50, 0, -angleRad, true);
+            this.ctx.closePath(); this.ctx.fillStyle = 'rgba(79, 70, 229, 0.2)'; this.ctx.fill();
+            this.updateAngleInfo();
+        },
+        
+        updateAngleInfo() {
+            const angle_val = this.angle;
+            document.getElementById('angle-title').textContent = "அடிப்படை கோணங்கள்";
+            document.getElementById('angle-desc').textContent = "கோணத்தின் கைப்பிடியை நகர்த்தி கோணத்தின் மதிப்பையும் அதன் வகையையும் கவனிக்கவும்.";
+            let type = '';
+            if (angle_val > 0 && angle_val < 90) type = "குறுங்கோணம் (< 90°)";
+            else if (angle_val == 90) type = "செங்கோணம் (90°)";
+            else if (angle_val > 90 && angle_val < 180) type = "விரிகோணம் (> 90° & < 180°)";
+            else if (angle_val == 180) type = "நேர்க்கோணம் (180°)";
+            else if (angle_val > 180 && angle_val < 360) type = "பின்வளைக்கோணம் (> 180°)";
+            else if (angle_val == 360 || angle_val == 0) type = "முழுக்கோணம் (360°)";
+            document.getElementById('angle-readout').innerHTML = `கோணம்: ${angle_val}°<br>வகை: <strong>${type}</strong>`;
+        },
+
+        drawLinearPair() {
+            const angle1 = this.angle > 180 ? 180 : this.angle < 0 ? 0 : this.angle;
+            const angle2 = 180 - angle1;
+            const radius = 150;
+            const angle1Rad = toRadians(angle1);
+
+            this.ctx.beginPath(); this.ctx.moveTo(this.center.x - radius - 20, this.center.y);
+            this.ctx.lineTo(this.center.x + radius + 20, this.center.y);
+            this.ctx.strokeStyle = '#333'; this.ctx.lineWidth = 5; this.ctx.stroke();
+
+            const arm = { x: this.center.x + radius * Math.cos(angle1Rad), y: this.center.y - radius * Math.sin(angle1Rad) };
+            this.ctx.beginPath(); this.ctx.moveTo(this.center.x, this.center.y); this.ctx.lineTo(arm.x, arm.y); this.ctx.stroke();
+            
+            drawHandle(this.ctx, arm.x, arm.y);
+
+            this.ctx.beginPath(); this.ctx.moveTo(this.center.x, this.center.y);
+            this.ctx.arc(this.center.x, this.center.y, 50, 0, -angle1Rad, true);
+            this.ctx.closePath(); this.ctx.fillStyle = 'rgba(79, 70, 229, 0.2)'; this.ctx.fill();
+
+            this.ctx.beginPath(); this.ctx.moveTo(this.center.x, this.center.y);
+            this.ctx.arc(this.center.x, this.center.y, 60, -angle1Rad, -toRadians(180), true);
+            this.ctx.closePath(); this.ctx.fillStyle = 'rgba(239, 68, 68, 0.2)'; this.ctx.fill();
+            
+            document.getElementById('angle-title').textContent = "நேரிய இணைக் கோணங்கள்";
+            document.getElementById('angle-desc').textContent = "ஒரு நேர்க்கோட்டின் மீது ஒரு கதிர் நிற்கும்போது உருவாகும் அடுத்துள்ள கோணங்களின் கூடுதல் 180°. இவை நேரிய இணைக் கோணங்கள் எனப்படும். கைப்பிடியை நகர்த்தி இதை சரிபார்க்கவும்.";
+            document.getElementById('angle-readout').innerHTML = `கோணம் 1: ${angle1}°<br>கோணம் 2: ${angle2}°<br>கூடுதல்: <strong>${angle1 + angle2}°</strong>`;
+        },
+
+        drawVerticalAngles() {
+            const den = (this.lineP1.x-this.lineP2.x)*(this.lineP3.y-this.lineP4.y)-(this.lineP1.y-this.lineP2.y)*(this.lineP3.x-this.lineP4.x);
+            if(den === 0) return;
+            const t = ((this.lineP1.x-this.lineP3.x)*(this.lineP3.y-this.lineP4.y)-(this.lineP1.y-this.lineP3.y)*(this.lineP3.x-this.lineP4.x))/den;
+            const intersect = { x: this.lineP1.x + t * (this.lineP2.x - this.lineP1.x), y: this.lineP1.y + t * (this.lineP2.y - this.lineP1.y) };
+
+            this.ctx.beginPath(); this.ctx.moveTo(this.lineP1.x, this.lineP1.y); this.ctx.lineTo(this.lineP2.x, this.lineP2.y);
+            this.ctx.strokeStyle = '#333'; this.ctx.lineWidth = 5; this.ctx.stroke();
+            this.ctx.beginPath(); this.ctx.moveTo(this.lineP3.x, this.lineP3.y); this.ctx.lineTo(this.lineP4.x, this.lineP4.y);
+            this.ctx.strokeStyle = '#ef4444'; this.ctx.lineWidth = 5; this.ctx.stroke();
+            
+            drawHandle(this.ctx, this.lineP2.x, this.lineP2.y);
+
+            let a1 = Math.atan2(this.lineP1.y - intersect.y, this.lineP1.x - intersect.x); let a2 = Math.atan2(this.lineP3.y - intersect.y, this.lineP3.x - intersect.x);
+            let a3 = Math.atan2(this.lineP2.y - intersect.y, this.lineP2.x - intersect.x); let a4 = Math.atan2(this.lineP4.y - intersect.y, this.lineP4.x - intersect.x);
+            let angleA = Math.round(Math.abs(toDegrees(a2-a1))); if(angleA > 180) angleA = 360 - angleA;
+            let angleB = Math.round(Math.abs(toDegrees(a3-a2))); if(angleB > 180) angleB = 360 - angleB;
+
+            this.ctx.fillStyle = 'rgba(79, 70, 229, 0.3)';
+            this.ctx.beginPath(); this.ctx.moveTo(intersect.x, intersect.y); this.ctx.arc(intersect.x, intersect.y, 40, a1, a2); this.ctx.closePath(); this.ctx.fill();
+            this.ctx.beginPath(); this.ctx.moveTo(intersect.x, intersect.y); this.ctx.arc(intersect.x, intersect.y, 40, a3, a4); this.ctx.closePath(); this.ctx.fill();
+
+            this.ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
+            this.ctx.beginPath(); this.ctx.moveTo(intersect.x, intersect.y); this.ctx.arc(intersect.x, intersect.y, 40, a2, a3); this.ctx.closePath(); this.ctx.fill();
+            this.ctx.beginPath(); this.ctx.moveTo(intersect.x, intersect.y); this.ctx.arc(intersect.x, intersect.y, 40, a4, a1); this.ctx.closePath(); this.ctx.fill();
+
+            document.getElementById('angle-title').textContent = "குத்தெதிர்க் கோணங்கள்";
+            document.getElementById('angle-desc').textContent = "இரண்டு நேர்க்கோடுகள் வெட்டிக்கொள்ளும்போது, வெட்டும் புள்ளிக்கு எதிரெதிரே அமையும் கோணங்கள் குத்தெதிர்க் கோணங்கள் ஆகும். இவை எப்போதும் சமமாக இருக்கும். கோட்டை நகர்த்தி இதை சரிபார்க்கவும்.";
+            document.getElementById('angle-readout').innerHTML = `நீல கோணங்கள்: ${angleA}°<br>சிவப்பு கோணங்கள்: ${angleB}°<br><strong>குத்தெதிர்க் கோணங்கள் சமம்!</strong>`;
+        }
+    };
+
+    // --- MODULE 1 > SUB-MODULE: LINES SIMULATION ---
+    const LinesSim = {
+        canvas: null, ctx: null, mode: 'line',
+        p1: {}, p2: {}, p3: {}, p4: {},
+        isDragging: null,
+        buttonIds : ['line-proper-btn', 'segment-btn', 'ray-btn', 'intersecting-lines-btn', 'parallel-lines-btn', 'perpendicular-lines-btn'],
+        modes: ['line', 'segment', 'ray', 'intersecting', 'parallel', 'perpendicular'],
+
+        init() {
+            this.canvas = document.getElementById('line-canvas');
+            if(!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.addEventListeners();
+            this.setupMode('line');
+        },
+
+        setupMode(newMode) {
+            this.mode = newMode;
+            
+            this.buttonIds.forEach((id, index) => {
+                const btn = document.getElementById(id);
+                const currentMode = this.modes[index];
+                btn.classList.toggle('btn-primary', newMode === currentMode);
+                btn.classList.toggle('btn-secondary', newMode !== currentMode);
+            });
+
+            if (newMode === 'intersecting') {
+                this.p1 = {x: 100, y: 100}; this.p2 = {x: 400, y: 300};
+                this.p3 = {x: 100, y: 300}; this.p4 = {x: 400, y: 100};
+            } else if (newMode === 'parallel') {
+                this.p1 = {x: 50, y: 150}; this.p2 = {x: 450, y: 150};
+                this.p3 = {x: 50, y: 250}; this.p4 = {x: 450, y: 250};
+            } else if (newMode === 'perpendicular') {
+                this.p1 = {x: 250, y: 50}; this.p2 = {x: 250, y: 350};
+                this.p3 = {x: 100, y: 200}; this.p4 = {x: 400, y: 200};
+            } else if (newMode === 'line' || newMode === 'segment') {
+                this.p1 = {x: 100, y: 200}; this.p2 = {x: 400, y: 200};
+            } else if (newMode === 'ray') {
+                this.p1 = {x: 100, y: 200}; this.p2 = {x: 300, y: 200};
+            }
+            this.draw();
+        },
+
+        addEventListeners() {
+            this.buttonIds.forEach((id, index) => {
+                document.getElementById(id).onclick = () => this.setupMode(this.modes[index]);
+            });
+
+            this.canvas.onmousedown = (e) => {
+                const mouse = this.getMousePos(e);
+                this.isDragging = null;
+
+                if (['line', 'segment', 'ray'].includes(this.mode)) {
+                    if (dist(mouse, this.p1) < 15) this.isDragging = 'p1';
+                    else if (dist(mouse, this.p2) < 15) this.isDragging = 'p2';
+                } else if (this.mode === 'intersecting' || this.mode === 'perpendicular') {
+                    if (dist(mouse, this.p1) < 15) this.isDragging = 'p1';
+                    else if (dist(mouse, this.p2) < 15) this.isDragging = 'p2';
+                    else if (dist(mouse, this.p3) < 15) this.isDragging = 'p3';
+                    else if (dist(mouse, this.p4) < 15) this.isDragging = 'p4';
+                } else if (this.mode === 'parallel') {
+                    if (Math.abs(mouse.y - this.p1.y) < 15) this.isDragging = 'l1';
+                    else if (Math.abs(mouse.y - this.p3.y) < 15) this.isDragging = 'l2';
+                }
+            };
+            this.canvas.onmouseup = () => this.isDragging = null;
+            this.canvas.onmouseleave = () => this.isDragging = null;
+            this.canvas.onmousemove = (e) => {
+                if (!this.isDragging) return;
+                const mouse = this.getMousePos(e);
+
+                if (this.isDragging === 'p1') this.p1 = mouse;
+                else if (this.isDragging === 'p2') this.p2 = mouse;
+                else if (this.isDragging === 'p3') this.p3 = mouse;
+                else if (this.isDragging === 'p4') this.p4 = mouse;
+                else if (this.isDragging === 'l1') {
+                     const dy = mouse.y - this.p1.y; this.p1.y += dy; this.p2.y += dy;
+                } else if (this.isDragging === 'l2') {
+                     const dy = mouse.y - this.p3.y; this.p3.y += dy; this.p4.y += dy;
+                }
+                
+                if(this.mode === 'perpendicular') {
+                    this.p2.x = this.p1.x; this.p4.y = this.p3.y;
+                }
+                this.draw();
+            };
+        },
+        
+        getMousePos(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        },
+        
+        draw() {
+            if(!this.ctx) return;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            switch(this.mode) {
+                case 'line': this.drawLineProper(); break;
+                case 'segment': this.drawLineSegment(); break;
+                case 'ray': this.drawRay(); break;
+                case 'intersecting': this.drawIntersecting(); break;
+                case 'parallel': this.drawParallel(); break;
+                case 'perpendicular': this.drawPerpendicular(); break;
+            }
+        },
+        
+        drawArrow(ctx, p1, p2, color, width) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            const headlen = 10;
+            const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.lineTo(p2.x - headlen * Math.cos(angle - Math.PI / 6), p2.y - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(p2.x, p2.y);
+            ctx.lineTo(p2.x - headlen * Math.cos(angle + Math.PI / 6), p2.y - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
+        },
+
+        drawLineProper() {
+            document.getElementById('line-title').textContent = "நேர்கோடு";
+            document.getElementById('line-desc').textContent = "இருபுறமும் முடிவில்லாமல் நீண்டு செல்லும் புள்ளிகளின் தொகுதி. இதற்கு முடிவுப்புள்ளிகள் இல்லை. கைப்பிடிகளை நகர்த்தி அதன் திசையை மாற்றவும்.";
+            
+            const dx = this.p2.x - this.p1.x;
+            const dy = this.p2.y - this.p1.y;
+
+            const start = {x: this.p1.x - dx * 10, y: this.p1.y - dy * 10};
+            const end = {x: this.p2.x + dx * 10, y: this.p2.y + dy * 10};
+
+            this.drawArrow(this.ctx, start, this.p2, '#3b82f6', 5);
+            this.drawArrow(this.ctx, end, this.p1, '#3b82f6', 5);
+            
+            drawHandle(this.ctx, this.p1.x, this.p1.y);
+            drawHandle(this.ctx, this.p2.x, this.p2.y);
+        },
+
+        drawLineSegment() {
+            document.getElementById('line-title').textContent = "நேர்கோட்டுத்துண்டு";
+            document.getElementById('line-desc').textContent = "ஒரு நேர்கோட்டின் ஒரு பகுதி. இதற்கு இரண்டு முடிவுப்புள்ளிகள் உண்டு. கைப்பிடிகளை நகர்த்தி இதன் நீளம் மற்றும் திசையை மாற்றவும்.";
+            
+            this.ctx.beginPath(); this.ctx.moveTo(this.p1.x, this.p1.y); this.ctx.lineTo(this.p2.x, this.p2.y);
+            this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 5; this.ctx.stroke();
+            
+            this.ctx.fillStyle = '#333';
+            this.ctx.beginPath(); this.ctx.arc(this.p1.x, this.p1.y, 6, 0, 2 * Math.PI); this.ctx.fill();
+            this.ctx.beginPath(); this.ctx.arc(this.p2.x, this.p2.y, 6, 0, 2 * Math.PI); this.ctx.fill();
+            
+            this.ctx.strokeStyle = '#4f46e5';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath(); this.ctx.arc(this.p1.x, this.p1.y, 10, 0, 2 * Math.PI); this.ctx.stroke();
+            this.ctx.beginPath(); this.ctx.arc(this.p2.x, this.p2.y, 10, 0, 2 * Math.PI); this.ctx.stroke();
+        },
+
+        drawRay() {
+            document.getElementById('line-title').textContent = "கதிர்";
+            document.getElementById('line-desc').textContent = "ஒரு புள்ளியில் தொடங்கி, ஒரு குறிப்பிட்ட திசையில் முடிவில்லாமல் நீண்டு செல்லும் ஒரு நேர்கோட்டின் பகுதி. இதற்கு ஒரு தொடக்கப் புள்ளி உண்டு, முடிவுப் புள்ளி இல்லை.";
+
+            const dx = this.p2.x - this.p1.x;
+            const dy = this.p2.y - this.p1.y;
+            const end = {x: this.p1.x + dx * 10, y: this.p1.y + dy * 10};
+            
+            this.drawArrow(this.ctx, this.p1, end, '#3b82f6', 5);
+            
+            this.ctx.fillStyle = '#333';
+            this.ctx.beginPath(); this.ctx.arc(this.p1.x, this.p1.y, 6, 0, 2 * Math.PI); this.ctx.fill();
+
+            drawHandle(this.ctx, this.p2.x, this.p2.y);
+            this.ctx.strokeStyle = '#4f46e5';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath(); this.ctx.arc(this.p1.x, this.p1.y, 10, 0, 2 * Math.PI); this.ctx.stroke();
+        },
+
+        drawIntersecting() {
+            document.getElementById('line-title').textContent = "வெட்டும் கோடுகள்";
+            document.getElementById('line-desc').textContent = "ஒரு தளத்தில் உள்ள இரு கோடுகள் ஒரு பொதுவான புள்ளியில் சந்தித்தால் அவை வெட்டும் கோடுகள் எனப்படும். கைப்பிடிகளை நகர்த்தி கோடுகள் வெட்டுவதை சோதித்துப் பார்க்கவும்.";
+            
+            this.ctx.beginPath(); this.ctx.moveTo(this.p1.x, this.p1.y); this.ctx.lineTo(this.p2.x, this.p2.y);
+            this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 5; this.ctx.stroke();
+            this.ctx.beginPath(); this.ctx.moveTo(this.p3.x, this.p3.y); this.ctx.lineTo(this.p4.x, this.p4.y);
+            this.ctx.strokeStyle = '#ef4444'; this.ctx.lineWidth = 5; this.ctx.stroke();
+
+            drawHandle(this.ctx, this.p1.x, this.p1.y);
+            drawHandle(this.ctx, this.p2.x, this.p2.y);
+            drawHandle(this.ctx, this.p3.x, this.p3.y);
+            drawHandle(this.ctx, this.p4.x, this.p4.y);
+        },
+        drawParallel() {
+            document.getElementById('line-title').textContent = "இணை கோடுகள்";
+            document.getElementById('line-desc').textContent = "ஒரு தளத்தில் உள்ள இரு கோடுகள் ஒன்றையொன்று வெட்டிக் கொள்ளாவிட்டால் அவை இணை கோடுகள். அவற்றுக்கு இடையே உள்ள தூரம் எப்போதும் சமமாக இருக்கும். கோடுகளை மேலும் கீழும் நகர்த்தி பார்க்கவும்.";
+
+            this.ctx.beginPath(); this.ctx.moveTo(this.p1.x, this.p1.y); this.ctx.lineTo(this.p2.x, this.p2.y);
+            this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 5; this.ctx.stroke();
+            this.ctx.beginPath(); this.ctx.moveTo(this.p3.x, this.p3.y); this.ctx.lineTo(this.p4.x, this.p4.y);
+            this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 5; this.ctx.stroke();
+        },
+        drawPerpendicular() {
+            document.getElementById('line-title').textContent = "செங்குத்து கோடுகள்";
+            document.getElementById('line-desc').textContent = "இரு கோடுகள் 90° கோணத்தில் வெட்டிக் கொண்டால் அவை செங்குத்து கோடுகள் எனப்படும். கோடுகளை நகர்த்தி செங்குத்து அமைப்பை ஆராயவும்.";
+            
+            this.ctx.beginPath(); this.ctx.moveTo(this.p1.x, this.p1.y); this.ctx.lineTo(this.p2.x, this.p2.y);
+            this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 5; this.ctx.stroke();
+            this.ctx.beginPath(); this.ctx.moveTo(this.p3.x, this.p3.y); this.ctx.lineTo(this.p4.x, this.p4.y);
+            this.ctx.strokeStyle = '#ef4444'; this.ctx.lineWidth = 5; this.ctx.stroke();
+
+            const den = (this.p1.x - this.p2.x) * (this.p3.y - this.p4.y) - (this.p1.y - this.p2.y) * (this.p3.x - this.p4.x);
+            if (den !== 0) {
+                const t = ((this.p1.x - this.p3.x) * (this.p3.y - this.p4.y) - (this.p1.y - this.p3.y) * (this.p3.x - this.p4.x)) / den;
+                const ix = this.p1.x + t * (this.p2.x - this.p1.x);
+                const iy = this.p1.y + t * (this.p2.y - this.p1.y);
+                this.ctx.strokeStyle = '#333'; this.ctx.lineWidth = 2;
+                this.ctx.strokeRect(ix - 10, iy, 10, 10);
+            }
+
+            drawHandle(this.ctx, this.p1.x, this.p1.y);
+            drawHandle(this.ctx, this.p2.x, this.p2.y);
+            drawHandle(this.ctx, this.p3.x, this.p3.y);
+            drawHandle(this.ctx, this.p4.x, this.p4.y);
+        }
+    };
+
+    // --- MODULE 2: TRANSVERSAL SIMULATION ---
+    const TransversalSim = {
+        canvas: null, ctx: null,
+        line1Y: 150, line2Y: 350,
+        transversalP1: {x: 50, y: 50}, transversalP2: {x: 450, y: 450},
+        isParallel: true, isDragging: null,
+        highlightType: 'corresponding',
+
+        init() {
+            this.canvas = document.getElementById('transversal-canvas');
+            if(!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.addEventListeners();
+            this.draw();
+        },
+        
+        addEventListeners() {
+            document.getElementById('parallel-toggle').onchange = (e) => {
+                this.isParallel = e.target.checked;
+                this.draw();
+            };
+            
+            document.querySelectorAll('.transversal-angle-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    this.highlightType = e.target.dataset.type;
+                    document.querySelectorAll('.transversal-angle-btn').forEach(b => {
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-secondary');
+                    });
+                    e.target.classList.add('btn-primary');
+                    e.target.classList.remove('btn-secondary');
+                    this.draw();
+                }
+            });
+
+            this.canvas.onmousedown = (e) => {
+                const mouse = this.getMousePos(e);
+                if (dist(mouse, this.transversalP1) < 15) this.isDragging = 'p1';
+                else if (dist(mouse, this.transversalP2) < 15) this.isDragging = 'p2';
+                else if (Math.abs(mouse.y - this.line1Y) < 15) this.isDragging = 'l1';
+                else if (Math.abs(mouse.y - this.line2Y) < 15 && !this.isParallel) this.isDragging = 'l2';
+            };
+            this.canvas.onmouseup = () => this.isDragging = null;
+            this.canvas.onmouseleave = () => this.isDragging = null;
+            this.canvas.onmousemove = (e) => {
+                if (!this.isDragging) return;
+                const mouse = this.getMousePos(e);
+                if (this.isDragging === 'p1') this.transversalP1 = mouse;
+                else if (this.isDragging === 'p2') this.transversalP2 = mouse;
+                else if (this.isDragging === 'l1') {
+                    const diff = mouse.y - this.line1Y;
+                    this.line1Y = mouse.y;
+                    if(this.isParallel) this.line2Y += diff;
+                }
+                else if (this.isDragging === 'l2') this.line2Y = mouse.y;
+                this.draw();
+            };
+        },
+        
+        getMousePos(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        },
+        
+        draw() {
+            if(!this.ctx) return;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.lineWidth = 4;
+            this.ctx.strokeStyle = '#374151';
+            this.ctx.beginPath(); this.ctx.moveTo(0, this.line1Y); this.ctx.lineTo(this.canvas.width, this.line1Y); this.ctx.stroke();
+            
+            this.ctx.beginPath(); 
+            if (this.isParallel) {
+                this.ctx.moveTo(0, this.line2Y); this.ctx.lineTo(this.canvas.width, this.line2Y);
+            } else {
+                this.ctx.moveTo(0, this.line2Y - 30); this.ctx.lineTo(this.canvas.width, this.line2Y + 30);
+            }
+            this.ctx.stroke();
+
+            this.ctx.strokeStyle = '#1d4ed8';
+            this.ctx.beginPath(); this.ctx.moveTo(this.transversalP1.x, this.transversalP1.y); this.ctx.lineTo(this.transversalP2.x, this.transversalP2.y); this.ctx.stroke();
+
+            drawHandle(this.ctx, this.transversalP1.x, this.transversalP1.y);
+            drawHandle(this.ctx, this.transversalP2.x, this.transversalP2.y);
+            
+            this.findAndDrawAngles();
+        },
+
+        findAndDrawAngles() {
+            const getIntersection = (lineY, isParallel) => {
+                const p1 = this.transversalP1, p2 = this.transversalP2;
+                if (p2.x === p1.x) return { x: p1.x, y: lineY }; // vertical transversal
+                const m_trans = (p2.y - p1.y) / (p2.x - p1.x);
+                const c_trans = p1.y - m_trans * p1.x;
+
+                let m_line = 0, c_line = lineY;
+                if (!isParallel) {
+                    m_line = ( (this.line2Y + 30) - (this.line2Y - 30) ) / this.canvas.width;
+                    c_line = (this.line2Y - 30);
+                }
+                
+                const x = (c_line - c_trans) / (m_trans - m_line);
+                const y = m_trans * x + c_trans;
+                return { x, y };
+            }
+
+            const i1 = getIntersection(this.line1Y, true);
+            const i2 = getIntersection(this.line2Y, this.isParallel);
+
+            const transAngleRad = Math.atan2(this.transversalP2.y - this.transversalP1.y, this.transversalP2.x - this.transversalP1.x);
+
+            const drawAngleArc = (center, startRad, endRad, color) => {
+                this.ctx.fillStyle = color;
+                this.ctx.beginPath();
+                this.ctx.moveTo(center.x, center.y);
+                this.ctx.arc(center.x, center.y, 30, startRad, endRad, false);
+                this.ctx.closePath();
+                this.ctx.fill();
+            };
+            
+            const color1 = 'rgba(239, 68, 68, 0.4)';
+            const color2 = 'rgba(59, 130, 246, 0.4)';
+
+            const explanations = {
+                corresponding: "<b>ஒத்த கோணங்கள்:</b> குறுக்குவெட்டியின் ஒரே பக்கத்திலும், கோடுகளுக்கு ஒரே நிலையிலும் (மேலே/கீழே) அமையும் கோணங்கள். இணை கோடுகளில் இவை சமம்.",
+                'alt-interior': "<b>ஒன்றுவிட்ட உட்கோணங்கள்:</b> குறுக்குவெட்டியின் எதிரெதிர் பக்கங்களிலும், கோடுகளுக்கு உள்ளேயும் அமையும் கோணங்கள். இணை கோடுகளில் இவை சமம்.",
+                'alt-exterior': "<b>ஒன்றுவிட்ட வெளிகோணங்கள்:</b> குறுக்குவெட்டியின் எதிரெதிர் பக்கங்களிலும், கோடுகளுக்கு வெளியேயும் அமையும் கோணங்கள். இணை கோடுகளில் இவை சமம்.",
+                'con-interior': "<b>ஒரே பக்க உட்கோணங்கள்:</b> குறுக்குவெட்டியின் ஒரே பக்கத்திலும், கோடுகளுக்கு உள்ளேயும் அமையும் கோணங்கள். இணை கோடுகளில் இவற்றின் கூடுதல் 180°."
+            };
+
+            document.getElementById('transversal-info').innerHTML = explanations[this.highlightType] || 'ஒரு கோண வகையைத் தேர்ந்தெடுக்கவும்.';
+            
+            if (!this.highlightType) return;
+
+            const pairs = {
+                corresponding: [ [transAngleRad, 0], [Math.PI, transAngleRad] ],
+                'alt-interior': [ [Math.PI, Math.PI + transAngleRad], [transAngleRad, 0] ],
+                'alt-exterior': [ [transAngleRad, Math.PI], [0, Math.PI + transAngleRad] ],
+                'con-interior': [ [Math.PI + transAngleRad, Math.PI], [0, transAngleRad] ],
+            };
+            
+            const selectedPairs = pairs[this.highlightType];
+            if (!selectedPairs) return;
+
+            drawAngleArc(i1, selectedPairs[0][0], selectedPairs[0][1], color1);
+            drawAngleArc(i2, selectedPairs[0][0], selectedPairs[0][1], color1);
+
+            if (selectedPairs.length > 1) {
+                drawAngleArc(i1, selectedPairs[1][0], selectedPairs[1][1], color2);
+                drawAngleArc(i2, selectedPairs[1][0], selectedPairs[1][1], color2);
+            }
+        }
+    };
+
+    // --- MODULE 3, 4, 5: CONSTRUCTION SIMULATIONS ---
+    const ConstructionSim = {
+        canvas: null, ctx: null, mode: null,
+        points: [], step: 0, instructions: [],
+        nextBtn: null, resetBtn: null, instructionEl: null,
+        
+        init(config) {
+            this.canvas = document.getElementById(config.canvasId);
+            if(!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.mode = config.mode;
+            this.instructions = config.instructions;
+            this.instructionEl = document.getElementById(config.instructionElId);
+            this.nextBtn = document.getElementById(config.nextBtnId);
+            this.resetBtn = document.getElementById(config.resetBtnId);
+            
+            if(config.titleId) {
+                const titleElement = document.getElementById(config.titleId);
+                if(titleElement) {
+                    titleElement.textContent = config.title || this.instructions[0];
+                }
+            }
+            
+            this.nextBtn.onclick = () => this.nextStep();
+            this.resetBtn.onclick = () => this.reset();
+            
+            this.reset();
+        },
+        
+        reset() {
+            this.step = 0;
+            if (this.mode === 'perpendicular_bisector') this.points = [{x:100, y:250}, {x:400, y:250}];
+            else if (this.mode === 'angle_bisector') this.points = [{x:400, y:400}, {x:250, y:100}, {x:100, y:400}];
+            else this.points = [{x:150, y:350}, {x:350, y:350}];
+            this.draw();
+        },
+
+        nextStep() {
+            if (this.step < this.instructions.length - 1) {
+                this.step++;
+                this.draw();
+            }
+        },
+
+        draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.updateInstructions();
+            const drawLine = (p1, p2, color = '#333', width = 3) => {
+                this.ctx.beginPath(); this.ctx.moveTo(p1.x, p1.y); this.ctx.lineTo(p2.x, p2.y);
+                this.ctx.strokeStyle = color; this.ctx.lineWidth = width; this.ctx.stroke();
+            };
+            const drawPoint = (p, label) => {
+                this.ctx.beginPath(); this.ctx.arc(p.x, p.y, 5, 0, 2*Math.PI); this.ctx.fillStyle = '#333'; this.ctx.fill();
+                this.ctx.font = '16px Noto Sans Tamil'; this.ctx.fillText(label, p.x + 10, p.y);
+            };
+            const drawArc = (center, radius, start, end, color = '#4f46e5', dash = false) => {
+                this.ctx.beginPath(); this.ctx.arc(center.x, center.y, radius, start, end);
+                if (dash) this.ctx.setLineDash([5, 5]);
+                this.ctx.strokeStyle = color; this.ctx.lineWidth = 2; this.ctx.stroke();
+                this.ctx.setLineDash([]);
+            };
+
+            if (this.mode === 'perpendicular_bisector') {
+                const [A, B] = this.points;
+                drawLine(A, B); drawPoint(A, 'A'); drawPoint(B, 'B');
+                const radius = dist(A, B) * 0.7;
+                if(this.step >= 1) drawArc(A, radius, toRadians(-60), toRadians(60));
+                if(this.step >= 2) drawArc(B, radius, toRadians(120), toRadians(240));
+                if(this.step >= 3) {
+                    const P = {x: 250, y: 250 - Math.sqrt(radius*radius - 150*150)};
+                    const Q = {x: 250, y: 250 + Math.sqrt(radius*radius - 150*150)};
+                    drawPoint(P, 'P'); drawPoint(Q, 'Q');
+                    if(this.step >= 4) {
+                       drawLine(P, Q, '#ef4444', 4);
+                       this.ctx.strokeRect(245, 245, 10, 10);
+                    }
+                }
+            } else if (this.mode === 'angle_bisector') {
+                const [P, Q, R] = this.points;
+                drawLine(Q, P); drawLine(Q, R);
+                drawPoint(P, 'P'); drawPoint(Q, 'Q'); drawPoint(R, 'R');
+                if (this.step >= 1) {
+                    drawArc(Q, 80, toRadians(200), toRadians(340));
+                    const S = {x: Q.x - 80 * Math.cos(toRadians(20)), y: Q.y - 80 * Math.sin(toRadians(20))};
+                    const T = {x: Q.x + 80 * Math.cos(toRadians(20)), y: Q.y - 80 * Math.sin(toRadians(20))};
+                    if(this.step >= 2) drawArc(S, 100, toRadians(-45), toRadians(45), '#ef4444');
+                    if(this.step >= 3) drawArc(T, 100, toRadians(135), toRadians(225), '#ef4444');
+                    if(this.step >= 4) {
+                        const U = {x: 250, y: 280};
+                        drawPoint(U, 'U');
+                        if (this.step >= 5) drawLine(Q, U, '#22c55e', 4);
+                    }
+                }
+            } else {
+                const [A, B] = this.points;
+                drawLine(A, B); drawPoint(A, 'A'); drawPoint(B, 'B');
+                const radius = dist(A,B)/2;
+
+                if (this.mode === '60_deg') {
+                    const P = { x: A.x + radius, y: A.y };
+                    if (this.step >= 1) drawArc(A, radius, toRadians(-90), toRadians(10));
+                    if (this.step >= 2) drawArc(P, radius, toRadians(100), toRadians(160));
+                    const C = { x: A.x + radius * Math.cos(toRadians(60)), y: A.y - radius * Math.sin(toRadians(60)) };
+                    if (this.step >= 3) {
+                        drawPoint(C, 'C');
+                        if (this.step >= 4) {
+                            drawLine(A, C);
+                            drawArc(A, 40, toRadians(-60), 0, '#ef4444');
+                        }
+                    }
+                } else if (this.mode === '120_deg') {
+                     const P = { x: A.x + radius, y: A.y };
+                     const Q = { x: A.x + radius * Math.cos(toRadians(60)), y: A.y - radius * Math.sin(toRadians(60)) };
+                     if (this.step >= 1) drawArc(A, radius, toRadians(-130), toRadians(10));
+                     if (this.step >= 2) drawArc(P, radius, toRadians(100), toRadians(160));
+                     if (this.step >= 3) drawArc(Q, radius, toRadians(70), toRadians(130));
+                     const C = { x: A.x + radius * Math.cos(toRadians(120)), y: A.y - radius * Math.sin(toRadians(120)) };
+                     if (this.step >= 4) {
+                         drawPoint(C, 'C');
+                         if (this.step >= 5) {
+                             drawLine(A, C);
+                             drawArc(A, 40, toRadians(-120), 0, '#ef4444');
+                         }
+                     }
+                } else if (this.mode === '90_deg') {
+                    const P = { x: A.x + radius, y: A.y };
+                    const Q = { x: A.x + radius * Math.cos(toRadians(60)), y: A.y - radius * Math.sin(toRadians(60)) };
+                    const R = { x: A.x + radius * Math.cos(toRadians(120)), y: A.y - radius * Math.sin(toRadians(120)) };
+                    if (this.step >= 1) drawArc(A, radius, toRadians(-130), toRadians(10));
+                    if (this.step >= 2) drawPoint(P, 'P');
+                    if (this.step >= 3) {
+                        drawArc(P, radius, toRadians(100), toRadians(160));
+                        drawPoint(Q, 'Q');
+                    }
+                    if (this.step >= 4) {
+                        drawArc(Q, radius, toRadians(70), toRadians(130));
+                        drawPoint(R, 'R');
+                    }
+                    if (this.step >= 5) {
+                        drawArc(Q, radius, toRadians(-30), toRadians(30), '#10b981');
+                        drawArc(R, radius, toRadians(150), toRadians(210), '#10b981');
+                    }
+                    const S = { x: A.x, y: A.y - radius };
+                    if (this.step >= 6) {
+                        drawPoint(S, 'S');
+                        drawLine(A, S, '#ef4444');
+                        this.ctx.strokeRect(A.x, A.y -10, 10, 10);
+                    }
+                } else if (this.mode === '30_deg') {
+                    const P = { x: A.x + radius, y: A.y };
+                    const Q = { x: A.x + radius * Math.cos(toRadians(60)), y: A.y - radius * Math.sin(toRadians(60)) };
+                    if (this.step >= 1) drawArc(A, radius, toRadians(-70), toRadians(10));
+                    if (this.step >= 2) {
+                        drawPoint(P, 'P');
+                        drawArc(P, radius, toRadians(100), toRadians(160));
+                        drawPoint(Q, 'Q');
+                    }
+                    if (this.step >= 3) {
+                        drawArc(P, radius, toRadians(140), toRadians(200), '#10b981');
+                        drawArc(Q, radius, toRadians(-20), toRadians(40), '#10b981');
+                    }
+                    const R = { x: A.x + radius * Math.cos(toRadians(30)), y: A.y - radius * Math.sin(toRadians(30)) };
+                    if (this.step >= 4) {
+                        drawPoint(R, 'R');
+                        drawLine(A, R, '#ef4444');
+                        drawArc(A, 40, toRadians(-30), 0, '#ef4444');
+                    }
+                }
+            }
+        },
+        
+        updateInstructions() {
+            if (!this.instructionEl) return;
+            this.instructionEl.innerHTML = '';
+            
+            // The first item in instructions is the title, so we skip it here.
+            for(let i=1; i < this.instructions.length; i++) {
+                const p = document.createElement('p');
+                p.textContent = this.instructions[i];
+                if (this.step >= i) {
+                    p.style.fontWeight = 'bold';
+                    p.style.color = '#166534';
+                    p.textContent = '✅ ' + p.textContent;
+                } else {
+                    p.style.color = '#555';
+                }
+                this.instructionEl.appendChild(p);
+            }
+        }
+    };
+    
+    const PerpendicularBisectorSim = { init() { ConstructionSim.init({ canvasId: 'bisector-canvas', titleId: 'bisector-title', instructionElId: 'bisector-instructions-list', nextBtnId: 'bisector-next-step', resetBtnId: 'bisector-reset', mode: 'perpendicular_bisector', instructions: ['மையக்குத்துக்கோடு வரைதல்', 'A-ஐ மையமாகக் கொண்டு, AB-யின் பாதிக்கு மேல் ஆரமுள்ள ஒரு வில்லை மேலே மற்றும் கீழே வரைக.', 'B-ஐ மையமாகக் கொண்டு, அதே ஆரத்துடன் முந்தைய விற்களை வெட்டுமாறு வரைக.', 'விற்கள் வெட்டும் புள்ளிகளை P மற்றும் Q எனக் குறிக்கவும்.', 'P மற்றும் Q வழியாக ஒரு கோடு வரைக. இதுவே தேவையான மையக்குத்துக்கோடு ஆகும்.'] }); } };
+    const AngleBisectorSim = { init() { ConstructionSim.init({ canvasId: 'angle-bisector-canvas', titleId: 'angle-bisector-title', instructionElId: 'angle-bisector-instructions-list', nextBtnId: 'angle-bisector-next-step', resetBtnId: 'angle-bisector-reset', mode: 'angle_bisector', instructions: ['கோண இருசமவெட்டி வரைதல்', 'Q-ஐ மையமாகக் கொண்டு, QP மற்றும் QR-ஐ வெட்டுமாறு ஒரு வில் வரைக.', 'வெட்டும் புள்ளியிலிருந்து (S) கோணத்திற்கு உள்ளே ஒரு வில் வரைக.', 'மற்ற வெட்டும் புள்ளியிலிருந்து (T) முந்தைய வில்லை வெட்டுமாறு மற்றொரு வில் வரைக.', 'விற்கள் வெட்டும் புள்ளிக்கு U என பெயரிடுக.', 'Q-லிருந்து U வழியாக ஒரு கதிர் வரைக. QU என்பதே கோண இருசமவெட்டி ஆகும்.'] }); } };
+    const SpecialAnglesSim = {
+        configs: {
+            '60': { title: '60° கோணம் வரைதல்', mode: '60_deg', instructions: ['60° கோணம் வரைதல்', 'A ஐ மையமாகக் கொண்டு ஒரு வில் வரைக.', 'அது AB ஐ வெட்டும் புள்ளியில் இருந்து அதே ஆரத்துடன் முந்தைய வில்லை வெட்டுக.', 'வெட்டும் புள்ளி C ஐக் குறிக்க.', 'AC ஐ இணைக்க, ∠CAB = 60° கிடைக்கும்.'] },
+            '120': { title: '120° கோணம் வரைதல்', mode: '120_deg', instructions: ['120° கோணம் வரைதல்', 'A ஐ மையமாகக் கொண்டு ஒரு வில் வரைக.', 'முதல் வெட்டும் புள்ளியில் இருந்து ஒரு வில் வரைக (60°).', '60° புள்ளியில் இருந்து மற்றொரு வில் வரைக (120°).', 'வெட்டும் புள்ளி C ஐக் குறிக்க.', 'AC ஐ இணைக்க, ∠CAB = 120° கிடைக்கும்.'] },
+            '90': { title: '90° கோணம் வரைதல்', mode: '90_deg', instructions: ['90° கோணம் வரைதல்', 'A-ஐ மையமாகக் கொண்டு ஒரு வில் வரைந்து P-ஐ குறிக்கவும்.', 'P-லிருந்து வில்லை வெட்டி Q-வை குறிக்கவும் (60°).', 'Q-லிருந்து வில்லை வெட்டி R-ஐ குறிக்கவும் (120°).', 'Q மற்றும் R-ஐ மையமாக வைத்து விற்கள் வரைக.', 'அவை வெட்டும் புள்ளி S-ஐ குறிக்கவும்.', 'AS-ஐ இணைத்தால், ∠SAB = 90° கிடைக்கும்.'] },
+            '30': { title: '30° கோணம் வரைதல்', mode: '30_deg', instructions: ['30° கோணம் வரைதல்', 'முதலில் 60° கோணம் வரைக (புள்ளிகள் P, Q).', 'P மற்றும் Q ஐ மையமாகக் கொண்டு விற்கள் வரைக.', 'அவை வெட்டும் புள்ளி R-ஐ குறிக்கவும்.', 'AR-ஐ இணைத்தால், ∠RAB = 30° கிடைக்கும்.'] }
+        },
+        init() { this.setupButtons(); this.startSimulation('60'); },
+        setupButtons() { document.querySelectorAll('.special-angle-btn').forEach(btn => { btn.onclick = (e) => { document.querySelectorAll('.special-angle-btn').forEach(b => {b.classList.remove('btn-primary'); b.classList.add('btn-secondary');}); e.target.classList.add('btn-primary'); e.target.classList.remove('btn-secondary'); this.startSimulation(e.target.dataset.angle); } }); },
+        startSimulation(angle) { const config = this.configs[angle]; ConstructionSim.init({ canvasId: 'special-angle-canvas', instructionElId: 'special-angle-instructions-list', nextBtnId: 'special-angle-next-step', resetBtnId: 'special-angle-reset', titleId: 'special-angle-title', ...config }); }
+    };
+
+    // --- INITIALIZE THE APP ---
+    document.addEventListener('DOMContentLoaded', () => App.init());
+    </script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>கன்ய சம்பூர்ணா திட்டம் - நேர் மற்றும் எதிர் விகிதங்கள்</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@400;700&family=Noto+Sans+Tamil:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Tamil', sans-serif;
+            background-color: #f0f4f8;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Arima', cursive;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+            padding-bottom: 8px;
+        }
+        .tab-button.active {
+            border-bottom-color: #4f46e5;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        .simulation-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+        }
+        .visual-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+            border: 2px dashed #e0e0e0;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background: #f9fafb;
+            flex-grow: 1;
+        }
+        .visual-item {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        .graph-bar {
+            background-color: #6366f1;
+            transition: all 0.5s ease-in-out;
+            border-radius: 4px;
+        }
+        .quiz-option {
+            transition: background-color 0.2s;
+        }
+        .quiz-option.selected {
+            background-color: #c7d2fe;
+            border-color: #818cf8;
+        }
+        .quiz-option.correct {
+            background-color: #dcfce7;
+            border-color: #4ade80;
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #f87171;
+        }
+        .quiz-nav-btn {
+            background-color: #6366f1;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .quiz-nav-btn:disabled {
+            background-color: #a5b4fc;
+            cursor: not-allowed;
+        }
+        .quiz-nav-btn:hover:not(:disabled) {
+            background-color: #4338ca;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-8 p-6 bg-white rounded-xl shadow-md">
+            <h1 class="text-3xl md:text-4xl font-bold text-indigo-700">கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+            <p class="mt-2 text-lg text-gray-600">இத்திட்டம் TITAN மற்றும் KALIKE நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது</p>
+            <div class="mt-4 text-sm font-semibold bg-indigo-100 text-indigo-800 inline-block px-4 py-2 rounded-full">
+                <span>வகுப்பு: 7</span> |
+                <span>பருவம்: 1</span> |
+                <span>தலைப்பு: நேர் மற்றும் எதிர் விகிதங்கள்</span>
+            </div>
+        </header>
+
+        <div class="mb-6 bg-white rounded-lg shadow-sm">
+            <nav class="flex justify-center flex-wrap space-x-2 md:space-x-8 p-4" id="tabs">
+                <button class="tab-button active" data-tab="intro">அறிமுகம்</button>
+                <button class="tab-button" data-tab="direct">நேர் விகிதம்</button>
+                <button class="tab-button" data-tab="inverse">எதிர் விகிதம்</button>
+                <button class="tab-button" data-tab="comparison">கலப்புக் கணக்குகள்</button>
+            </nav>
+        </div>
+
+        <main id="tab-content">
+            <!-- Introduction Tab -->
+            <div id="intro-content" class="tab-pane active">
+                <div class="simulation-card">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center text-indigo-600">விகிதம் மற்றும் விகிதச்சமம்</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="p-6 bg-indigo-50 rounded-lg shadow-inner flex flex-col h-full">
+                            <h3 class="text-xl font-semibold mb-4 text-indigo-800 text-center">விகிதத்தை ஆராயுங்கள்</h3>
+                            <p class="text-md leading-relaxed mb-6 text-center">இரண்டு அளவுகளை ஒப்பிடுவதே விகிதம். ஸ்லைடர்களை நகர்த்தி, பொருட்களின் எண்ணிக்கை மாறும்போது விகிதம் எப்படி மாறுகிறது என்பதைக் கவனியுங்கள்.</p>
+                            <div class="mb-4">
+                                <label for="ratio-slider-1" class="font-semibold">பொருள் 1 (🍎): <span id="ratio-count-1" class="font-bold text-indigo-700 text-xl">5</span></label>
+                                <input type="range" min="1" max="15" value="5" class="slider" id="ratio-slider-1">
+                            </div>
+                            <div class="mb-6">
+                                <label for="ratio-slider-2" class="font-semibold">பொருள் 2 (🍌): <span id="ratio-count-2" class="font-bold text-indigo-700 text-xl">3</span></label>
+                                <input type="range" min="1" max="15" value="3" class="slider" id="ratio-slider-2">
+                            </div>
+                            <div class="flex justify-center items-center gap-4 text-4xl flex-wrap mt-auto">
+                                <div id="ratio-visual-1" class="visual-container text-2xl"></div>
+                                <div class="font-bold text-gray-500">:</div>
+                                <div id="ratio-visual-2" class="visual-container text-2xl"></div>
+                            </div>
+                            <p class="mt-4 text-3xl font-bold text-indigo-900 text-center" id="ratio-text">5 : 3</p>
+                        </div>
+                        <div class="p-6 bg-purple-50 rounded-lg shadow-inner flex flex-col h-full">
+                            <h3 class="text-xl font-semibold mb-4 text-purple-800 text-center">விகிதச்சமத்தை ஆராயுங்கள்</h3>
+                             <p class="text-md leading-relaxed mb-6 text-center">இரண்டு விகிதங்கள் சமமாக இருந்தால், அவை விகிதச்சமம். கோடி உறுப்புகளின் பெருக்கற்பலனும் (a×d), நடு உறுப்புகளின் பெருக்கற்பலனும் (b×c) சமமாக உள்ளதா எனச் சோதிக்கவும்.</p>
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-3 mb-4">
+                                <div>
+                                    <label for="prop-slider-a" class="font-semibold">a (🍎): <span id="prop-count-a">2</span></label>
+                                    <input type="range" min="1" max="10" value="2" class="slider" id="prop-slider-a">
+                                </div>
+                                <div>
+                                    <label for="prop-slider-b" class="font-semibold">b (🍌): <span id="prop-count-b">4</span></label>
+                                    <input type="range" min="1" max="10" value="4" class="slider" id="prop-slider-b">
+                                </div>
+                                <div>
+                                    <label for="prop-slider-c" class="font-semibold">c (🍊): <span id="prop-count-c">3</span></label>
+                                    <input type="range" min="1" max="10" value="3" class="slider" id="prop-slider-c">
+                                </div>
+                                <div>
+                                    <label for="prop-slider-d" class="font-semibold">d (🍇): <span id="prop-count-d">6</span></label>
+                                    <input type="range" min="1" max="10" value="6" class="slider" id="prop-slider-d">
+                                </div>
+                            </div>
+                            <div class="mt-auto">
+                                <div class="flex items-center justify-center gap-2">
+                                    <div id="prop-visual-a" class="visual-container"></div>
+                                    <span class="font-bold text-2xl">:</span>
+                                    <div id="prop-visual-b" class="visual-container"></div>
+                                </div>
+                                <div class="flex items-center justify-center text-4xl font-bold my-2">::</div>
+                                <div class="flex items-center justify-center gap-2">
+                                    <div id="prop-visual-c" class="visual-container"></div>
+                                    <span class="font-bold text-2xl">:</span>
+                                    <div id="prop-visual-d" class="visual-container"></div>
+                                </div>
+                                <div id="proportion-result" class="mt-4 p-3 rounded-lg text-center w-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs with quiz -->
+            <div id="direct-content" class="tab-pane hidden"></div>
+            <div id="inverse-content" class="tab-pane hidden"></div>
+            <div id="comparison-content" class="tab-pane hidden"></div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Data for Quizzes ---
+    const directQuestions = [
+        { q: '8 ஆப்பிள்களின் விலை ₹56 எனில், 12 ஆப்பிள்களின் விலை என்ன?', o: ['₹72', '₹84', '₹96'], a: 1 },
+        { q: 'பழங்கள் நிறைந்த ஒரு பெட்டியின் எடை 3.5 கி.கி எனில், அதே அளவுள்ள 6 பெட்டிகளின் எடை என்ன?', o: ['18 கி.கி', '24 கி.கி', '21 கி.கி'], a: 2 },
+        { q: 'ஒரு மகிழுந்து 60 கி.மீ தூரத்தைக் கடக்க 3 லிட்டர் பெட்ரோல் தேவைப்படுகிறது. 200 கி.மீ தூரத்தைச் சென்றடைய, தேவையான பெட்ரோலின் அளவு என்ன?', o: ['10 லிட்டர்', '12 லிட்டர்', '8 லிட்டர்'], a: 0 },
+        { q: '7 மீ அளவுள்ள துணியின் விலை ₹294 எனில், 5 மீ அளவுள்ள துணியின் விலை என்ன?', o: ['₹210', '₹200', '₹225'], a: 0 },
+        { q: 'ஓர் இயந்திரம் 600 பாட்டில்களை 5 மணி நேரத்தில் நிரப்புகிறது. எனில், அவ்வியந்திரம், 3 மணி நேரத்தில் நிரப்பும் பாட்டில்களின் எண்ணிக்கை என்ன?', o: ['360', '300', '400'], a: 0 },
+        { q: 'ஒரு டசன் (12) வாழைப்பழங்களின் விலை ₹20 எனில், 48 வாழைப்பழங்களின் விலை என்ன?', o: ['₹60', '₹80', '₹100'], a: 1 },
+        { q: '21 மாணவர்களுக்கு ₹840 நுழைவுக் கட்டணமாகச் செலுத்தப்பட்டது. ₹1680 ஐ நுழைவுக் கட்டணமாகச் செலுத்தினால் எத்தனை மாணவர்கள் அக்காட்சியைக் காண முடியும்?', o: ['38', '45', '42'], a: 2 },
+        { q: '120 ஆட்கள் 8 முறை மின் தூக்கியில் சென்றனர். மின் தூக்கி, 12 முறை சென்றால் எத்தனை ஆட்கள் சென்றிருப்பர்?', o: ['180', '160', '200'], a: 0 },
+        { q: '8 மீ நீளமுள்ள கம்பத்தின் நிழலின் நீளம் 6 மீ. அதே நேரத்தில், 30 மீ நிழல் ஏற்படுத்தும் மற்றொரு கம்பத்தின் நீளம் எவ்வளவு?', o: ['40 மீ', '35 மீ', '45 மீ'], a: 0 },
+        { q: 'ஓர் அஞ்சற்காரர் 738 கடிதங்களை 6 மணிநேரத்தில் பிரிக்கிறார் எனில், அவர் 9 மணி நேரத்தில் எத்தனை கடிதங்களைப் பிரிப்பார்?', o: ['1107', '1000', '1200'], a: 0 },
+    ];
+
+    const inverseQuestions = [
+        { q: 'ஒரு பெட்ரோல் தொட்டியை 16 குழாய்கள் 18 நிமிடங்களில் நிரப்புகின்றன. 9 குழாய்கள் அதே தொட்டியை எத்தனை நிமிடங்களில் நிரப்பும்?', o: ['32 நிமிடங்கள்', '24 நிமிடங்கள்', '36 நிமிடங்கள்'], a: 0 },
+        { q: '40 வேலையாட்கள் ஒரு வேலையை 8 நாள்களில் முடிப்பார்கள் எனில், அதே வேலையை 4 நாள்களில் முடிக்கத் தேவையான வேலையாட்களின் எண்ணிக்கை என்ன?', o: ['60', '80', '100'], a: 1 },
+        { q: 'ஒரு நீர்த்தேக்கத் தொட்டியை நிறைப்பதற்கு 6 குழாய்கள் 90 நிமிடம் எடுத்துக்கொள்கின்றன. ஒரு குழாயை அடைத்துவிட்டால் (5 குழாய்கள்) அதே தொட்டியை நிறைக்க எடுத்துக்கொள்ளும் காலம் எவ்வளவு?', o: ['100 நிமிடங்கள்', '112 நிமிடங்கள்', '108 நிமிடங்கள்'], a: 2 },
+        { q: 'ஒரு விவசாயியிடம் 144 வாத்துகளுக்கு 28 நாட்களுக்குத் தேவையான உணவு உள்ளது. அவர் 32 வாத்துகளை விற்றுவிட்டார் (112 வாத்துகள்). மீதமுள்ள உணவு எத்தனை நாட்களுக்குப் போதுமானதாக இருக்கும்?', o: ['36', '32', '40'], a: 0 },
+        { q: 'ஒரு குழி வெட்ட 10 இயந்திரங்கள் 60 நாள்கள் எடுத்துக்கொள்கின்றன. 30 இயந்திரங்கள் அதே குழியை வெட்ட எத்தனை நாள்களாகும்?', o: ['20', '30', '15'], a: 0 },
+        { q: '40 மாணவர்கள் ஒரு விடுதியில் தங்கியுள்ளனர். அவர்களுக்கு 30 நாள்களுக்குத் தேவையான உணவுப் பொருள் உள்ளது. மாணவர்களின் எண்ணிக்கை இருமடங்காக (80) மாறினால் அவ்வுணவுப் பொருள் எத்தனை நாள்களுக்குப் போதுமானதாக இருக்கும்?', o: ['20 நாட்கள்', '15 நாட்கள்', '10 நாட்கள்'], a: 1 },
+        { q: '500 கிராம் எடையுள்ள 8 சிப்பங்களை அனுப்ப பணம் உள்ளது. அதே பணத்தில் 40 சிப்பங்களை அனுப்பினால், ஒரு சிப்பத்தின் எடை எவ்வளவு இருக்கும்?', o: ['150 கி', '120 கி', '100 கி'], a: 2 },
+        { q: 'ஒரு தோட்டத்தைக் களையெடுக்க 6 தோட்டக்காரர்களுக்கு 120 நிமிடங்கள் தேவை. அதே வேலையை 30 நிமிடங்களில் செய்து முடிக்க மொத்தம் எத்தனை தோட்டக்காரர்கள் தேவை?', o: ['18', '24', '30'], a: 1 },
+        { q: 'ஒருவர் 12 கி.மீ/மணி சராசரி வேகத்தில் சென்றால் பள்ளியை அடைய 20 நிமிடம் ஆகிறது. அவர் 15 நிமிடத்தில் பள்ளியைச் சென்றடைந்தால் அவளது அதிகரித்த வேகம் என்ன?', o: ['16 கி.மீ/மணி', '15 கி.மீ/மணி', '18 கி.மீ/மணி'], a: 0 },
+        { q: 'ஒரு தொழிற்சாலை 36 இயந்திரங்களைக் கொண்டு 54 நாள்களில் பொம்மைகளை உற்பத்தி செய்கிறது. அதே அளவிலான பொம்மைகளை 81 நாள்களில் உற்பத்தி செய்ய எத்தனை இயந்திரங்கள் தேவை?', o: ['24', '30', '18'], a: 0 },
+    ];
+    
+    const comparisonQuestions = [
+        { q: '7 கி.கி வெங்காயத்தின் விலை ₹84 எனில், 3 கி.கி வெங்காயத்தின் விலை என்ன?', o: ['₹36', '₹42', '₹30'], a: 0, type: 'நேர் விகிதம்' },
+        { q: '12 பசுக்கள் ஒரு புல் தரையை 10 நாள்கள் மேய்கின்றன. 20 பசுக்கள் அதே புல் தரையை எத்தனை நாள்கள் மேயும்?', o: ['8', '15', '6'], a: 2, type: 'எதிர் விகிதம்' },
+        { q: '6 பழரசப் பாட்டில்களின் விலை ₹210 எனில், 4 பழரசப் பாட்டில்களின் விலை என்ன?', o: ['₹150', '₹140', '₹160'], a: 1, type: 'நேர் விகிதம்' },
+        { q: '4 தட்டச்சர்கள் ஒரு வேலையை முடிக்க 12 நாள்கள் எடுத்துக்கொள்கின்றனர். மேலும் 2 தட்டச்சர்கள் கூடுதலாகச் சேர்ந்தால் (6 பேர்), அதே வேலையை எத்தனை நாள்களில் செய்து முடிப்பர்?', o: ['8', '9', '6'], a: 0, type: 'எதிர் விகிதம்' },
+        { q: '10 விவசாயிகள் 21 நாள்களில் ஒரு நிலத்தை உழுது முடிக்கின்றனர் எனில், அதே நிலத்தை 14 விவசாயிகள் எத்தனை நாள்களில் உழுது முடிப்பர்?', o: ['15', '18', '12'], a: 0, type: 'எதிர் விகிதம்' },
+        { q: '280 நபர்கள் ஒரு விமானத்தில் 2 முறை பயணம் செய்கின்றனர் எனில், அவ்விமானத்தில் 1400 நபர்கள் எத்தனை முறை பயணம் செய்யலாம்?', o: ['8', '12', '10'], a: 2, type: 'நேர் விகிதம்' },
+        { q: '50 நபர்களுக்கு இனிப்பு தயாரிக்க 3 கி.கி சர்க்கரை தேவைப்படுகிறது எனில், 150 நபர்களுக்கு இனிப்பு தயாரிக்கத் தேவையான சர்க்கரையின் அளவு என்ன?', o: ['9 கி.கி', '6 கி.கி', '10 கி.கி'], a: 0, type: 'நேர் விகிதம்' },
+        { q: '6 நபர்கள் ஒரு வேலையை 12 நாள்களில் செய்து முடிக்கின்றனர். 2 நாள்கள் கழித்து மேலும் 6 நபர்கள் வந்து சேர்கிறார்கள். எனில், மீதமுள்ள வேலையைச் செய்ய எத்தனை நாள்கள் எடுத்துக்கொள்வார்கள்?', o: ['5 நாட்கள்', '6 நாட்கள்', '4 நாட்கள்'], a: 0, type: 'எதிர் விகிதம்' },
+        { q: 'ஒரு அச்சு இயந்திரம் 1 நிமிடத்தில் 30 பக்கங்கள் என அச்சிடுகிறது. அதே புத்தகத்தை 1 நிமிடத்தில் 25 பக்கங்கள் என அச்சிட்டால், அச்சிட்டு முடிக்க ஆகும் நேரம் அதிகரிக்குமா, குறையுமா?', o: ['அதிகரிக்கும்', 'குறையும்', 'மாறாது'], a: 0, type: 'எதிர் விகிதம்' },
+        { q: 'ஒரு விடுதியில் உள்ள மாணவர்களின் எண்ணிக்கையும், அவர்கள் உண்ணும் உணவின் அளவும் என்ன விகிதத்தில் இருக்கும்?', o: ['நேர் விகிதம்', 'எதிர் விகிதம்', 'விகிதமில்லை'], a: 0, type: 'நேர் விகிதம்' },
+    ];
+
+    function createQuizInterface(container, questions, quizId) {
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+
+        function renderQuestion() {
+            const question = questions[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            
+            container.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-xl font-bold text-gray-700">பயிற்சி</h4>
+                        <button id="${quizId}-reset" class="quiz-nav-btn bg-orange-500 hover:bg-orange-600 text-sm">மீண்டும் முயற்சி செய்</button>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h5 class="text-lg font-semibold">கேள்வி ${currentQuestionIndex + 1} / ${questions.length}</h5>
+                    </div>
+                    <p class="text-lg font-semibold mb-5 h-16">${question.q}</p>
+                    <div id="${quizId}-options" class="space-y-3">
+                        ${question.o.map((option, index) => `
+                            <button 
+                                class="quiz-option block w-full text-left p-3 bg-gray-50 rounded-lg border-2 border-transparent hover:bg-indigo-100" 
+                                data-index="${index}" ${userAnswer !== null ? 'disabled' : ''}>
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="${quizId}-feedback" class="mt-4 text-center font-semibold text-lg h-8"></div>
+                    <div class="flex justify-between items-center mt-6">
+                        <button id="${quizId}-prev" class="quiz-nav-btn" ${currentQuestionIndex === 0 ? 'disabled' : ''}>முந்தைய</button>
+                        <button id="${quizId}-check" class="quiz-nav-btn bg-green-600 hover:bg-green-700" ${userAnswer !== null ? 'disabled' : ''}>விடையைச் சரிபார்</button>
+                        <button id="${quizId}-next" class="quiz-nav-btn" ${currentQuestionIndex === questions.length - 1 ? 'disabled' : ''}>அடுத்த</button>
+                    </div>
+                </div>
+            `;
+            if (userAnswer !== null) showResultForQuestion();
+        }
+
+        function showResultForQuestion() {
+            const question = questions[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            const options = container.querySelectorAll('.quiz-option');
+            const feedbackEl = container.querySelector(`#${quizId}-feedback`);
+            
+            options.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === question.a) btn.classList.add('correct');
+                if (index === userAnswer && userAnswer !== question.a) btn.classList.add('incorrect');
+            });
+
+            feedbackEl.textContent = userAnswer === question.a ? 'சரியான விடை! 🎉' : 'தவறான விடை!';
+            feedbackEl.classList.add(userAnswer === question.a ? 'text-green-600' : 'text-red-600');
+            container.querySelector(`#${quizId}-check`).disabled = true;
+        }
+
+        container.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.classList.contains('quiz-option') && userAnswers[currentQuestionIndex] === null) {
+                container.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected', 'border-indigo-500'));
+                target.classList.add('selected', 'border-indigo-500');
+                container.querySelector(`#${quizId}-check`).disabled = false;
+            } else if (target.id === `${quizId}-prev`) {
+                currentQuestionIndex--;
+                renderQuestion();
+            } else if (target.id === `${quizId}-next`) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else if (target.id === `${quizId}-check`) {
+                const selectedOption = container.querySelector('.quiz-option.selected');
+                const feedbackEl = container.querySelector(`#${quizId}-feedback`);
+                
+                if (selectedOption) {
+                    userAnswers[currentQuestionIndex] = parseInt(selectedOption.dataset.index);
+                    showResultForQuestion();
+                } else {
+                    // Flash message logic
+                    feedbackEl.textContent = 'தயவுசெய்து ஒரு விடையைத் தேர்ந்தெடுக்கவும்!';
+                    feedbackEl.className = 'mt-4 text-center font-semibold text-lg h-8 text-orange-500';
+                    setTimeout(() => {
+                        if (feedbackEl.textContent === 'தயவுசெய்து ஒரு விடையைத் தேர்ந்தெடுக்கவும்!') {
+                           feedbackEl.textContent = '';
+                           feedbackEl.className = 'mt-4 text-center font-semibold text-lg h-8';
+                        }
+                    }, 2000);
+                }
+            } else if (target.id === `${quizId}-reset`) {
+                currentQuestionIndex = 0;
+                userAnswers.fill(null);
+                renderQuestion();
+            }
+        });
+        renderQuestion();
+    }
+    
+    document.getElementById('direct-content').innerHTML = `
+        <div class="simulation-card">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 text-center text-green-600">நேர் விகிதம்</h2>
+            <p class="text-center text-lg mb-6">ஓர் அளவு அதிகரிக்கும்போது அதனுடன் தொடர்புடைய மற்றொரு அளவும் அதே விகிதத்தில் அதிகரித்தால், அது நேர் விகிதம் எனப்படும்.</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center mb-10">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-center">உதாரணம்: பேனாக்கள் வாங்குதல்</h3>
+                    <p class="text-center mb-4">ஒரு பேனாவின் விலை: <span class="font-bold">₹10</span></p>
+                    <label for="direct-slider" class="font-semibold">பேனாக்களின் எண்ணிக்கை: <span id="direct-count" class="font-bold text-indigo-700 text-xl">1</span></label>
+                    <input type="range" min="1" max="10" value="1" class="slider" id="direct-slider">
+                    <div class="mt-6 p-4 bg-green-100 rounded-lg text-center"><p class="text-lg">மொத்த விலை (y): <span id="direct-total" class="font-bold text-2xl text-green-700">₹10</span></p></div>
+                    <div class="mt-6 p-4 bg-gray-100 rounded-lg text-center"><p class="text-lg">விகித மாறிலி (k = y/x): <span id="direct-constant" class="font-bold text-2xl text-gray-700">10</span></p></div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-center">காட்சி விளக்கம்</h3>
+                    <p class="text-center mb-2">பேனாக்களின் எண்ணிக்கை (x)</p>
+                    <div id="direct-visual" class="visual-container mb-4 text-2xl"></div>
+                    <p class="text-center mb-2">விலை வரைபடம்</p>
+                    <div class="w-full h-40 bg-gray-50 rounded-lg p-2 flex items-end justify-center gap-2"><div id="direct-graph" class="graph-bar" style="width: 10%; height: 10%;"></div></div>
+                </div>
+            </div>
+            <div id="direct-quiz"></div>
+        </div>
+    `;
+    createQuizInterface(document.getElementById('direct-quiz'), directQuestions, 'direct-quiz');
+    
+    document.getElementById('inverse-content').innerHTML = `
+        <div class="simulation-card">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 text-center text-red-600">எதிர் விகிதம்</h2>
+            <p class="text-center text-lg mb-6">ஓர் அளவு அதிகரிக்கும்போது அதனுடன் தொடர்புடைய மற்றொரு அளவு அதே விகிதத்தில் குறைந்தால் (அல்லது நேர்மாறாக), அது எதிர் விகிதம் எனப்படும்.</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center mb-10">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-center">உதாரணம்: ஒரு வேலையை முடித்தல்</h3>
+                    <p class="text-center mb-4">முடிக்க வேண்டிய மொத்த வேலை: <span class="font-bold">120 அலகுகள்</span></p>
+                    <label for="inverse-slider" class="font-semibold">வேலையாட்களின் எண்ணிக்கை (x): <span id="inverse-count" class="font-bold text-indigo-700 text-xl">2</span></label>
+                    <input type="range" min="0" max="9" value="0" class="slider" id="inverse-slider">
+                    <div class="mt-6 p-4 bg-red-100 rounded-lg text-center"><p class="text-lg">தேவையான நாட்கள் (y): <span id="inverse-total" class="font-bold text-2xl text-red-700">60 நாட்கள்</span></p></div>
+                    <div class="mt-6 p-4 bg-gray-100 rounded-lg text-center"><p class="text-lg">பெருக்கல் மாறிலி (k = x * y): <span id="inverse-constant" class="font-bold text-2xl text-gray-700">120</span></p></div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-center">காட்சி விளக்கம்</h3>
+                    <p class="text-center mb-2">வேலையாட்களின் எண்ணிக்கை (x)</p>
+                    <div id="inverse-visual" class="visual-container mb-4 text-2xl"></div>
+                    <p class="text-center mb-2">நேர வரைபடம்</p>
+                    <div class="w-full h-40 bg-gray-50 rounded-lg p-2 flex items-end justify-center gap-2"><div id="inverse-graph" class="graph-bar bg-red-500" style="width: 10%; height: 100%;"></div></div>
+                </div>
+            </div>
+            <div id="inverse-quiz"></div>
+        </div>
+    `;
+    createQuizInterface(document.getElementById('inverse-quiz'), inverseQuestions, 'inverse-quiz');
+
+    document.getElementById('comparison-content').innerHTML = `
+        <div class="simulation-card">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center text-purple-600">கலப்புக் கணக்குகள்</h2>
+            <p class="text-center text-lg mb-6">கீழே கொடுக்கப்பட்டுள்ள கணக்குகள் நேர் விகிதமா அல்லது எதிர் விகிதமா எனச் சிந்தித்து விடையளிக்கவும்.</p>
+            <div id="comparison-quiz"></div>
+        </div>
+    `;
+    createQuizInterface(document.getElementById('comparison-quiz'), comparisonQuestions, 'comparison-quiz');
+
+    const tabs = document.getElementById('tabs');
+    const tabButtons = tabs.querySelectorAll('.tab-button');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    tabs.addEventListener('click', (e) => {
+        if (e.target.classList.contains('tab-button')) {
+            const targetTab = e.target.dataset.tab;
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            tabPanes.forEach(pane => pane.classList.toggle('hidden', pane.id !== `${targetTab}-content`));
+        }
+    });
+
+    const ratioSlider1 = document.getElementById('ratio-slider-1');
+    if (ratioSlider1) {
+        const ratioSlider2 = document.getElementById('ratio-slider-2');
+        const ratioCount1 = document.getElementById('ratio-count-1');
+        const ratioCount2 = document.getElementById('ratio-count-2');
+        const ratioVisual1 = document.getElementById('ratio-visual-1');
+        const ratioVisual2 = document.getElementById('ratio-visual-2');
+        const ratioText = document.getElementById('ratio-text');
+        const updateRatio = () => {
+            const count1 = parseInt(ratioSlider1.value);
+            const count2 = parseInt(ratioSlider2.value);
+            ratioCount1.textContent = count1;
+            ratioCount2.textContent = count2;
+            ratioVisual1.innerHTML = '🍎'.repeat(count1);
+            ratioVisual2.innerHTML = '🍌'.repeat(count2);
+            ratioText.textContent = `${count1} : ${count2}`;
+        };
+        ratioSlider1.addEventListener('input', updateRatio);
+        ratioSlider2.addEventListener('input', updateRatio);
+        updateRatio();
+    }
+
+    const propSliderA = document.getElementById('prop-slider-a');
+    if (propSliderA) {
+        const sliders = { a: propSliderA, b: document.getElementById('prop-slider-b'), c: document.getElementById('prop-slider-c'), d: document.getElementById('prop-slider-d') };
+        const counts = { a: document.getElementById('prop-count-a'), b: document.getElementById('prop-count-b'), c: document.getElementById('prop-count-c'), d: document.getElementById('prop-count-d') };
+        const visuals = { a: document.getElementById('prop-visual-a'), b: document.getElementById('prop-visual-b'), c: document.getElementById('prop-visual-c'), d: document.getElementById('prop-visual-d') };
+        const proportionResult = document.getElementById('proportion-result');
+        const emojis = { a: '🍎', b: '🍌', c: '🍊', d: '🍇' };
+        const updateProportion = () => {
+            const values = { a: parseInt(sliders.a.value), b: parseInt(sliders.b.value), c: parseInt(sliders.c.value), d: parseInt(sliders.d.value) };
+            ['a', 'b', 'c', 'd'].forEach(key => {
+                counts[key].textContent = values[key];
+                visuals[key].innerHTML = emojis[key].repeat(values[key]);
+            });
+            const extremesProduct = values.a * values.d;
+            const meansProduct = values.b * values.c;
+            if (extremesProduct === meansProduct) {
+                proportionResult.className = 'mt-4 p-3 rounded-lg text-center w-full bg-green-100 text-green-800 transition-all duration-300';
+                proportionResult.innerHTML = `<p class="text-lg font-bold">✅ விகிதச்சமத்தில் உள்ளது</p><p class="mt-1 text-sm">கோடி உறுப்புகள் (a × d): ${values.a} × ${values.d} = <b>${extremesProduct}</b></p><p class="text-sm">நடு உறுப்புகள் (b × c): ${values.b} × ${values.c} = <b>${meansProduct}</b></p>`;
+            } else {
+                proportionResult.className = 'mt-4 p-3 rounded-lg text-center w-full bg-red-100 text-red-800 transition-all duration-300';
+                proportionResult.innerHTML = `<p class="text-lg font-bold">❌ விகிதச்சமத்தில் இல்லை</p><p class="mt-1 text-sm">கோடி உறுப்புகள் (a × d): ${values.a} × ${values.d} = <b>${extremesProduct}</b></p><p class="text-sm">நடு உறுப்புகள் (b × c): ${values.b} × ${values.c} = <b>${meansProduct}</b></p>`;
+            }
+        };
+        Object.values(sliders).forEach(slider => slider.addEventListener('input', updateProportion));
+        updateProportion();
+    }
+
+    const directSlider = document.getElementById('direct-slider');
+    if (directSlider) {
+        const directCount = document.getElementById('direct-count');
+        const directTotal = document.getElementById('direct-total');
+        const directVisual = document.getElementById('direct-visual');
+        const directGraph = document.getElementById('direct-graph');
+        const directConstant = document.getElementById('direct-constant');
+        const pricePerPen = 10;
+        const updateDirectProportion = () => {
+            const count = parseInt(directSlider.value);
+            const total = count * pricePerPen;
+            directCount.textContent = count;
+            directTotal.textContent = `₹${total}`;
+            directConstant.textContent = total / count;
+            directVisual.innerHTML = '✒️'.repeat(count);
+            directGraph.style.height = `${(count / parseInt(directSlider.max)) * 100}%`;
+        };
+        directSlider.addEventListener('input', updateDirectProportion);
+        updateDirectProportion();
+    }
+
+    const inverseSlider = document.getElementById('inverse-slider');
+    if (inverseSlider) {
+        const factorsOf120 = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20];
+        const inverseCount = document.getElementById('inverse-count');
+        const inverseTotal = document.getElementById('inverse-total');
+        const inverseVisual = document.getElementById('inverse-visual');
+        const inverseGraph = document.getElementById('inverse-graph');
+        const inverseConstant = document.getElementById('inverse-constant');
+        const totalWork = 120;
+        
+        const updateInverseProportion = () => {
+            const sliderIndex = parseInt(inverseSlider.value);
+            const count = factorsOf120[sliderIndex];
+            const days = totalWork / count;
+            
+            inverseCount.textContent = count;
+            inverseTotal.textContent = `${days} நாட்கள்`;
+            inverseConstant.textContent = totalWork;
+            inverseVisual.innerHTML = '👷'.repeat(count);
+            
+            const maxDays = totalWork / factorsOf120[0]; // days for minimum workers
+            const graphHeight = (days / maxDays) * 100;
+            inverseGraph.style.height = `${graphHeight}%`;
+        };
+        inverseSlider.addEventListener('input', updateInverseProportion);
+        updateInverseProportion();
+    }
+});
+</script>
+</body>
+</html>

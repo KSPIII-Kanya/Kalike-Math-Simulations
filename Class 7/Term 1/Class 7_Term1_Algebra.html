@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>கணிதச் சிமுலேட்டர்: இயற்கணிதம்</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the simulator */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e8eaf6, #d1d9fa); /* Light Blue-Purple gradient background */
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #673ab7; /* Deep Purple */
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            background-color: #e1bee7; /* Light lavender/purple for section titles */
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #673ab7; /* Deep Purple */
+            text-align: center;
+            border-left: 8px solid #673ab7; /* Deep Purple border */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .card {
+            background-color: #f5f5f7; /* Very light grey-blue background for cards */
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="number"] {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            /* Adjusted min-width for better placeholder visibility across all tabs */
+            min-width: 280px; 
+        }
+
+        .input-group input[type="text"]:focus,
+        .input-group input[type="number"]:focus {
+            border-color: #673ab7; /* Deep Purple focus */
+            box-shadow: 0 0 0 3px rgba(103, 58, 183, 0.2);
+            outline: none;
+        }
+
+        .button-primary {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+            margin: 5px;
+        }
+
+        .button-primary:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .button-secondary {
+            background-color: #f44336; /* Red */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.2);
+            margin: 5px;
+        }
+
+        .button-secondary:hover {
+            background-color: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(244, 67, 54, 0.3);
+        }
+
+        .feedback-message {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .feedback-correct {
+            background-color: #e6ffed; /* Light green */
+            color: #1a8a3c; /* Darker green */
+            border: 1px solid #1a8a3c;
+        }
+
+        .feedback-incorrect {
+            background-color: #ffebee; /* Light red */
+            color: #d32f2f; /* Darker red */
+            border: 1px solid #d32f2f;
+        }
+
+        .concept-explanation {
+            background-color: #ede7f6; /* Lighter purple */
+            border-left: 5px solid #9575cd; /* Medium Purple border */
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .draggable-term {
+            background-color: #d1c4e9; /* Light purple */
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: grab;
+            margin: 5px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-block;
+        }
+
+        .draggable-term:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .drop-target {
+            border: 2px dashed #9575cd; /* Medium purple dashed border */
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: #e8eaf6; /* Light blue-purple background */
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .drop-target.hover {
+            border-color: #673ab7; /* Deep Purple on hover */
+            background-color: #a592cf; /* more saturated purple on hover */
+        }
+
+        .equation-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #673ab7; /* Deep Purple */
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #f3f1f7; /* Very light purple-grey */
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .balance-scale-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .balance-beam {
+            width: 80%;
+            height: 10px;
+            background-color: #a0a0a0;
+            border-radius: 5px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .balance-pivot {
+            width: 20px;
+            height: 40px;
+            background-color: #a0a0a0;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 10px;
+            border-radius: 5px;
+        }
+
+        .balance-pan-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .balance-pan {
+            width: 45%;
+            min-height: 100px;
+            background-color: #f0f0f0;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .balance-pan.left {
+            transform: rotateZ(var(--balance-left-tilt, 0deg));
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .balance-pan.right {
+            transform: rotateZ(var(--balance-right-tilt, 0deg));
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .operator-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .operator-buttons button {
+            background-color: #673ab7; /* Deep Purple for operators */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 10px rgba(103, 58, 183, 0.2);
+        }
+        .operator-buttons button:hover {
+            background-color: #5e35b1;
+            transform: translateY(-1px);
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #888;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content h3 {
+            color: #673ab7; /* Deep Purple */
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            background-color: #673ab7; /* Deep Purple */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #5e35b1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tab specific styles */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            background-color: #e8eaf6; /* Light blue-purple for tabs */
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background-color: #d1c4e9; /* Slightly darker light purple for inactive tabs */
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button:hover {
+            background-color: #b39ddb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-button.active {
+            background-color: #673ab7; /* Active tab color - Deep Purple */
+            color: white;
+            box-shadow: 0 5px 15px rgba(103, 58, 183, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none; /* Hidden by default */
+            animation: fadeInContent 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block; /* Show active tab content */
+        }
+
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
+            .container {
+                padding: 20px;
+            }
+            .input-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .input-group input {
+                width: 100%;
+                max-width: 300px;
+            }
+            .button-primary, .button-secondary {
+                width: 100%;
+                max-width: 200px;
+            }
+            .balance-pan {
+                width: 48%;
+            }
+            .tab-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .tab-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold mb-4">கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
+        <h2 class="text-xl mb-6">இத்திட்டம் TITAN மற்றும் KALIKE நிறுவனங்களின் பங்களிப்போடு செயல்படுத்தப்படுகிறது.</h2>
+        <h3 class="text-lg mb-8">வகுப்பு: 7 | பருவம்: 1 | தலைப்பு: இயற்கணிதம்</h3>
+
+        <!-- Modals for alerts -->
+        <div id="infoModal" class="modal">
+            <div class="modal-content">
+                <h3 id="modalTitle">தகவல்</h3>
+                <p id="modalMessage">இது ஒரு தகவல் செய்தி.</p>
+                <button onclick="closeModal()">சரி</button>
+            </div>
+        </div>
+
+        <div id="confirmModal" class="modal">
+            <div class="modal-content">
+                <h3 id="confirmModalTitle">உறுதிப்படுத்தவும்</h3>
+                <p id="confirmModalMessage">நீங்கள் இதை உறுதிப்படுத்த விரும்புகிறீர்களா?</p> <!-- Changed ID here -->
+                <button id="confirmYesBtn">ஆம்</button>
+                <button id="confirmNoBtn">இல்லை</button>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">1. மாறிகள் & மாறிலிகள்</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">2. கெழுக்கள்</button>
+            <button class="tab-button" onclick="openTab(event, 'tab3')">3. ஒத்த & மாறுபட்ட உறுப்புகள்</button>
+            <button class="tab-button" onclick="openTab(event, 'tab4')">4. கூட்டல் & கழித்தல்</button>
+            <button class="tab-button" onclick="openTab(event, 'tab5')">5. கோவைகள் அமைத்தல்</button>
+            <button class="tab-button" onclick="openTab(event, 'tab6')">6. சமன்பாடுகள் தீர்த்தல்</button>
+        </div>
+
+        <!-- Section 1: மாறிகளையும், மாறிலிகளையும் இனங்காணுதல் (Identifying Variables and Constants) -->
+        <div id="tab1" class="tab-content card active">
+            <div class="section-title">1. மாறிகளையும், மாறிலிகளையும் இனங்காணுதல்</div>
+            <div class="concept-explanation">
+                <p>இயற்கணிதக் கோவைகளில் <b>மாறிகள்</b> என்பவை 'x', 'y', 'z' போன்ற எழுத்துக்களால் குறிப்பிடப்படும் மதிப்புகள் ஆகும், அவை மாறக்கூடியவை. <b>மாறிலிகள்</b> என்பவை மாறாத, நிலையான எண் மதிப்புகள் (உதாரணமாக: 5, -10, 3/4).</p>
+                <p>கீழே கொடுக்கப்பட்டுள்ள கோவையில் மாறிகளையும், மாறிலிகளையும் கண்டறியவும்.</p>
+            </div>
+            <div class="flex flex-col items-center p-5 bg-blue-50 rounded-lg">
+                <div id="expressionDisplay1" class="text-2xl font-bold text-center mb-4" style="color: #673ab7;"></div>
+                <div class="flex flex-wrap justify-center gap-3 mb-5" id="termContainer1">
+                    <!-- Terms will be dynamically added here -->
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                    <div>
+                        <div class="section-title text-base mb-2">மாறிகள் (Variables)</div>
+                        <div id="variablesDropZone" class="drop-target min-h-[100px] border-blue-400">
+                            இங்கு மாறிகளை கொண்டு சேர்க்கவும்
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-title text-base mb-2">மாறிலிகள் (Constants)</div>
+                        <div id="constantsDropZone" class="drop-target min-h-[100px] border-blue-400">
+                            இங்கு மாறிலிகளை கொண்டு சேர்க்கவும்
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center mt-5 gap-4">
+                    <button class="button-secondary" onclick="navigateProblem('tab1', 'prev')">&lt;&lt; முந்தைய கணக்கு</button>
+                    <button class="button-primary" onclick="checkVariablesConstants()">சரிபார்க்க</button>
+                    <button class="button-secondary" onclick="resetCurrentTabProblem('tab1')">மீட்டமை</button>
+                    <button class="button-secondary" onclick="navigateProblem('tab1', 'next')">அடுத்த கணக்கு &gt;&gt;</button>
+                </div>
+                <div id="feedback1" class="feedback-message w-full hidden"></div>
+            </div>
+        </div>
+
+        <!-- Section 2: கெழுக்களைக் கண்டறிதல் (Finding Coefficients) -->
+        <div id="tab2" class="tab-content card">
+            <div class="section-title">2. ஓர் இயற்கணிதக் கோவையில், உறுப்புகளின் கெழுக்களைக் கண்டறிதல்</div>
+            <div class="concept-explanation">
+                <p>ஒரு இயற்கணித உறுப்பில், ஒரு மாறி அல்லது மாறிகளின் பெருக்கற்பலனுக்கு முன்பு உள்ள எண் அல்லது மற்ற மாறிகள் <b>கெழு</b> எனப்படும். உதாரணமாக, 5xy என்ற உறுப்பில், x-ன் கெழு 5y ஆகும்; y-ன் கெழு 5x ஆகும்; xy-ன் கெழு 5 ஆகும்.</p>
+                <p>கீழே உள்ள கோவையில், கொடுக்கப்பட்ட மாறியின் கெழுவை உள்ளிடவும்.</p>
+            </div>
+            <div class="flex flex-col items-center p-5 bg-green-50 rounded-lg">
+                <div id="coefficientExpressionDisplay" class="text-2xl font-bold text-center mb-4" style="color: #673ab7;"></div>
+                <div class="input-group">
+                    <label for="variableToFind" class="text-lg font-semibold">மாறி:</label>
+                    <input type="text" id="variableToFind" placeholder="எ.கா: x, y, xy" class="p-2 border rounded-lg text-center font-bold" readonly>
+                </div>
+                <div class="input-group w-full max-w-md"> <!-- Increased size -->
+                    <label for="coefficientInput" class="text-lg font-semibold">கெழு:</label>
+                    <input type="text" id="coefficientInput" placeholder="கெழுவை இங்கு உள்ளிடவும் (எ.கா: 5, 3y)" class="p-3 w-full border rounded-lg text-center font-bold">
+                    <button class="button-primary" onclick="checkCoefficient()">சரிபார்க்க</button>
+                </div>
+                <div class="flex justify-center mt-3 gap-4">
+                    <button class="button-secondary" onclick="navigateProblem('tab2', 'prev')">&lt;&lt; முந்தைய கணக்கு</button>
+                    <button class="button-secondary" onclick="resetCurrentTabProblem('tab2')">மீட்டமை</button>
+                    <button class="button-secondary" onclick="navigateProblem('tab2', 'next')">அடுத்த கணக்கு &gt;&gt;</button>
+                </div>
+                <div id="feedback2" class="feedback-message w-full hidden"></div>
+            </div>
+        </div>
+
+        <!-- Section 3: ஒத்த உறுப்புகள் மற்றும் மாறுபட்ட உறுப்புகள் (Like and Unlike Terms) -->
+        <div id="tab3" class="tab-content card">
+            <div class="section-title">3. ஒத்த உறுப்புகளையும், மாறுபட்ட உறுப்புகளையும் அடையாளம் காணுதல்</div>
+            <div class="concept-explanation">
+                <p><b>ஒத்த உறுப்புகள்</b> என்பவை ஒரே மாதிரியான மாறிகளையும், அதே மாறிகளுக்கு ஒரே மாதிரியான அடுக்குகளையும் கொண்ட உறுப்புகள் ஆகும் (எ.கா: 7x, 5x). மாறிகளின் வரிசை முக்கியமில்லை (xy மற்றும் yx ஒத்த உறுப்புகள்).</p>
+                <p><b>மாறுபட்ட உறுப்புகள்</b> என்பவை ஒத்த உறுப்புகள் அல்லாதவை (எ.கா: 7x, 5y).</p>
+                <p>கீழே உள்ள உறுப்புகளில் ஒத்த உறுப்புகளை ஒரே குழுவில் இழுத்துப் போடவும்.</p>
+            </div>
+            <div class="flex flex-col items-center p-5 bg-yellow-50 rounded-lg">
+                <div id="termsForLikeUnlike" class="flex flex-wrap justify-center gap-3 mb-5 min-h-[50px] p-2 border-dashed border-gray-300 rounded-lg">
+                    <!-- Draggable terms for like/unlike -->
+                </div>
+                <div id="likeUnlikeDropZonesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
+                    <!-- Dynamic Drop Zones will be generated here -->
+                </div>
+                <div class="flex justify-center mt-5 gap-4">
+                    <button class="button-secondary" onclick="navigateProblem('tab3', 'prev')">&lt;&lt; முந்தைய கணக்கு</button>
+                    <button class="button-primary" onclick="checkLikeUnlikeTerms()">சரிபார்க்க</button>
+                    <button class="button-secondary" onclick="resetCurrentTabProblem('tab3')">மீட்டமை</button>
+                    <button class="button-secondary" onclick="navigateProblem('tab3', 'next')">அடுத்த கணக்கு &gt;&gt;</button>
+                </div>
+                <div id="feedback3" class="feedback-message w-full hidden"></div>
+            </div>
+        </div>
+
+        <!-- Section 4: இயற்கணிதக் கோவைகளைக் கூட்டல் மற்றும் கழித்தல் (Addition and Subtraction of Algebraic Expressions) -->
+        <div id="tab4" class="tab-content card">
+            <div class="section-title">4. இயற்கணிதக் கோவைகளைக் கூட்டல் மற்றும் கழித்தல்</div>
+            <div class="concept-explanation">
+                <p>இயற்கணிதக் கோவைகளைக் கூட்டவோ அல்லது கழிக்கவோ, அவற்றிலுள்ள <b>ஒத்த உறுப்புகளை</b> மட்டுமே நாம் சேர்க்கலாம் அல்லது குறைக்கலாம். ஒத்த உறுப்புகளின் கெழுக்களைக் கூட்டி அல்லது கழித்து, அதே மாறியை அதன் அடுக்கோடு வைத்துக்கொள்ள வேண்டும்.</p>
+                <p>கீழே உள்ள கோவைகளைச் சேர்த்து அல்லது கழித்து, அதன் விடையை உள்ளிடவும்.</p>
+            </div>
+            <div class="flex flex-col items-center p-5 bg-indigo-50 rounded-lg">
+                <div id="additionSubtractionProblem" class="text-2xl font-bold text-center mb-4" style="color: #673ab7;"></div>
+                <div class="input-group">
+                    <label for="additionSubtractionAnswer" class="text-lg font-semibold">உங்கள் பதில்:</label>
+                    <input type="text" id="additionSubtractionAnswer" placeholder="விடையை இங்கு உள்ளிடவும் (எ.கா: 5x+2y)">
+                    <button class="button-primary" onclick="checkAdditionSubtraction()">சரிபார்க்க</button>
+                </div>
+                <div class="flex justify-center mt-3 gap-4">
+                    <button class="button-secondary" onclick="navigateProblem('tab4', 'prev')">&lt;&lt; முந்தைய கணக்கு</button>
+                    <button class="button-secondary" onclick="resetCurrentTabProblem('tab4')">மீட்டமை</button>
+                    <button class="button-secondary" onclick="navigateProblem('tab4', 'next')">அடுத்த கணக்கு &gt;&gt;</button>
+                </div>
+                <div id="feedback4" class="feedback-message w-full hidden"></div>
+            </div>
+        </div>
+
+        <!-- Section 5: இரு மாறிகளைக் கொண்ட எளிய கோவைகளை அமைத்தல் (Forming Simple Expressions with Two Variables) -->
+        <div id="tab5" class="tab-content card">
+            <div class="section-title">5. இரு மாறிகளைக் கொண்ட எளிய கோவைகளை அமைத்தல்</div>
+            <div class="concept-explanation">
+                <p>ஒரு குறிப்பிட்ட சூழ்நிலையை விவரிக்க, மாறிகள், மாறிலிகள் மற்றும் கணிதச் செயல்களைப் பயன்படுத்தி இயற்கணிதக் கோவைகளை உருவாக்கலாம்.</p>
+                <p>கீழே கொடுக்கப்பட்டுள்ள சூழ்நிலைக்குப் பொருத்தமான இயற்கணிதக் கோவையை உருவாக்கவும்.</p>
+            </div>
+            <div class="flex flex-col items-center p-5 bg-purple-50 rounded-lg">
+                <div id="scenarioText" class="text-lg font-medium text-center mb-4 text-gray-800"></div>
+                <div class="input-group">
+                    <label for="expressionFormationAnswer" class="text-lg font-semibold">உங்கள் கோவை:</label>
+                    <input type="text" id="expressionFormationAnswer" placeholder="கோவையை இங்கு உள்ளிடவும் (எ.கா: 2x+3y)">
+                    <button class="button-primary" onclick="checkExpressionFormation()">சரிபார்க்க</button>
+                </div>
+                <div class="flex justify-center mt-3 gap-4">
+                    <button class="button-secondary" onclick="navigateProblem('tab5', 'prev')">&lt;&lt; முந்தைய கணக்கு</button>
+                    <button class="button-secondary" onclick="resetCurrentTabProblem('tab5')">மீட்டமை</button>
+                    <button class="button-secondary" onclick="navigateProblem('tab5', 'next')">அடுத்த கணக்கு &gt;&gt;</button>
+                </div>
+                <div id="feedback5" class="feedback-message w-full hidden"></div>
+            </div>
+        </div>
+
+        <!-- Section 6: எளிய நேரிய சமன்பாடுகளைத் தீர்த்தல் (Solving Simple Linear Equations) -->
+        <div id="tab6" class="tab-content card">
+            <div class="section-title">6. எளிய நேரிய சமன்பாடுகளைப் புரிந்துகொண்டு அவற்றை தீர்க்க கற்றல்</div>
+            <div class="concept-explanation">
+                <p>ஒரு சமன்பாடு என்பது ஒரு தராசு போன்றது. இரு பக்கங்களும் சமமாக இருக்கும்போது அது சமநிலையில் இருக்கும். சமன்பாட்டைத் தீர்க்க, சமநிலையை நிலைநிறுத்த இருபுறமும் ஒரே செயலைச் செய்ய வேண்டும்.</p>
+                <p>கீழே உள்ள சமன்பாட்டைத் தீர்க்கவும். மாறிலியைப் பிரித்தெடுக்க இருபுறமும் கூட்டல், கழித்தல், பெருக்கல் அல்லது வகுத்தல் போன்ற செயல்பாடுகளைப் பயன்படுத்தவும்.</p>
+            </div>
+            <div class="flex flex-col items-center p-5 bg-pink-50 rounded-lg">
+                <div class="equation-display" id="equationDisplay"></div>
+
+                <div class="balance-scale-container w-full max-w-xl">
+                    <div class="balance-beam">
+                        <div class="balance-pivot"></div>
+                    </div>
+                    <div class="balance-pan-container">
+                        <div class="balance-pan left" id="lhsPan"></div>
+                        <div class="balance-pan right" id="rhsPan"></div>
+                    </div>
+                </div>
+
+                <div class="operator-buttons mt-5">
+                    <input type="text" id="operationValue" placeholder="மதிப்பு (எ.கா: 5, 1/2)" class="p-2 border rounded-lg text-center font-bold flex-grow min-w-[280px]">
+                    <button onclick="applyEquationOperation('add')"> + கூட்டுக</button>
+                    <button onclick="applyEquationOperation('subtract')"> - கழிக்க</button>
+                    <button onclick="applyEquationOperation('multiply')"> × பெருக்க</button>
+                    <button onclick="applyEquationOperation('divide')"> ÷ வகுக்க</button>
+                </div>
+                <div class="flex justify-center mt-3 gap-4">
+                    <button class="button-secondary" onclick="navigateProblem('tab6', 'prev')">&lt;&lt; முந்தைய கணக்கு</button>
+                    <button class="button-primary" onclick="checkEquationSolution()">சரிபார்க்க</button>
+                    <button class="button-secondary" onclick="resetCurrentTabProblem('tab6')">மீட்டமை</button>
+                    <button class="button-secondary" onclick="navigateProblem('tab6', 'next')">அடுத்த கணக்கு &gt;&gt;</button>
+                </div>
+                <div id="feedback6" class="feedback-message w-full hidden"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Global variables for modals
+        let resolveConfirm;
+
+        function showModal(title, message, type = 'info') {
+            const modal = document.getElementById(type === 'confirm' ? 'confirmModal' : 'infoModal');
+            const modalTitle = document.getElementById(type === 'confirm' ? 'confirmModalTitle' : 'modalTitle');
+            // FIX: Corrected ID for confirm modal message
+            const modalMessage = document.getElementById(type === 'confirm' ? 'confirmModalMessage' : 'modalMessage'); 
+
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modal.style.display = 'flex';
+
+            if (type === 'confirm') {
+                return new Promise((resolve) => {
+                    resolveConfirm = resolve;
+                });
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        document.getElementById('confirmYesBtn').onclick = () => {
+            closeModal();
+            if (resolveConfirm) resolveConfirm(true);
+        };
+        document.getElementById('confirmNoBtn').onclick = () => {
+            closeModal();
+            if (resolveConfirm) resolveConfirm(false);
+        };
+
+        // Tab functionality
+        function openTab(evt, tabId) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabId).style.display = "block";
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+
+            // Initialize or reset content for the active tab when opened
+            if (tabProblemStates[tabId]) {
+                tabProblemStates[tabId].currentIndex = 0; // Reset to first problem when tab opens
+                tabProblemStates[tabId].loadFunc(tabProblemStates[tabId].currentIndex);
+            }
+        }
+
+        // --- Generic Navigation Functions and State ---
+        const tabProblemStates = {}; // Initialized after all problem arrays are defined
+
+        function navigateProblem(tabId, direction) {
+            const state = tabProblemStates[tabId];
+            if (!state) return;
+
+            if (direction === 'next') {
+                state.currentIndex = (state.currentIndex + 1) % state.problems.length;
+            } else if (direction === 'prev') {
+                state.currentIndex = (state.currentIndex - 1 + state.problems.length) % state.problems.length;
+            }
+            state.loadFunc(state.currentIndex);
+        }
+
+        function resetCurrentTabProblem(tabId) {
+            const state = tabProblemStates[tabId];
+            if (state && state.resetFunc) {
+                state.resetFunc(); // Call the specific reset function for the tab
+            }
+        }
+
+        // --- Section 1: மாறிகளையும், மாறிலிகளையும் இனங்காணுதல் (Identifying Variables and Constants) ---
+        const expressionsData1 = [
+            {
+                expression: "5x + 3y - 7",
+                draggableElements: ["x", "y", "-7", "5", "3", "xy"],
+                correctVariablesInExpression: ["x", "y"],
+                correctConstantsInExpression: ["-7"]
+            },
+            {
+                expression: "12 - 4a + 2b",
+                draggableElements: ["a", "b", "12", "-4", "2", "ab"],
+                correctVariablesInExpression: ["a", "b"],
+                correctConstantsInExpression: ["12"]
+            },
+            {
+                expression: "pqr + 15",
+                draggableElements: ["p", "q", "r", "15", "1", "pq", "qr"],
+                correctVariablesInExpression: ["p", "q", "r"],
+                correctConstantsInExpression: ["15"]
+            },
+            {
+                expression: "m - n",
+                draggableElements: ["m", "n", "-1", "1"],
+                correctVariablesInExpression: ["m", "n"],
+                correctConstantsInExpression: []
+            },
+            {
+                expression: "8k + 9",
+                draggableElements: ["k", "9", "8"],
+                correctVariablesInExpression: ["k"],
+                correctConstantsInExpression: ["9"]
+            },
+            {
+                expression: "2c + 5d + 1",
+                draggableElements: ["c", "d", "1", "2", "5", "cd"],
+                correctVariablesInExpression: ["c", "d"],
+                correctConstantsInExpression: ["1"]
+            },
+            {
+                expression: "a + 2b - 3c + 4",
+                draggableElements: ["a", "b", "c", "4", "2", "-3", "abc"],
+                correctVariablesInExpression: ["a", "b", "c"],
+                correctConstantsInExpression: ["4"]
+            },
+            {
+                expression: "10 - x - y",
+                draggableElements: ["x", "y", "10", "-1"],
+                correctVariablesInExpression: ["x", "y"],
+                correctConstantsInExpression: ["10"]
+            },
+            {
+                expression: "20",
+                draggableElements: ["20"],
+                correctVariablesInExpression: [],
+                correctConstantsInExpression: ["20"]
+            },
+            {
+                expression: "z + 1/2",
+                draggableElements: ["z", "1/2", "1"],
+                correctVariablesInExpression: ["z"],
+                correctConstantsInExpression: ["1/2"]
+            },
+            {
+                expression: "3/4 * r - 5",
+                draggableElements: ["r", "-5", "3/4"],
+                correctVariablesInExpression: ["r"],
+                correctConstantsInExpression: ["-5"]
+            }
+        ];
+
+        let currentExpressionParts1 = []; // Local state for current problem
+        let correctVariablesInExpression1 = [];
+        let correctConstantsInExpression1 = [];
+        let droppedVariables = new Set();
+        let droppedConstants = new Set();
+
+        function loadVariableConstantProblem(index) {
+            const problem = expressionsData1[index];
+            document.getElementById('expressionDisplay1').textContent = problem.expression;
+            currentExpressionParts1 = problem.draggableElements; // Use local variable
+            correctVariablesInExpression1 = problem.correctVariablesInExpression;
+            correctConstantsInExpression1 = problem.correctConstantsInExpression;
+            
+            _resetCurrentVariablesConstantsUI(); // Call UI reset function
+        }
+
+        function _initVariablesConstants() { // Internal setup, called by openTab
+            // Initial load handled by openTab and loadVariableConstantProblem
+        }
+
+        function _resetCurrentVariablesConstantsUI() { // Only resets the UI for the current problem
+            droppedVariables = new Set();
+            droppedConstants = new Set();
+
+            const termContainer = document.getElementById('termContainer1');
+            termContainer.innerHTML = ''; // Clear previous terms
+            currentExpressionParts1.forEach(part => { // Use local state variable
+                const termDiv = document.createElement('div');
+                termDiv.className = 'draggable-term';
+                termDiv.textContent = part;
+                termDiv.draggable = true;
+                termDiv.id = `term-${part}`; // Ensure ID is unique and properly set
+                termDiv.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.id); // FIX: Pass the element's ID, not its text content
+                    // Store the original parent ID for potential return
+                    e.dataTransfer.setData('sourceParentId', e.target.parentElement.id); 
+                });
+                termContainer.appendChild(termDiv);
+            });
+
+            const variablesDropZone = document.getElementById('variablesDropZone');
+            const constantsDropZone = document.getElementById('constantsDropZone');
+            variablesDropZone.innerHTML = 'இங்கு மாறிகளை கொண்டு சேர்க்கவும்'; // Changed text
+            constantsDropZone.innerHTML = 'இங்கு மாறிலிகளை கொண்டு சேர்க்கவும்'; // Changed text
+
+            variablesDropZone.querySelectorAll('.draggable-term').forEach(el => el.remove());
+            constantsDropZone.querySelectorAll('.draggable-term').forEach(el => el.remove());
+            
+            document.getElementById('feedback1').classList.add('hidden');
+
+            [variablesDropZone, constantsDropZone].forEach(zone => {
+                zone.removeEventListener('dragover', (e)=>{ e.preventDefault(); zone.classList.add('hover'); });
+                zone.removeEventListener('dragleave', (e)=>{ zone.classList.remove('hover'); });
+                zone.removeEventListener('drop', handleVariableConstantDrop);
+
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('hover');
+                });
+                zone.addEventListener('dragleave', (e) => {
+                    zone.classList.remove('hover');
+                });
+                zone.addEventListener('drop', handleVariableConstantDrop);
+            });
+        }
+
+        function handleVariableConstantDrop(e) {
+            e.preventDefault();
+            this.classList.remove('hover');
+            const termId = e.dataTransfer.getData('text/plain'); // Now correctly receives the element's ID
+            const sourceParentId = e.dataTransfer.getData('sourceParentId'); 
+            const termDiv = document.getElementById(termId);
+            if (!termDiv) return;
+
+            const termValue = termDiv.textContent;
+            const targetDropZoneId = this.id;
+
+            let isValidDrop = false;
+            let errorMessage = '';
+
+            const isCurrentProblemVariable = (term) => correctVariablesInExpression1.includes(term);
+            const isCurrentProblemConstant = (term) => correctConstantsInExpression1.includes(term);
+
+            if (targetDropZoneId === 'variablesDropZone') {
+                if (isCurrentProblemVariable(termValue)) {
+                    isValidDrop = true;
+                } else {
+                    errorMessage = `"${termValue}" ஒரு மாறி அல்ல. இங்கு மாறிகளை மட்டும் கொண்டு சேர்க்கவும்.`; // Changed text
+                }
+            } else if (targetDropZoneId === 'constantsDropZone') {
+                if (isCurrentProblemConstant(termValue)) {
+                    isValidDrop = true;
+                } else {
+                    errorMessage = `"${termValue}" ஒரு மாறிலி அல்ல. இங்கு மாறிலிகளை மட்டும் கொண்டு சேர்க்கவும்.`; // Changed text
+                }
+            }
+
+            if (!isValidDrop) {
+                showModal('தவறு', errorMessage, 'info');
+                return; // Stop further processing for invalid drops
+            }
+
+            // Valid drop: Proceed with moving the term and updating state
+            // If the item is being moved between drop zones or from initial container
+            if (sourceParentId !== targetDropZoneId) {
+                // Remove from the old drop zone's data model (if it was in one)
+                if (droppedVariables.has(termValue)) {
+                    droppedVariables.delete(termValue);
+                    const oldVarParent = document.getElementById('variablesDropZone');
+                    if (oldVarParent && oldVarParent.children.length === 0) { 
+                        oldVarParent.innerHTML = 'இங்கு மாறிகளை கொண்டு சேர்க்கவும்'; // Changed text
+                    }
+                }
+                if (droppedConstants.has(termValue)) {
+                    droppedConstants.delete(termValue);
+                    const oldConstParent = document.getElementById('constantsDropZone');
+                    if (oldConstParent && oldConstParent.children.length === 0) { 
+                        oldConstParent.innerHTML = 'இங்கு மாறிலிகளை கொண்டு சேர்க்கவும்'; // Changed text
+                    }
+                }
+                
+                // Remove from its current DOM parent
+                if (termDiv.parentElement) {
+                    termDiv.parentElement.removeChild(termDiv);
+                }
+            }
+            
+            this.appendChild(termDiv); // Append to the new target zone
+
+            // Add to the new drop zone's data model
+            if (targetDropZoneId === 'variablesDropZone') {
+                droppedVariables.add(termValue);
+            } else if (targetDropZoneId === 'constantsDropZone') {
+                droppedConstants.add(termValue);
+            }
+
+            // Clear the placeholder text in the target zone if it had one
+            if (this.childNodes.length > 1 && this.childNodes[0].nodeType === Node.TEXT_NODE && 
+                (this.childNodes[0].textContent.trim() === 'இங்கு மாறிகளை கொண்டு சேர்க்கவும்' || // Changed text
+                 this.childNodes[0].textContent.trim() === 'இங்கு மாறிலிகளை கொண்டு சேர்க்கவும்')) { // Changed text
+                this.childNodes[0].textContent = '';
+            }
+        }
+
+        function checkVariablesConstants() {
+            const feedbackDiv = document.getElementById('feedback1');
+            feedbackDiv.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+
+            // Check if nothing has been dropped
+            if (droppedVariables.size === 0 && droppedConstants.size === 0 && 
+                (correctVariablesInExpression1.length > 0 || correctConstantsInExpression1.length > 0)) {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = 'மாறிகள் அல்லது மாறிலிகளை இழுத்து கொண்டு சேர்க்கவும்.'; // Changed text
+                return;
+            }
+
+            let correct = true;
+
+            // Check if all correct variables are in the variable drop zone and no incorrect ones
+            const actualVariables = Array.from(droppedVariables);
+            if (actualVariables.length !== correctVariablesInExpression1.length || 
+                !correctVariablesInExpression1.every(v => actualVariables.includes(v))) {
+                correct = false;
+            } else {
+                if (!actualVariables.every(v => correctVariablesInExpression1.includes(v))) {
+                    correct = false;
+                }
+            }
+
+            // Check if all correct constants are in the constant drop zone and no incorrect ones
+            const actualConstants = Array.from(droppedConstants);
+            if (actualConstants.length !== correctConstantsInExpression1.length || 
+                !correctConstantsInExpression1.every(c => actualConstants.includes(c))) {
+                correct = false;
+            } else {
+                if (!actualConstants.every(c => correctConstantsInExpression1.includes(c))) {
+                    correct = false;
+                }
+            }
+            
+            // Additionally check for cross-contamination (e.g., a variable in constants box)
+            if (correct) { // Only perform cross-check if the initial checks passed
+                 for (let dv of droppedVariables) {
+                     if (correctConstantsInExpression1.includes(dv)) {
+                         correct = false;
+                         break;
+                     }
+                 }
+            }
+            if (correct) {
+                 for (let dc of droppedConstants) {
+                     if (correctVariablesInExpression1.includes(dc)) {
+                         correct = false;
+                         break;
+                     }
+                 }
+            }
+
+
+            if (correct) {
+                feedbackDiv.classList.add('feedback-correct');
+                feedbackDiv.textContent = 'மிகவும் அருமை! சரியான பதில்.';
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = 'மீண்டும் முயற்சிக்கவும். சில தவறுகள் உள்ளன. கெழுக்கள் மாறிகளோ மாறிலிகளோ அல்ல என்பதை நினைவில் கொள்ளுங்கள்.';
+            }
+        }
+
+        // --- Section 2: கெழுக்களைக் கண்டறிதல் (Finding Coefficients) ---
+        const coefficientProblems = [
+            { expression: "7xy", variable: "x", coefficient: "7y" },
+            { expression: "7xy", variable: "y", coefficient: "7x" },
+            { expression: "7xy", variable: "xy", coefficient: "7" },
+            { expression: "-3ab", variable: "a", coefficient: "-3b" },
+            { expression: "-3ab", variable: "b", coefficient: "-3a" },
+            { expression: "-3ab", variable: "ab", coefficient: "-3" },
+            { expression: "15p", variable: "p", coefficient: "15" },
+            { expression: "-q", variable: "q", coefficient: "-1" },
+            { expression: "z", variable: "z", coefficient: "1" },
+            { expression: "5mnp", variable: "mn", coefficient: "5p" },
+            { expression: "xyz", variable: "y", coefficient: "xz" },
+            { expression: "-10k", variable: "k", coefficient: "-10" },
+            { expression: "4r^2s", variable: "s", coefficient: "4r^2" },
+            { expression: "t / 2", variable: "t", coefficient: "1/2" },
+            { expression: "-0.5uv", variable: "u", coefficient: "-0.5v" }
+        ];
+
+        let currentCoefficientProblem = {}; // Local state for current problem
+
+        function loadCoefficientProblem(index) {
+            currentCoefficientProblem = coefficientProblems[index];
+            document.getElementById('coefficientExpressionDisplay').textContent = currentCoefficientProblem.expression;
+            document.getElementById('variableToFind').value = currentCoefficientProblem.variable;
+            _resetCurrentCoefficientProblemUI();
+        }
+
+        function _resetCurrentCoefficientProblemUI() {
+            document.getElementById('coefficientInput').value = '';
+            document.getElementById('feedback2').classList.add('hidden');
+        }
+
+        function checkCoefficient() {
+            const userAnswer = document.getElementById('coefficientInput').value.trim();
+            const feedbackDiv = document.getElementById('feedback2');
+            feedbackDiv.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+
+            if (userAnswer === '') {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = 'கெழுவை உள்ளிடவும்.'; // Added message for empty input
+                return;
+            }
+
+            const correctCoefficient = currentCoefficientProblem.coefficient;
+
+            if (userAnswer === correctCoefficient) {
+                feedbackDiv.classList.add('feedback-correct');
+                feedbackDiv.textContent = 'சரியான பதில்! மிக நன்று!';
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = `தவறான பதில். மீண்டும் முயற்சிக்கவும்.`; // Removed correct answer from here
+            }
+        }
+
+        // --- Section 3: ஒத்த உறுப்புகள் மற்றும் மாறுபட்ட உறுப்புகள் (Like and Unlike Terms) ---
+        const likeUnlikeProblems = [
+            {
+                terms: ["7xy", "19x", "1", "5y", "3yx", "15", "6x", "12xy", "5", "16y", "-9x", "15xy", "23", "45y", "-8y", "23x", "-y", "11", "2x^2", "3y^2", "-5x^2", "y^2"],
+                groups: [
+                    ["7xy", "3yx", "12xy", "15xy"],
+                    ["19x", "6x", "-9x", "23x"],
+                    ["1", "15", "5", "23", "11"],
+                    ["5y", "16y", "45y", "-8y", "-y"],
+                    ["2x^2", "-5x^2"],
+                    ["3y^2", "y^2"]
+                ]
+            },
+            {
+                terms: ["2a", "3b", "5a", "-7b", "ab", "4ba", "10", "-2c", "c", "8", "a^2b", "5a^2b", "7ac", "2ca"],
+                groups: [
+                    ["2a", "5a"],
+                    ["3b", "-7b"],
+                    ["ab", "4ba"],
+                    ["10", "8"],
+                    ["-2c", "c"],
+                    ["a^2b", "5a^2b"],
+                    ["7ac", "2ca"]
+                ]
+            },
+            {
+                terms: ["-p", "4q", "5p", "pq", "2qp", "-9q", "10", "1/2", "x", "5x", "-1/4"],
+                groups: [
+                    ["-p", "5p"],
+                    ["4q", "-9q"],
+                    ["pq", "2qp"],
+                    ["10", "1/2", "-1/4"],
+                    ["x", "5x"]
+                ]
+            },
+            {
+                terms: ["1.5m", "2.3n", "-0.5m", "mn", "3nm", "6", "12", "xy", "-4xy", "7n", "p"],
+                groups: [
+                    ["1.5m", "-0.5m"],
+                    ["2.3n", "7n"],
+                    ["mn", "3nm"],
+                    ["6", "12"],
+                    ["xy", "-4xy"],
+                    ["p"] // Single term can be a group
+                ]
+            }
+        ];
+
+        let currentLikeUnlikeTerms = []; // Local state for current problem
+        let correctLikeUnlikeGroups = [];
+        let droppedLikeUnlikeGroups = {}; // This will be dynamically populated
+
+        function simplifyTerm(term) {
+            term = term.replace(/ /g, '').toLowerCase();
+            const match = term.match(/^([+-]?\d*(?:\.\d*)?)?([a-z]+(?:\^\d)?)?$/);
+            if (!match) {
+                 if (!isNaN(parseFloat(term))) {
+                     return { coeff: parseFloat(term), vars: '' };
+                 }
+                return { coeff: 0, vars: term };
+            }
+
+            let coeffStr = match[1];
+            let vars = match[2] || '';
+
+            let coeff;
+            if (coeffStr === '' || coeffStr === '+') {
+                coeff = 1;
+            } else if (coeffStr === '-') {
+                coeff = -1;
+            } else {
+                coeff = parseFloat(coeffStr);
+            }
+            
+            if (vars) {
+                const varParts = vars.match(/([a-z])(\^(\d))?/g);
+                if (varParts) {
+                    vars = varParts.map(vp => {
+                        const base = vp.charAt(0);
+                        const expMatch = vp.match(/\^(\d)/);
+                        const exponent = expMatch ? parseInt(expMatch[1]) : 1;
+                        return { base, exponent };
+                    }).sort((a, b) => a.base.localeCompare(b.base))
+                      .map(obj => obj.base + (obj.exponent > 1 ? `^${obj.exponent}` : ''))
+                      .join('');
+                }
+            }
+            
+            return { coeff: coeff, vars: vars };
+        }
+
+        function areLikeTerms(term1, term2) {
+            const s1 = simplifyTerm(term1);
+            const s2 = simplifyTerm(term2);
+            return s1.vars === s2.vars;
+        }
+
+        function loadLikeUnlikeProblem(index) {
+            const problem = likeUnlikeProblems[index];
+            currentLikeUnlikeTerms = problem.terms;
+            correctLikeUnlikeGroups = problem.groups.filter(group => group.length > 0).map(group => group.sort());
+            _resetCurrentLikeUnlikeTermsUI();
+        }
+
+        function _resetCurrentLikeUnlikeTermsUI() {
+            const termsContainer = document.getElementById('termsForLikeUnlike');
+            if (termsContainer) {
+                termsContainer.innerHTML = ''; // Clear existing terms
+            }
+            
+            currentLikeUnlikeTerms.forEach(term => {
+                const termDiv = document.createElement('div');
+                termDiv.className = 'draggable-term';
+                termDiv.textContent = term;
+                termDiv.draggable = true;
+                termDiv.id = `like-unlike-term-${term}`;
+                termDiv.dataset.originalParentId = 'termsForLikeUnlike'; 
+                termDiv.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    e.dataTransfer.setData('sourceZoneId', e.target.parentElement.id);
+                });
+                if (termsContainer) {
+                    termsContainer.appendChild(termDiv);
+                }
+            });
+
+            const dropZonesContainer = document.getElementById('likeUnlikeDropZonesContainer');
+            dropZonesContainer.innerHTML = ''; // Clear previously generated drop zones
+            droppedLikeUnlikeGroups = {}; // Reset the data model for dropped items
+
+            const numRequiredGroups = correctLikeUnlikeGroups.length; // Number of groups for the current problem
+
+            // Generate only the required number of drop zones dynamically
+            for (let i = 0; i < numRequiredGroups; i++) {
+                const dropZoneId = `likeTermsDropZone_${i + 1}`; 
+                const dropZoneDivWrapper = document.createElement('div');
+                dropZoneDivWrapper.innerHTML = `
+                    <div class="section-title text-base mb-2">குழு ${i + 1} (Group ${i + 1})</div>
+                    <div id="${dropZoneId}" class="drop-target min-h-[100px] border-orange-400">இங்கு ஒத்த உறுப்புகளை இழுத்துப் போடுங்கள்</div>
+                `;
+                dropZonesContainer.appendChild(dropZoneDivWrapper);
+
+                // Attach event listeners to the *actual* drop target div
+                const actualDropTarget = document.getElementById(dropZoneId);
+                actualDropTarget.addEventListener('dragover', handleLikeUnlikeDragOver);
+                actualDropTarget.addEventListener('dragleave', handleLikeUnlikeDragLeave);
+                actualDropTarget.addEventListener('drop', handleLikeUnlikeDrop);
+
+                droppedLikeUnlikeGroups[dropZoneId] = []; // Initialize data for this dynamic drop zone
+            }
+            document.getElementById('feedback3').classList.add('hidden');
+        }
+
+        function handleLikeUnlikeDragOver(e) {
+            e.preventDefault();
+            this.classList.add('hover');
+        }
+
+        function handleLikeUnlikeDragLeave(e) {
+            this.classList.remove('hover');
+        }
+
+        function handleLikeUnlikeDrop(e) {
+            e.preventDefault();
+            this.classList.remove('hover');
+            const termId = e.dataTransfer.getData('text/plain');
+            const sourceZoneId = e.dataTransfer.getData('sourceZoneId'); // The ID of the parent where the drag started
+            const termDiv = document.getElementById(termId);
+
+            if (!termDiv) return;
+
+            const termValue = termDiv.textContent;
+            const targetDropZoneId = this.id; // The ID of the zone where it's being dropped
+            const currentTermsInTargetDropZone = Array.from(this.querySelectorAll('.draggable-term')).map(el => el.textContent);
+
+            let isValidDrop = true;
+            // Check if drop zone already contains terms and if the new term is like the existing ones
+            if (currentTermsInTargetDropZone.length > 0 && !areLikeTerms(termValue, currentTermsInTargetDropZone[0])) {
+                isValidDrop = false;
+            }
+
+            if (isValidDrop) {
+                // Step 1: Update data model - remove from source data group if it came from another drop zone
+                if (sourceZoneId !== 'termsForLikeUnlike' && droppedLikeUnlikeGroups[sourceZoneId]) {
+                    droppedLikeUnlikeGroups[sourceZoneId] = droppedLikeUnlikeGroups[sourceZoneId].filter(t => t !== termValue);
+                    // Restore placeholder text if the source drop zone becomes empty
+                    const oldDropZone = document.getElementById(sourceZoneId);
+                    if (oldDropZone && oldDropZone.children.length === 0) {
+                         oldDropZone.innerHTML = 'இங்கு ஒத்த உறுப்புகளை இழுத்துப் போடுங்கள்';
+                    }
+                }
+                
+                // Step 2: Perform DOM manipulation - remove from source, add to target
+                // If it's coming from termsForLikeUnlike, its parent is termsForLikeUnlike.
+                // If it's coming from another drop zone, its parent is that drop zone.
+                const sourceContainerElement = document.getElementById(sourceZoneId);
+                if (sourceContainerElement && termDiv.parentElement === sourceContainerElement) { // Ensure it's still in its original place
+                    sourceContainerElement.removeChild(termDiv); // Remove from source DOM
+                }
+                
+                this.appendChild(termDiv); // Add to target DOM ('this' is the target drop zone element)
+
+                // Step 3: Update data model - add to target data group
+                droppedLikeUnlikeGroups[targetDropZoneId].push(termValue);
+
+                // Clear target drop zone's placeholder text if it had one and now has content
+                if (this.childNodes.length > 1 && this.childNodes[0].nodeType === Node.TEXT_NODE && this.childNodes[0].textContent.trim() === 'இங்கு ஒத்த உறுப்புகளை இழுத்துப் போடுங்கள்') {
+                    this.childNodes[0].textContent = '';
+                }
+
+            } else { // Invalid drop
+                showModal('தவறு', 'இந்த உறுப்பு இந்தக் குழுவில் சேராது!', 'info');
+                // The browser's default behavior for `e.preventDefault()` on `drop` is that
+                // the dragged element visually "snaps back" to its original position (where it was before drag started)
+                // if `appendChild` is not called. So, no explicit DOM manipulation is needed here.
+                // However, if the element was moved from one drop zone to another invalid drop zone, we need to manually put it back.
+                const originalSourceContainer = document.getElementById(sourceZoneId);
+                if (originalSourceContainer && termDiv.parentElement !== originalSourceContainer) {
+                    // Remove from invalid target, put back to source
+                    this.removeChild(termDiv);
+                    originalSourceContainer.appendChild(termDiv);
+                     // Re-add to the data model of the original source zone
+                    if (sourceZoneId !== 'termsForLikeUnlike' && droppedLikeUnlikeGroups[sourceZoneId]) {
+                        droppedLikeUnlikeGroups[sourceZoneId].push(termValue);
+                    }
+                    // Re-set placeholder if original source was empty
+                    if (originalSourceContainer.children.length === 1 && originalSourceContainer.childNodes[0].nodeType === Node.TEXT_NODE && originalSourceContainer.childNodes[0].textContent.trim() === '') {
+                        originalSourceContainer.childNodes[0].textContent = 'இங்கு ஒத்த உறுப்புகளை இழுத்துப் போடுங்கள்';
+                    }
+                }
+            }
+        }
+
+
+        function checkLikeUnlikeTerms() {
+            const feedbackDiv = document.getElementById('feedback3');
+            feedbackDiv.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+
+            const userGroupsRaw = Object.values(droppedLikeUnlikeGroups).filter(group => group.length > 0);
+            if (userGroupsRaw.length === 0) {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = 'குழுக்களாகப் பிரிக்க உறுப்புகளை இழுத்து விடவும்.'; // Added message for empty input
+                return;
+            }
+
+            let allCorrect = true;
+            const userGroups = userGroupsRaw.map(group => group.sort());
+
+            for (const userGroup of userGroups) {
+                if (userGroup.length > 1) {
+                    for (let i = 1; i < userGroup.length; i++) {
+                        if (!areLikeTerms(userGroup[0], userGroup[i])) {
+                            allCorrect = false;
+                            break;
+                        }
+                    }
+                }
+                if (!allCorrect) break;
+            }
+
+            const allOriginalTerms = new Set(currentLikeUnlikeTerms);
+            const allDroppedTerms = new Set();
+            userGroups.forEach(group => group.forEach(term => allDroppedTerms.add(term)));
+
+            if (allOriginalTerms.size !== allDroppedTerms.size) {
+                allCorrect = false;
+            } else {
+                for (let term of allOriginalTerms) {
+                    if (!allDroppedTerms.has(term)) {
+                        allCorrect = false;
+                        break;
+                    }
+                }
+            }
+            
+            const normalizedCorrectGroups = correctLikeUnlikeGroups.map(group => group.map(t => simplifyTerm(t).vars).sort().join(',')).sort().join(';');
+            const normalizedUserGroups = userGroups.map(group => group.map(t => simplifyTerm(t).vars).sort().join(',')).sort().join(';');
+
+            if (normalizedCorrectGroups !== normalizedUserGroups) {
+                allCorrect = false;
+            }
+
+            if (allCorrect) {
+                feedbackDiv.classList.add('feedback-correct');
+                feedbackDiv.textContent = 'மிகவும் அருமை! அனைத்து உறுப்புகளையும் சரியாகக் குழுவாக்கினீர்கள்.';
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = 'மீண்டும் முயற்சிக்கவும். சில உறுப்புகள் தவறாகக் குழுவாக்கப்பட்டுள்ளன அல்லது விடுபட்டுள்ளன.';
+            }
+        }
+
+        // --- Section 4: இயற்கணிதக் கோவைகளைக் கூட்டல் மற்றும் கழித்தல் (Addition and Subtraction of Algebraic Expressions) ---
+        const addSubProblems = [
+            {
+                problem: "(5x + 3y) + (2x - y)",
+                answer: "7x+2y",
+                explanation: "ஒத்த உறுப்புகளைக் கூட்டவும்: (5x+2x) = 7x; (3y-y) = 2y. எனவே, விடை 7x+2y."
+            },
+            {
+                problem: "(8a - 4b) - (3a + 2b)",
+                answer: "5a-6b",
+                explanation: "கழிக்க, இரண்டாவது கோவையின் ஒவ்வொரு உறுப்பின் குறியையும் மாற்றவும்: (8a - 4b) + (-3a - 2b). ஒத்த உறுப்புகளைச் சேர்க்கவும்: (8a-3a) = 5a; (-4b-2b) = -6b. எனவே, விடை 5a-6b."
+            },
+            {
+                problem: "(10p + 7q - 5) + (p - 2q + 8)",
+                answer: "11p+5q+3",
+                explanation: "ஒத்த உறுப்புகளைக் கூட்டவும்: (10p+p) = 11p; (7q-2q) = 5q; (-5+8) = 3. எனவே, விடை 11p+5q+3."
+            },
+            {
+                problem: "(6m - 2n) - (-3m + 5n)",
+                answer: "9m-7n",
+                explanation: "கழிக்க, இரண்டாவது கோவையின் ஒவ்வொரு உறுப்பின் குறியையும் மாற்றவும்: (6m - 2n) + (3m - 5n). ஒத்த உறுப்புகளைச் சேர்க்கவும்: (6m+3m) = 9m; (-2n-5n) = -7n. எனவே, விடை 9m-7n."
+            },
+            {
+                problem: "(4x + 2) + (x - 7)",
+                answer: "5x-5",
+                explanation: "ஒத்த உறுப்புகளைக் கூட்டவும்: (4x+x) = 5x; (2-7) = -5. எனவே, விடை 5x-5."
+            },
+            {
+                problem: "(3c + 5) + (2c - 1)",
+                answer: "5c+4",
+                explanation: "ஒத்த உறுப்புகளைக் கூட்டவும்: (3c+2c) = 5c; (5-1) = 4. எனவே, விடை 5c+4."
+            },
+            {
+                problem: "(9k - 1) - (4k + 6)",
+                answer: "5k-7",
+                explanation: "கழிக்க, இரண்டாவது கோவையின் ஒவ்வொரு உறுப்பின் குறியையும் மாற்றவும்: (9k - 1) + (-4k - 6). ஒத்த உறுப்புகளைச் சேர்க்கவும்: (9k-4k) = 5k; (-1-6) = -7. எனவே, விடை 5k-7."
+            },
+            {
+                problem: "(-a + 2b) + (5a - b)",
+                answer: "4a+b",
+                explanation: "ஒத்த உறுப்புகளைக் கூட்டவும்: (-a+5a) = 4a; (2b-b) = b. எனவே, விடை 4a+b."
+            },
+            {
+                problem: "(7p - 3q) - (-p - 2q)",
+                answer: "8p-q",
+                explanation: "கழிக்க, இரண்டாவது கோவையின் ஒவ்வொரு உறுப்பின் குறியையும் மாற்றவும்: (7p - 3q) + (p + 2q). ஒத்த உறுப்புகளைச் சேர்க்கவும்: (7p+p) = 8p; (-3q+2q) = -q. எனவே, விடை 8p-q."
+            },
+            {
+                problem: "(x^2 + 2x) + (3x^2 - x)",
+                answer: "4x^2+x",
+                explanation: "ஒத்த உறுப்புகளைக் கூட்டவும்: (x^2+3x^2) = 4x^2; (2x-x) = x. எனவே, விடை 4x^2+x."
+            }
+        ];
+
+        let currentAddSubProblem = {};
+
+        function normalizeExpression(expr) {
+            expr = expr.replace(/\s/g, '').toLowerCase();
+            expr = expr.replace(/\+\-/g, '-').replace(/\-\-/g, '+');
+            const terms = expr.match(/([+-]?\d*\.?\d*[a-z]*(\^[2-3])?)/g).filter(Boolean);
+
+            const parsedTerms = [];
+            terms.forEach(term => {
+                const match = term.match(/([+-]?\d*\.?\d*)?([a-z]*(\^[2-3])?)/);
+                let coeff = match[1];
+                let vars = match[2];
+
+                if (coeff === '+' || coeff === '') coeff = '1';
+                if (coeff === '-') coeff = '-1';
+                coeff = parseFloat(coeff);
+
+                if (vars) {
+                    const varParts = vars.match(/([a-z])(\^(\d))?/g);
+                    if (varParts) {
+                        vars = varParts.map(vp => {
+                            const base = vp.charAt(0);
+                            const expMatch = vp.match(/\^(\d)/);
+                            const exponent = expMatch ? parseInt(expMatch[1]) : 1;
+                            return { base, exponent };
+                        }).sort((a, b) => a.base.localeCompare(b.base)).map(obj => obj.base + (obj.exponent > 1 ? `^${obj.exponent}` : '')).join('');
+                    }
+                } else {
+                    vars = '';
+                }
+                parsedTerms.push({ coeff, vars });
+            });
+
+            const groupedTerms = {};
+            parsedTerms.forEach(term => {
+                const key = term.vars;
+                if (!groupedTerms[key]) {
+                    groupedTerms[key] = 0;
+                }
+                groupedTerms[key] += term.coeff;
+            });
+
+            let result = [];
+            const sortedKeys = Object.keys(groupedTerms).sort((a, b) => {
+                if (a === '' && b !== '') return 1;
+                if (b === '' && a !== '') return -1;
+                return a.localeCompare(b);
+            });
+
+            sortedKeys.forEach(key => {
+                const coeff = groupedTerms[key];
+                if (Math.abs(coeff) < 0.000001) return;
+
+                let termStr = '';
+                if (key === '') {
+                    termStr = coeff.toString();
+                } else {
+                    if (coeff === 1) {
+                        termStr = key;
+                    } else if (coeff === -1) {
+                        termStr = '-' + key;
+                    } else {
+                        const formattedCoeff = (Math.round(coeff * 100) / 100).toString();
+                        termStr = formattedCoeff + key;
+                    }
+                }
+                result.push(termStr);
+            });
+
+            let finalResult = result.join('');
+            finalResult = finalResult.replace(/\+-/g, '-').replace(/\-\-/g, '+');
+            
+            if (finalResult.length > 0 && finalResult[0] === '+') {
+                 finalResult = finalResult.substring(1);
+            }
+            finalResult = finalResult.replace(/(\d|[a-z]\^\d|[a-z])([+-])/g, '$1$2');
+
+            if (!finalResult) return "0";
+
+            return finalResult;
+        }
+
+        function loadAdditionSubtractionProblem(index) {
+            currentAddSubProblem = addSubProblems[index];
+            document.getElementById('additionSubtractionProblem').textContent = currentAddSubProblem.problem;
+            _resetCurrentAdditionSubtractionProblemUI();
+        }
+
+        function _resetCurrentAdditionSubtractionProblemUI() {
+            document.getElementById('additionSubtractionAnswer').value = '';
+            document.getElementById('feedback4').classList.add('hidden');
+        }
+
+        function checkAdditionSubtraction() {
+            const userAnswer = document.getElementById('additionSubtractionAnswer').value.trim();
+            const feedbackDiv = document.getElementById('feedback4');
+            feedbackDiv.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+
+            if (userAnswer === '') {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = 'உங்கள் விடையை உள்ளிடவும்.'; // Added message for empty input
+                return;
+            }
+
+            const normalizedUserAnswer = normalizeExpression(userAnswer);
+            const normalizedCorrectAnswer = normalizeExpression(currentAddSubProblem.answer);
+
+            if (normalizedUserAnswer === normalizedCorrectAnswer) {
+                feedbackDiv.classList.add('feedback-correct');
+                feedbackDiv.innerHTML = `சரியான பதில்! மிக நன்று! <br>விளக்கம்: ${currentAddSubProblem.explanation}`;
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.innerHTML = `தவறான பதில். மீண்டும் முயற்சிக்கவும்.`; // Removed correct answer from here
+            }
+        }
+
+        // --- Section 5: இரு மாறிகளைக் கொண்ட எளிய கோவைகளை அமைத்தல் (Forming Simple Expressions with Two Variables) ---
+        const expressionFormationProblems = [
+            {
+                scenario: "அரிசியின் விலை 'x' எனவும், கோதுமையின் விலை 'y' எனவும் கொண்டால், 5 கிலோ அரிசி மற்றும் 3 கிலோ கோதுமையின் மொத்த விலை என்ன?",
+                answer: "5x+3y"
+            },
+            {
+                scenario: "ஒரு பென்சிலின் விலை 'p' எனவும், ஒரு ரப்பரின் விலை 'r' எனவும் கொண்டால், 10 பென்சில்கள் மற்றும் 7 ரப்பர்களின் மொத்த விலை என்ன?",
+                answer: "10p+7r"
+            },
+            {
+                scenario: "ஒரு புத்தகத்தின் விலை 'b' எனவும், ஒரு நோட்டுப் புத்தகத்தின் விலை 'n' எனவும் கொண்டால், 4 புத்தகங்கள் மற்றும் 6 நோட்டுப் புத்தகங்களின் மொத்த விலை என்ன?",
+                answer: "4b+6n"
+            },
+            {
+                scenario: "ஒரு கால்பந்தாட்டத்தில், கோல் அடித்ததற்கு 'g' புள்ளிகளும், அசிஸ்டுக்கு 'a' புள்ளிகளும் வழங்கப்பட்டால், 2 கோல்கள் மற்றும் 3 அசிஸ்டுகளின் மொத்தப் புள்ளிகள் என்ன?",
+                answer: "2g+3a"
+            },
+            {
+                scenario: "ஒரு பையின் விலை 'x' எனவும், ஒரு பேனாவின் விலை 'y' எனவும் கொண்டால், 3 பைகள் மற்றும் 2 பேனாக்களின் மொத்த விலை என்ன?",
+                answer: "3x+2y"
+            },
+            {
+                scenario: "சந்தியாவிடம் 'm' ஆப்பிள்கள் இருந்தன, அவள் 'n' ஆப்பிள்களை தனது நண்பர்களுக்குக் கொடுத்தாள். அவளிடம் மீதமுள்ள ஆப்பிள்கள் எத்தனை?",
+                answer: "m-n"
+            },
+            {
+                scenario: "ஒரு கார் ஒரு மணி நேரத்திற்கு 'k' கி.மீ வேகத்தில் சென்றால், 't' மணி நேரத்தில் அது எவ்வளவு தூரம் பயணிக்கும்?",
+                answer: "kt"
+            },
+            {
+                scenario: "ஒரு வகுப்பில் 'b' சிறுவர்களும், 'g' சிறுமிகளும் இருந்தால், வகுப்பில் மொத்த மாணவர்கள் எத்தனை பேர்?",
+                answer: "b+g"
+            },
+            {
+                scenario: "ஒரு கடைக்காரர் 'c' சாக்லேட்டுகளையும், 'l' லாலிபாப்களையும் விற்பனை செய்தால், மொத்த மிட்டாய்களின் எண்ணிக்கை என்ன?",
+                answer: "c+l"
+            },
+            {
+                scenario: "ஒரு விவசாயி ஒரு ஏக்கருக்கு 'w' கிலோ கோதுமை அறுவடை செய்தால், 'a' ஏக்கரில் எவ்வளவு கோதுமை அறுவடை செய்வார்?",
+                answer: "wa"
+            },
+            {
+                scenario: "ஒரு பந்தின் விலை 'd' மற்றும் ஒரு பேட்டின் விலை 'e' எனில், 2 பந்துகள் மற்றும் 1 பேட்டின் மொத்த விலை என்ன?",
+                answer: "2d+e"
+            }
+        ];
+
+        let currentExpressionFormationProblem = {};
+
+        function loadExpressionFormationProblem(index) {
+            currentExpressionFormationProblem = expressionFormationProblems[index];
+            document.getElementById('scenarioText').textContent = currentExpressionFormationProblem.scenario;
+            _resetCurrentExpressionFormationProblemUI();
+        }
+
+        function _resetCurrentExpressionFormationProblemUI() {
+            document.getElementById('expressionFormationAnswer').value = '';
+            document.getElementById('feedback5').classList.add('hidden');
+        }
+
+        function checkExpressionFormation() {
+            const userAnswer = document.getElementById('expressionFormationAnswer').value.trim();
+            const feedbackDiv = document.getElementById('feedback5');
+            feedbackDiv.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+
+            if (userAnswer === '') {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = 'உங்கள் கோவையை உள்ளிடவும்.'; // Added message for empty input
+                return;
+            }
+
+            const normalizedUserAnswer = normalizeExpression(userAnswer);
+            const normalizedCorrectAnswer = normalizeExpression(currentExpressionFormationProblem.answer);
+
+            if (normalizedUserAnswer === normalizedCorrectAnswer) {
+                feedbackDiv.classList.add('feedback-correct');
+                feedbackDiv.textContent = 'சரியான கோவை! மிக நன்று!';
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = `தவறான கோவை. மீண்டும் முயற்சிக்கவும். கொடுக்கப்பட்ட சூழ்நிலையை சரியாகப் புரிந்துகொள்ளவும்.`; // Removed correct answer from here
+            }
+        }
+
+        // --- Section 6: எளிய நேரிய சமன்பாடுகளைத் தீர்த்தல் (Solving Simple Linear Equations) ---
+        let currentEquationState = {
+            variable: '',
+            solution: 0,
+            lhsTerms: [],
+            rhsTerms: []
+        };
+
+        const equationProblems = [
+            { equation: "x + 5 = 12", variable: 'x', solution: 7 },
+            { equation: "y - 3 = 7", variable: 'y', solution: 10 },
+            { equation: "2a = 30", variable: 'a', solution: 15 },
+            { equation: "m / 6 = 5", variable: 'm', solution: 30 },
+            { equation: "3x + 10 = 25", variable: 'x', solution: 5 },
+            { equation: "4y - 8 = 12", variable: 'y', solution: 5 },
+            { equation: "15 = 2z + 1", variable: 'z', solution: 7 },
+            { equation: "x / 2 + 3 = 7", variable: 'x', solution: 8 },
+            { equation: "5p + 2 = 17", variable: 'p', solution: 3 },
+            { equation: "7q - 4 = 10", variable: 'q', solution: 2 },
+            { equation: "8 = 2k + 2", variable: 'k', solution: 3 },
+            { equation: "n / 3 - 1 = 4", variable: 'n', solution: 15 },
+            { equation: "1/2 r + 5 = 6", variable: 'r', solution: 2 }
+        ];
+
+        // New helper function to parse a single term (e.g., "5x", "-3", "y/2", "0.75abc")
+        function parseSingleTerm(termStr) {
+            termStr = termStr.trim();
+            if (!termStr) return null;
+
+            let coeff = 1;
+            let varPart = '';
+            let isNegative = false;
+
+            if (termStr.startsWith('-')) {
+                isNegative = true;
+                termStr = termStr.substring(1).trim();
+            } else if (termStr.startsWith('+')) {
+                termStr = termStr.substring(1).trim();
+            }
+
+            // Try to match patterns like "1/2x", "x/2", "5x", "0.5", "x"
+            const fracNumVarMatch = termStr.match(/^(\d+)\/(\d+)\s*([a-zA-Z]+(?:\^\d)?)?$/); // e.g., "1/2x"
+            const varFracNumMatch = termStr.match(/^([a-zA-Z]+(?:\^\d)?)\/(\d+)$/); // e.g., "x/2"
+            const numVarMatch = termStr.match(/^((?:\d+(?:\.\d+)?|\d*\.\d+)?)\s*([a-zA-Z]+(?:\^\d)?)?$/); // e.g., "5x", "0.5", "x"
+
+            if (fracNumVarMatch) {
+                coeff = parseFloat(fracNumVarMatch[1]) / parseFloat(fracNumVarMatch[2]);
+                varPart = fracNumVarMatch[3] || '';
+            } else if (varFracNumMatch) {
+                coeff = 1 / parseFloat(varFracNumMatch[2]);
+                varPart = varFracNumMatch[1];
+            } else if (numVarMatch) {
+                let numStr = numVarMatch[1];
+                varPart = numVarMatch[2] || '';
+
+                if (numStr) {
+                    coeff = parseFloat(numStr);
+                } else if (varPart) { // Implicit 1 if only variable present
+                    coeff = 1;
+                } else { // Should not happen if parsing is good and string is not empty
+                    coeff = 0;
+                }
+            } else {
+                // Fallback for cases like just "x", "y" where regex might not capture it if strict
+                if (!isNaN(parseFloat(termStr))) {
+                    coeff = parseFloat(termStr);
+                    varPart = '';
+                } else { // Pure variable like "x" or "abc"
+                    coeff = 1;
+                    varPart = termStr;
+                }
+            }
+
+            if (isNegative) coeff *= -1;
+
+            // Normalize varPart (e.g., "yx" to "xy") - basic alphabetical sort for single letter vars
+            if (varPart) {
+                const varComponents = varPart.match(/([a-z])(?:\^(\d))?/g);
+                if (varComponents) {
+                    varPart = varComponents.map(vc => {
+                        const base = vc.charAt(0);
+                        const expMatch = vc.match(/\^(\d)/);
+                        const exponent = expMatch ? parseInt(expMatch[1]) : 1;
+                        return { base, exponent };
+                    }).sort((a, b) => a.base.localeCompare(b.base))
+                      .map(obj => obj.base + (obj.exponent > 1 ? `^${obj.exponent}` : ''))
+                      .join('');
+                }
+            }
+
+            return { coeff: coeff, var: varPart };
+        }
+
+        function parseEquationToTerms(eqString, variable) {
+            const parts = eqString.split('=').map(s => s.trim());
+            const lhsString = parts[0];
+            const rhsString = parts[1];
+
+            const splitAndParseSide = (sideStr) => {
+                // This regex splits terms based on operators (+ or -) that are not part of a number (like in "0.5")
+                // and attempts to capture the full term including its sign.
+                const termsArray = sideStr.match(/([+-]?\s*(?:\d+(?:\/\d*)?|\d*\.\d+)?(?:[a-zA-Z]+(?:\^\d)?)?)/g)
+                                  .filter(t => t && t.trim() !== '');
+                
+                // If the first term doesn't have a sign, assume '+'
+                if (termsArray.length > 0 && !termsArray[0].startsWith('+') && !termsArray[0].startsWith('-')) {
+                    termsArray[0] = '+' + termsArray[0];
+                }
+
+                return termsArray.map(term => parseSingleTerm(term)).filter(Boolean);
+            };
+
+            const lhsTerms = splitAndParseSide(lhsString);
+            const rhsTerms = splitAndParseSide(rhsString);
+
+            return { lhsTerms, rhsTerms };
+        }
+
+
+        function formatTermsToString(termsArray) {
+            if (termsArray.length === 0) return '0';
+            let str = '';
+            termsArray.forEach((term, index) => {
+                let termStr = '';
+                // Round coefficients for display
+                let displayCoeff = parseFloat(term.coeff.toFixed(6)); // More precision before checking for 0
+
+                if (Math.abs(displayCoeff) < 0.000001) return; // Skip terms that round to 0
+
+                if (term.var === '') { // Constant term
+                    termStr = displayCoeff.toString();
+                } else { // Variable term
+                    if (displayCoeff === 1) {
+                        termStr = `${term.var}`;
+                    } else if (displayCoeff === -1) {
+                        termStr = `-${term.var}`;
+                    } else {
+                        // Corrected: Use displayCoeff and term.var
+                        const formattedCoeff = (Math.round(displayCoeff * 100) / 100).toString();
+                        termStr = formattedCoeff + term.var; // FIX: Changed 'key' to 'term.var'
+                    }
+                }
+
+                // Add '+' sign only if it's not the first term and the coefficient is positive
+                if (displayCoeff >= 0 && index !== 0 && str !== '') { // Added str !== '' to prevent leading + if first term is 0 then next is positive
+                    str += ` + ${termStr}`;
+                } else if (displayCoeff < 0 && index !== 0 && str !== '') {
+                    str += ` ${termStr}`; // Negative sign is part of termStr
+                } else if (index === 0) { // First term
+                    str += `${termStr}`;
+                } else {
+                     // This condition handles cases where initial terms were 0 and first non-zero is positive
+                     str += ` + ${termStr}`;
+                }
+            });
+            // Clean up leading " + " if it somehow appears (e.g. from removing a -ve first term)
+            if (str.startsWith(' + ')) {
+                str = str.substring(3);
+            } else if (str.startsWith('+')) { // Also remove if it's just "+" at the start
+                str = str.substring(1);
+            }
+
+            return str.trim() || '0'; // Return '0' if the entire expression simplifies to zero
+        }
+
+
+        function renderEquationState() {
+            const { lhsTerms, rhsTerms } = currentEquationState;
+
+            document.getElementById('equationDisplay').textContent = 
+                `${formatTermsToString(lhsTerms)} = ${formatTermsToString(rhsTerms)}`;
+            
+            const lhsPan = document.getElementById('lhsPan');
+            const rhsPan = document.getElementById('rhsPan');
+            
+            lhsPan.textContent = formatTermsToString(lhsTerms);
+            rhsPan.textContent = formatTermsToString(rhsTerms);
+
+            const currentVarValue = currentEquationState.solution;
+            
+            const calculateTotal = (terms) => {
+                let total = 0;
+                terms.forEach(term => {
+                    if (term.var === '') {
+                        total += term.coeff;
+                    } else if (term.var === currentEquationState.variable) { // Only substitute for the problem's variable
+                        total += term.coeff * currentVarValue;
+                    }
+                    // For other variables, they are treated as part of the coefficient or ignored in this context
+                });
+                return total;
+            };
+
+            const lhsTotal = calculateTotal(lhsTerms);
+            const rhsTotal = calculateTotal(rhsTerms);
+
+            updateBalanceScale(lhsTotal, rhsTotal);
+        }
+
+        function loadEquationProblem(index) {
+            const problem = equationProblems[index];
+            currentEquationState.variable = problem.variable;
+            currentEquationState.solution = problem.solution;
+
+            const { lhsTerms, rhsTerms } = parseEquationToTerms(problem.equation, problem.variable);
+            currentEquationState.lhsTerms = lhsTerms;
+            currentEquationState.rhsTerms = rhsTerms;
+            
+            _resetCurrentEquationProblemUI();
+        }
+        
+        function _resetCurrentEquationProblemUI() {
+            renderEquationState(); // Render the initial state for the problem
+            document.getElementById('feedback6').classList.add('hidden');
+            document.getElementById('operationValue').value = '';
+        }
+        
+        function updateBalanceScale(lhsTotalValue, rhsTotalValue) {
+            const leftPan = document.querySelector('.balance-pan.left');
+            const rightPan = document.querySelector('.balance-pan.right');
+
+            let tiltDegree = 0;
+            const diff = lhsTotalValue - rhsTotalValue;
+            const maxTilt = 10; // Max tilt in degrees
+
+            // Scale the difference to a tilt degree. A larger difference means more tilt.
+            // Using a non-linear scaling might look more natural, but linear is simpler for now.
+            if (diff > 0.01) { // Left side is heavier
+                tiltDegree = -Math.min(maxTilt, Math.log(diff * 10 + 1) * 5); // Logarithmic scaling for subtle tilts
+            } else if (diff < -0.01) { // Right side is heavier
+                tiltDegree = Math.min(maxTilt, Math.log(Math.abs(diff) * 10 + 1) * 5);
+            } else { // Balanced
+                tiltDegree = 0;
+            }
+            
+            // Apply a slight damping to make movement smoother visually
+            const currentLeftTilt = parseFloat(leftPan.style.getPropertyValue('--balance-left-tilt')) || 0;
+            const currentRightTilt = parseFloat(rightPan.style.getPropertyValue('--balance-right-tilt')) || 0;
+            
+            const smoothedLeftTilt = currentLeftTilt + (tiltDegree - currentLeftTilt) * 0.3; // 0.3 is a smoothing factor
+            const smoothedRightTilt = currentRightTilt + (-tiltDegree - currentRightTilt) * 0.3;
+
+            leftPan.style.setProperty('--balance-left-tilt', `${smoothedLeftTilt}deg`);
+            rightPan.style.setProperty('--balance-right-tilt', `${smoothedRightTilt}deg`);
+        }
+
+        async function applyEquationOperation(opType) {
+            const valueInput = document.getElementById('operationValue').value;
+            let value;
+
+            if (valueInput.includes('/')) {
+                const fracParts = valueInput.split('/');
+                if (fracParts.length === 2 && !isNaN(parseFloat(fracParts[0])) && !isNaN(parseFloat(fracParts[1])) && parseFloat(fracParts[1]) !== 0) {
+                    value = parseFloat(fracParts[0]) / parseFloat(fracParts[1]);
+                } else {
+                    showModal('தவறு', 'செயல்பாட்டிற்கு சரியான பின்னத்தை (எ.கா: 1/2) அல்லது எண்ணை உள்ளிடவும்.');
+                    return;
+                }
+            } else {
+                value = parseFloat(valueInput);
+            }
+
+            if (isNaN(value)) {
+                showModal('தவறு', 'செயல்பாட்டிற்கு சரியான எண்ணை உள்ளிடவும்.');
+                return;
+            }
+
+            if (opType === 'divide' && value === 0) {
+                showModal('தவறு', 'பூஜ்ஜியத்தால் வகுக்க முடியாது.');
+                return;
+            }
+
+            let newLhsTerms = JSON.parse(JSON.stringify(currentEquationState.lhsTerms));
+            let newRhsTerms = JSON.parse(JSON.stringify(currentEquationState.rhsTerms));
+            const variable = currentEquationState.variable;
+
+            const applyOperationToSide = (termsArray, opValue) => {
+                let updatedTerms = [];
+                if (opType === 'add') {
+                    updatedTerms = termsArray.map(term => ({ ...term })); // shallow copy
+                    updatedTerms.push({ coeff: opValue, var: '' });
+                } else if (opType === 'subtract') {
+                    updatedTerms = termsArray.map(term => ({ ...term })); // shallow copy
+                    updatedTerms.push({ coeff: -opValue, var: '' }); 
+                } else if (opType === 'multiply') {
+                    updatedTerms = termsArray.map(term => ({ coeff: term.coeff * opValue, var: term.var }));
+                } else if (opType === 'divide') {
+                    updatedTerms = termsArray.map(term => ({ coeff: term.coeff / opValue, var: term.var }));
+                }
+                return consolidateTerms(updatedTerms);
+            };
+            
+            if (opType === 'multiply' || opType === 'divide') {
+                const actionText = opType === 'multiply' ? 'பெருக்க' : 'வகுக்க';
+                const confirm = await showModal('உறுதிப்படுத்தவும்', `சமன்பாட்டின் இருபுறமும் ${valueInput} ஆல் ${actionText} விரும்புகிறீர்களா?`, 'confirm');
+                if (!confirm) return;
+            }
+
+            currentEquationState.lhsTerms = applyOperationToSide(newLhsTerms, value);
+            currentEquationState.rhsTerms = applyOperationToSide(newRhsTerms, value);
+            renderEquationState();
+            showModal('செயல்பாடு வெற்றிகரமாக முடிந்தது', `உங்கள் செயல்பாடு வெற்றிகரமாகச் செயல்படுத்தப்பட்டது.`);
+        }
+
+
+        function consolidateTerms(terms) {
+            const consolidated = {};
+            terms.forEach(term => {
+                const key = term.var === '' ? 'constant' : term.var;
+                if (!consolidated[key]) {
+                    consolidated[key] = 0;
+                }
+                consolidated[key] += term.coeff;
+            });
+
+            let result = [];
+            for (const key in consolidated) {
+                if (Math.abs(consolidated[key]) > 0.000001) { // Check for near-zero values
+                    result.push({
+                        coeff: consolidated[key],
+                        var: key === 'constant' ? '' : key
+                    });
+                }
+            }
+            if (result.length === 0) {
+                result.push({ coeff: 0, var: '' });
+            }
+            // Sort to ensure consistent order for comparison (constants last, then alphabetical for vars)
+            return result.sort((a,b) => {
+                if (a.var === '' && b.var !== '') return 1; // Constants go to end
+                if (a.var !== '' && b.var === '') return -1; // Variables go to front
+                return a.var.localeCompare(b.var); // Alphabetical for variables
+            });
+        }
+
+
+        function checkEquationSolution() {
+            const feedbackDiv = document.getElementById('feedback6');
+            feedbackDiv.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+            
+            // Check if the operationValue input is empty when checking the solution
+            const operationValueInput = document.getElementById('operationValue').value.trim();
+            if (operationValueInput === '' && (currentEquationState.lhsTerms.length > 1 || currentEquationState.rhsTerms.length > 1 || 
+                                              (currentEquationState.lhsTerms.length === 1 && currentEquationState.rhsTerms.length === 1 &&
+                                              currentEquationState.lhsTerms[0].var !== '' && currentEquationState.rhsTerms[0].var !== ''))) {
+                 feedbackDiv.classList.add('feedback-incorrect');
+                 feedbackDiv.textContent = 'மதிப்பை உள்ளிட்டு ஒரு செயல்பாட்டைப் பயன்படுத்தவும்.'; // Message for empty operation input
+                 return;
+            }
+
+
+            const { lhsTerms, rhsTerms, variable, solution } = currentEquationState;
+
+            let finalLhsVarCoeff = 0;
+            let finalLhsConstTerm = 0;
+            let finalRhsVarCoeff = 0;
+            let finalRhsConstTerm = 0;
+
+            lhsTerms.forEach(term => {
+                if (term.var === variable) {
+                    finalLhsVarCoeff += term.coeff;
+                } else if (term.var === '') {
+                    finalLhsConstTerm += term.coeff;
+                }
+            });
+
+            rhsTerms.forEach(term => {
+                if (term.var === variable) {
+                    finalRhsVarCoeff += term.coeff;
+                } else if (term.var === '') {
+                    finalRhsConstTerm += term.coeff;
+                }
+            }
+            );
+
+            // Rounding to avoid floating point comparison issues
+            finalLhsVarCoeff = parseFloat(finalLhsVarCoeff.toFixed(6));
+            finalLhsConstTerm = parseFloat(finalLhsConstTerm.toFixed(6));
+            finalRhsVarCoeff = parseFloat(finalRhsVarCoeff.toFixed(6));
+            finalRhsConstTerm = parseFloat(finalRhsConstTerm.toFixed(6));
+
+            let isSolved = false;
+            let derivedSolution = NaN;
+
+            // Scenario 1: Variable isolated on LHS, constant on RHS (e.g., x = 7)
+            if (finalLhsVarCoeff === 1 && finalLhsConstTerm === 0 && finalRhsVarCoeff === 0) {
+                derivedSolution = finalRhsConstTerm;
+                isSolved = true;
+            }
+            // Scenario 2: Variable isolated on RHS, constant on LHS (e.g., 7 = x)
+            else if (finalRhsVarCoeff === 1 && finalRhsConstTerm === 0 && finalLhsVarCoeff === 0) {
+                derivedSolution = finalLhsConstTerm;
+                isSolved = true;
+            }
+            // Scenario 3: Variable with coefficient on LHS, constant on RHS (e.g., 2x = 10)
+            else if (finalLhsVarCoeff !== 0 && finalLhsConstTerm === 0 && finalRhsVarCoeff === 0) {
+                derivedSolution = finalRhsConstTerm / finalLhsVarCoeff;
+                isSolved = true;
+            }
+            // Scenario 4: Variable with coefficient on RHS, constant on LHS (e.g., 10 = 2x)
+            else if (finalRhsVarCoeff !== 0 && finalRhsConstTerm === 0 && finalLhsVarCoeff === 0) {
+                derivedSolution = finalLhsConstTerm / finalRhsVarCoeff;
+                isSolved = true;
+            }
+            // Scenario 5: Identity (e.g., 5 = 5 or 2x = 2x)
+            else if (finalLhsVarCoeff === finalRhsVarCoeff && finalLhsConstTerm === finalRhsConstTerm) {
+                feedbackDiv.classList.add('feedback-correct');
+                feedbackDiv.textContent = `அருமை! இந்த சமன்பாடு ஒரு சர்வ சமன்பாடு (identity) மற்றும் இது அனைத்து மதிப்புகளுக்கும் உண்மை.`;
+                return;
+            }
+            // Scenario 6: Contradiction (e.g., 5 = 7)
+            else if (finalLhsVarCoeff === finalRhsVarCoeff && finalLhsConstTerm !== finalRhsConstTerm) {
+                feedbackDiv.classList.add('feedback-incorrect');
+                feedbackDiv.textContent = `இந்த சமன்பாட்டிற்கு தீர்வு இல்லை. இது ஒரு முரண்பாடு.`;
+                return;
+            }
+
+
+            if (isSolved && Math.abs(derivedSolution - solution) < 0.001) { // Compare with higher precision
+                feedbackDiv.classList.add('feedback-correct');
+                feedbackDiv.textContent = `அருமை! நீங்கள் ${variable} = ${solution.toFixed(2).replace(/\.00$/, '')} என்ற சரியான விடையைக் கண்டறிந்துவிட்டீர்கள்.`;
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect');
+                if (isSolved) {
+                    feedbackDiv.textContent = `மிகவும் நெருக்கமாக இருந்தீர்கள்! உங்கள் விடை தவறானது. மீண்டும் முயற்சிக்கவும்.`; // Removed correct answer from here
+                } else {
+                    feedbackDiv.textContent = `நீங்கள் இன்னும் மாறியைத் தனிமைப்படுத்தவில்லை அல்லது உங்கள் படிகளில் தவறு உள்ளது. மீண்டும் முயற்சிக்கவும்.`;
+                }
+            }
+        }
+
+
+        // Initialize tabProblemStates AFTER all problem arrays and load/reset functions are defined
+        document.addEventListener('DOMContentLoaded', () => {
+            Object.assign(tabProblemStates, {
+                tab1: { problems: expressionsData1, currentIndex: 0, loadFunc: loadVariableConstantProblem, resetFunc: _resetCurrentVariablesConstantsUI },
+                tab2: { problems: coefficientProblems, currentIndex: 0, loadFunc: loadCoefficientProblem, resetFunc: _resetCurrentCoefficientProblemUI }, 
+                tab3: { problems: likeUnlikeProblems, currentIndex: 0, loadFunc: loadLikeUnlikeProblem, resetFunc: _resetCurrentLikeUnlikeTermsUI },
+                tab4: { problems: addSubProblems, currentIndex: 0, loadFunc: loadAdditionSubtractionProblem, resetFunc: _resetCurrentAdditionSubtractionProblemUI },
+                tab5: { problems: expressionFormationProblems, currentIndex: 0, loadFunc: loadExpressionFormationProblem, resetFunc: _resetCurrentExpressionFormationProblemUI },
+                tab6: { problems: equationProblems, currentIndex: 0, loadFunc: loadEquationProblem, resetFunc: _resetCurrentEquationProblemUI }
+            });
+
+            // Show first tab by default and initialize its content
+            document.getElementById('tab1').style.display = 'block';
+            tabProblemStates.tab1.loadFunc(tabProblemStates.tab1.currentIndex);
+        });
+    </script>
+</body>
+</html>
