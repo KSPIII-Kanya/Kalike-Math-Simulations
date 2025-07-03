@@ -1,191 +1,170 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>கன்ய சம்பூர்ணா திட்டம்</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f4f7fc;
-      color: #333;
-      margin: 0;
-      line-height: 1.6;
-    }
-
-    .page-header {
-      background: linear-gradient(135deg, #005f73, #0a9396);
-      color: #ffffff;
-      padding: 40px 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .page-header h1 {
-      margin: 0;
-      font-size: 2.5em;
-      font-weight: 700;
-    }
-
-    .page-header .subheading {
-      margin: 10px 0 0;
-      font-size: 1.2em;
-      font-weight: 400;
-      opacity: 0.9;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    .class-section {
-      margin-bottom: 50px;
-    }
-
-    .class-section h2 {
-      font-size: 1.8em;
-      color: #003e4e;
-      border-bottom: 3px solid #94d2bd;
-      padding-bottom: 10px;
-      margin-bottom: 30px;
-    }
-
-    .simulations-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
-    }
-
-    .card {
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-      padding: 25px;
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border: 1px solid #e0e0e0;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .card h3 {
-      margin: 0 0 8px 0;
-      color: #005f73;
-      font-size: 1.25em;
-    }
-
-    .card p {
-      margin: 0;
-      font-size: 1em;
-      color: #555;
-    }
-
-    @media (max-width: 768px) {
-      .page-header h1 {
-        font-size: 2em;
-      }
-      .page-header .subheading {
-        font-size: 1em;
-      }
-      .class-section h2 {
-        font-size: 1.5em;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .page-header {
-        padding: 30px 15px;
-      }
-      .simulations-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>கன்ய சம்பூர்ணா திட்டம்</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Tamil:ital@0;1&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8; /* A light blue-grey background */
+        }
+        .font-tiro-tamil {
+            font-family: 'Tiro Tamil', serif;
+        }
+        .header-dark-blue {
+            background: linear-gradient(135deg, #0d47a1, #1976d2); /* Professional dark blue gradient */
+        }
+        .card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid #e2e8f0;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .card-icon-wrapper {
+            transition: transform 0.3s ease-in-out, background-color 0.3s;
+        }
+        .card:hover .card-icon-wrapper {
+            transform: scale(1.05);
+            background-color: #bbdefb; /* A slightly darker blue on hover */
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50">
 
-  <header class="page-header">
-    <h1>கன்ய சம்பூர்ணா திட்டம் / கன்யா பெண்கள் கல்வி திட்டம்</h1>
-    <p class="subheading">இத்திட்டம் TITAN மற்றும் KALIKE நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது</p>
-  </header>
+    <!-- Header Section -->
+    <header class="header-dark-blue text-white shadow-lg">
+        <div class="container mx-auto px-6 py-10 text-center">
+            <!-- Header icon has been removed as requested -->
+            <h1 class="text-4xl md:text-5xl font-bold font-tiro-tamil mb-3">கன்ய சம்பூர்ணா திட்டம்/கன்யா பெண்கள் கல்வி திட்டம்</h1>
+            <p class="mt-2 max-w-2xl mx-auto text-base opacity-90">இத்திட்டம் TITAN மற்றும் KALIKE நிறுவனங்களின் பங்களிப்புடன் செயல்படுத்தப்படுகிறது</p>
+        </div>
+    </header>
 
-  <main class="container">
-    <section class="class-section">
-      <h2>வகுப்பு 6 - பருவம் 1 (Class 6 – Term 1)</h2>
-      <div class="simulations-grid">
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Algebra%20_%20Perimeter,%20Area%20of%20Rectangle,%20Square.html" class="card" target="_blank">
-          <h3>இயற்கணிதம்</h3>
-          <p>செவ்வகம், சதுரத்தின் சுற்றளவு, பரப்பளவு</p>
-        </a>
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Algebra%20_%20Types%20of%20Numbers.html" class="card" target="_blank">
-          <h3>இயற்கணிதம்</h3>
-          <p>எண்களின் வகைகள்</p>
-        </a>
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Numbers%20_%20Addition%20Rules.html" class="card" target="_blank">
-          <h3>எண்கள்</h3>
-          <p>கூட்டல் விதிகள்</p>
-        </a>
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Numbers%20_%20Division%20Rules.html" class="card" target="_blank">
-          <h3>எண்கள்</h3>
-          <p>வகுத்தல் விதிகள்</p>
-        </a>
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Numbers%20_%20Multiplication%20Rules.html" class="card" target="_blank">
-          <h3>எண்கள்</h3>
-          <p>பெருக்கல் விதிகள்</p>
-        </a>
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Numbers%20_%20Subtraction%20Rules.html" class="card" target="_blank">
-          <h3>எண்கள்</h3>
-          <p>கழித்தல் விதிகள்</p>
-        </a>
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Ratio%20and%20Proportion.html" class="card" target="_blank">
-          <h3>விகிதம் மற்றும் விகிதாச்சாரம்</h3>
-          <p>Ratio and Proportion</p>
-        </a>
-        <a href="Class%206/Term%201/Class%206%20_%20Term%201%20_%20Statistics%20(Finding%20Average).html" class="card" target="_blank">
-          <h3>புள்ளியியல்</h3>
-          <p>சராசரி கண்டறிதல்</p>
-        </a>
-      </div>
-    </section>
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-16">
 
-    <section class="class-section">
-      <h2>வகுப்பு 7 - பருவம் 1 (Class 7 – Term 1)</h2>
-      <div class="simulations-grid">
-        <a href="Class%207/Term%201/Class%207_Term1_Integers_Arithmetic_Calculations_through_number_line.html" class="card" target="_blank">
-          <h3>முழுக்கள்</h3>
-          <p>எண் கோடு மூலம் எண்கணித கணக்கீடுகள்</p>
-        </a>
-        <a href="Class%207/Term%201/Class%207%20_%20Term%201%20_%20Geometry.html" class="card" target="_blank">
-          <h3>வடிவியல்</h3>
-          <p>Geometry</p>
-        </a>
-        <a href="Class%207/Term%201/Class%207%20_%20Term%201%20_%20Parallelogram,%20Rhombus,%20Trapezoid.html" class="card" target="_blank">
-          <h3>வடிவியல்</h3>
-          <p>இணைகரம், சாய்சதுரம், சரிவகம்</p>
-        </a>
-        <a href="Class%207/Term%201/Class%207%20_%20Term%201%20_%20Ratio%20and%20Proportion.html" class="card" target="_blank">
-          <h3>விகிதம் மற்றும் விகிதாச்சாரம்</h3>
-          <p>Ratio and Proportion</p>
-        </a>
-        <a href="Class%207/Term%201/Class%207_Term1_Algebra.html" class="card" target="_blank">
-          <h3>இயற்கணிதம்</h3>
-          <p>Algebra</p>
-        </a>
-      </div>
-    </section>
-  </main>
+        <!-- Class 6 Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-slate-800 mb-10 pb-3 border-b-4 border-blue-700">
+                வகுப்பு 6 - பருவம் 1 <span class="text-xl font-normal text-slate-500">(Class 6 – Term 1)</span>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <!-- Card Start -->
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="ruler" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">இயற்கணிதம்</h3>
+                    <p class="text-slate-600 text-sm mt-1">செவ்வகம், சதுரத்தின் சுற்றளவு, பரப்பளவு</p>
+                </a>
+                <!-- Card End -->
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="variable" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">இயற்கணிதம்</h3>
+                    <p class="text-slate-600 text-sm mt-1">எண்களின் வகைகள்</p>
+                </a>
+                 <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="plus" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">எண்கள்</h3>
+                    <p class="text-slate-600 text-sm mt-1">கூட்டல் விதிகள்</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="divide" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">எண்கள்</h3>
+                    <p class="text-slate-600 text-sm mt-1">வகுத்தல் விதிகள்</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="x" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">எண்கள்</h3>
+                    <p class="text-slate-600 text-sm mt-1">பெருக்கல் விதிகள்</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="minus" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">எண்கள்</h3>
+                    <p class="text-slate-600 text-sm mt-1">கழித்தல் விதிகள்</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="ratio" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">விகிதம் மற்றும் விகிதாச்சாரம்</h3>
+                    <p class="text-slate-600 text-sm mt-1">Ratio & Proportion</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="bar-chart-3" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">புள்ளியியல்</h3>
+                    <p class="text-slate-600 text-sm mt-1">சராசரி கண்டறிதல்</p>
+                </a>
+            </div>
+        </section>
 
+        <!-- Class 7 Section -->
+        <section>
+            <h2 class="text-3xl font-bold text-slate-800 mb-10 pb-3 border-b-4 border-blue-700">
+                வகுப்பு 7 - பருவம் 1 <span class="text-xl font-normal text-slate-500">(Class 7 – Term 1)</span>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                 <a href="Class%207/Term%201/Class%207%20Term%201%20Integers%20Arithmetic%20Calculations%20through%20number%20line.html" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="move-horizontal" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">முழுக்கள்</h3>
+                    <p class="text-slate-600 text-sm mt-1">எண் கோடு மூலம் கணக்கீடுகள்</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="compass" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">வடிவியல்</h3>
+                    <p class="text-slate-600 text-sm mt-1">Geometry</p>
+                </a>
+                 <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="triangle" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">வடிவியல்</h3>
+                    <p class="text-slate-600 text-sm mt-1">இணைகரம், சாய்சதுரம், சரிவகம்</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="ratio" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">விகிதம் மற்றும் விகிதாச்சாரம்</h3>
+                    <p class="text-slate-600 text-sm mt-1">Ratio & Proportion</p>
+                </a>
+                <a href="#" class="card bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 mb-4 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center card-icon-wrapper">
+                        <i data-lucide="superscript" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">இயற்கணிதம்</h3>
+                    <p class="text-slate-600 text-sm mt-1">Algebra</p>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
